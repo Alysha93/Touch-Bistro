@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
 :root {
-  --dk-red: #c8102e;
-  --dk-white: #ffffff;
-  --dk-dark: #222222;
-  --dk-light: #f7f7f7;
+  --theme-red: #c8102e;
+  --theme-blue: #002366; /* Deep blue */
+  --theme-black: #0a0a0a; /* True black */
+  --theme-light: #f5f5f5;
+  --theme-white: #ffffff;
 }
 
 * {
@@ -11,70 +14,81 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--dk-light);
-  color: var(--dk-dark);
+  font-family: 'Playfair Display', serif; /* Classic elegant serif for readability */
+  background: var(--theme-light);
+  color: var(--theme-black);
 }
 
-/* Header styled like a flag band */
+/* Calligraphy font for headings */
+h1, h2, h3, .gallery-item {
+  font-family: 'Great Vibes', cursive;
+  font-weight: normal;
+}
+
+/* Header styled in Red */
 header {
-  background: var(--dk-red);
-  color: var(--dk-white);
+  background: var(--theme-red);
+  color: var(--theme-white);
   padding: 60px 20px;
   text-align: center;
+  border-bottom: 5px solid var(--theme-black);
 }
 
 header h1 {
-  font-size: 3rem;
+  font-size: 4rem;
   margin: 0;
   letter-spacing: 2px;
-  text-transform: uppercase;
 }
 
 header p {
   margin-top: 10px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
 }
 
-/* Navigation bar */
+/* Navigation bar styled in Blue */
 nav {
-  background: var(--dk-dark);
-  padding: 10px;
+  background: var(--theme-blue);
+  padding: 15px;
   text-align: center;
+  border-bottom: 3px solid var(--theme-black);
 }
 
 nav a {
-  color: var(--dk-white);
+  color: var(--theme-white);
   margin: 0 15px;
   text-decoration: none;
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  letter-spacing: 1px;
 }
 
 nav a:hover {
-  color: var(--dk-red);
+  color: var(--theme-red);
 }
 
 /* Main sections */
 section {
   padding: 40px 20px;
   max-width: 1000px;
-  margin: 20px auto;
-  background: var(--dk-white);
+  margin: 30px auto;
+  background: var(--theme-white);
   border-radius: 8px;
-  border: 2px solid var(--dk-red);
+  border: 2px solid var(--theme-black);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 h2 {
-  color: var(--dk-red);
+  color: var(--theme-blue);
   margin-top: 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 3rem;
 }
 
 p {
-  line-height: 1.6;
+  line-height: 1.8;
+  font-size: 1.1rem;
 }
 
 .grid {
@@ -85,37 +99,51 @@ p {
 }
 
 .card {
-  background: var(--dk-light);
+  background: var(--theme-light);
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid var(--dk-red);
+  border: 1px solid var(--theme-blue);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .card h3 {
   margin-top: 0;
-  color: var(--dk-red);
+  color: var(--theme-red);
+  font-size: 2.2rem;
 }
 
-/* Simple “flag stripe” accent under some sections */
+/* A dynamic styling accent to show off the red and blue theme */
 .flag-accent {
+  display: flex;
   height: 6px;
-  width: 80px;
-  background: var(--dk-red);
+  width: 150px;
   margin: 10px 0 20px;
+}
+
+.flag-accent::before {
+  content: '';
+  flex: 1;
+  background: var(--theme-blue);
+}
+.flag-accent::after {
+  content: '';
+  flex: 1;
+  background: var(--theme-red);
 }
 
 footer {
   text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-  background: var(--dk-dark);
-  color: var(--dk-white);
-  font-size: 0.9rem;
+  padding: 30px 20px;
+  margin-top: 50px;
+  background: var(--theme-black);
+  color: var(--theme-white);
+  font-size: 1rem;
+  font-style: italic;
 }
 
 @media (max-width: 600px) {
   header h1 {
-    font-size: 2.2rem;
+    font-size: 3rem;
   }
 }
 
@@ -128,28 +156,31 @@ form {
 }
 label {
   font-weight: bold;
-  color: var(--dk-dark);
+  color: var(--theme-black);
 }
 input, textarea, select {
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border: 1px solid var(--theme-blue);
   border-radius: 4px;
   font-family: inherit;
   font-size: 1rem;
+  background: var(--theme-light);
 }
 button {
-  background: var(--dk-red);
-  color: var(--dk-white);
-  border: none;
+  background: var(--theme-blue);
+  color: var(--theme-white);
+  border: 2px solid var(--theme-black);
   padding: 15px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-family: 'Playfair Display', serif;
   font-weight: bold;
   border-radius: 4px;
   cursor: pointer;
   text-transform: uppercase;
+  margin-top: 10px;
 }
 button:hover {
-  background: var(--dk-dark);
+  background: var(--theme-red);
 }
 
 /* Gallery specific */
@@ -159,18 +190,19 @@ button:hover {
   gap: 15px;
   margin-top: 20px;
 }
+
 .gallery-item {
-  background: var(--dk-light);
-  border: 1px solid var(--dk-red);
+  background: var(--theme-light);
+  border: 2px solid var(--theme-blue);
   border-radius: 8px;
   height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--dk-red);
-  font-weight: bold;
-  font-style: italic;
+  color: var(--theme-red);
+  font-size: 2.5rem;
   overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .gallery-item img {
   width: 100%;
