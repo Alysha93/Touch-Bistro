@@ -62,7 +62,13 @@ nav {
   border-bottom: 3px solid var(--theme-black);
 }
 
-nav a {
+.nav-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
   color: var(--theme-white);
   margin: 0 15px;
   text-decoration: none;
@@ -72,8 +78,20 @@ nav a {
   letter-spacing: 1px;
 }
 
-nav a:hover {
+.nav-links a:hover {
   color: var(--theme-red);
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--theme-white);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: inherit;
+  margin: 0 auto;
 }
 
 /* Main sections */
@@ -168,6 +186,25 @@ footer {
     position: static;
     margin-bottom: 15px;
   }
+  
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 15px;
+  }
+  
+  .nav-links.active {
+    display: flex;
+  }
+  
+  .nav-links a {
+    margin: 10px 0;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }
 }
 
 /* Forms (Contact / Plan Trip) */
@@ -232,4 +269,10 @@ button:hover {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+  filter: brightness(1.15);
 }
