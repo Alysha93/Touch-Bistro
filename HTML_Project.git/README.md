@@ -1,6 +1,12 @@
 # Visit Denmark 🇩🇰
 An educational and visually stunning website showcasing the tourism, attractions, and culture of Denmark! 
 
+## Screenshots
+![Home Page](screenshots/home.png)
+![Gallery Page](screenshots/gallery.png)
+![Plan Trip Page](screenshots/plan-trip.png)
+![Contact Page](screenshots/contact.png)
+
 ## Features
 - **Responsive Design**: Adapts beautifully to desktop and mobile screens.
 - **Dynamic Theme**: Employs a stylized "Denmark Flag" color palette (deep blue, rich red, and true black) alongside elegant calligraphy typography.
