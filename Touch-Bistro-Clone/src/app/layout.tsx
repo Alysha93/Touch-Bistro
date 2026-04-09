@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Woodframe POS",
+  title: "TouchBistro POS",
   description: "TouchBistro Clone POS System",
 };
 

@@ -31,7 +31,7 @@ export default function LoginScreen() {
   return (
     <div className="flex h-full w-full items-center justify-center" style={{ backgroundColor: 'var(--bg-app)' }}>
       <div className="surface flex flex-col items-center" style={{ padding: '3rem', width: '400px' }}>
-        <h1 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 600 }}>Woodframe POS</h1>
+        <h1 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 600 }}>TouchBistro POS</h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Enter passcode</p>
         
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>

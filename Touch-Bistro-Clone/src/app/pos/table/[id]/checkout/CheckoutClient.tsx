@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { initiateCFDPayment, checkOrderStatus } from '../actions';
+import { initiateCFDPayment, checkOrderStatus } from '../../actions';
 
 export default function CheckoutClient({ table, order, items }: any) {
   const router = useRouter();
@@ -80,7 +80,7 @@ export default function CheckoutClient({ table, order, items }: any) {
       <div className="flex flex-col items-center justify-center" style={{ flex: '1', backgroundColor: '#9ca3af', height: '100%', overflowY: 'auto' }}>
         <div style={{ width: '400px', backgroundColor: '#fff', padding: '2rem 1.5rem', boxShadow: '0 4px 10px rgba(0,0,0,0.15)', fontFamily: 'monospace', margin: 'auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Woodframe</h2>
+            <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>TouchBistro</h2>
             <p>1407 Broadway #3701</p>
             <p>Printed: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
           </div>
@@ -117,7 +117,7 @@ export default function CheckoutClient({ table, order, items }: any) {
               
               <div style={{ textAlign: 'center' }}>
                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
-                    <h2 style={{ color: 'var(--primary)', fontSize: '1.8rem', fontWeight: 'bold' }}>Woodframe <span style={{ fontWeight: 'normal' }}>Loyalty</span></h2>
+                    <h2 style={{ color: 'var(--primary)', fontSize: '1.8rem', fontWeight: 'bold' }}>TouchBistro <span style={{ fontWeight: 'normal' }}>Loyalty</span></h2>
                  </div>
                  
                  {points === null ? (

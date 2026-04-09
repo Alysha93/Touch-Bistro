@@ -26,7 +26,7 @@ export default function CFDClient() {
     return (
       <div style={{ height: '100vh', width: '100vw', display: 'flex', backgroundColor: '#f8fafc' }}>
          <div style={{ flex: 1, borderRight: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <h1 style={{ color: '#94a3b8', fontSize: '2rem' }}>Welcome to Woodframe</h1>
+            <h1 style={{ color: '#94a3b8', fontSize: '2rem' }}>Welcome to TouchBistro</h1>
          </div>
          <div style={{ flex: 2, backgroundImage: 'url("https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80")', backgroundSize: 'cover' }}>
             <div style={{ backgroundColor: 'rgba(0,0,0,0.5)', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
@@ -60,7 +60,7 @@ export default function CFDClient() {
       {/* LEFT PANE - Itemized List */}
       <div style={{ flex: 1, backgroundColor: 'white', boxShadow: 'var(--shadow-lg)', zIndex: 10, display: 'flex', flexDirection: 'column' }}>
          <div style={{ padding: '2rem', backgroundColor: '#1e293b', color: 'white', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Woodframe</h2>
+            <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>TouchBistro</h2>
          </div>
          
          <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>

@@ -54,7 +54,7 @@ export default function OnlineClient({ categories, items }: any) {
        {/* Header */}
        <header style={{ backgroundColor: 'var(--primary)', color: 'white', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: 'var(--shadow-md)', zIndex: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-             <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Woodframe Takeout</span>
+             <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>TouchBistro Takeout</span>
           </div>
           <div>
             {!loyaltyAccount ? (
