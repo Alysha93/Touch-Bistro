@@ -13,6 +13,23 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 
 ![TouchBistro Demo](./public/demo.webp)
 
+## Screenshots
+
+### Staff Login
+![Login](./public/screenshots/login.png)
+
+### Floorplan View
+![Floorplan](./public/screenshots/floorplan.png)
+
+### Active Table Order
+![Order Interface](./public/screenshots/order_ui.png)
+
+### Print Receipt & Checkout
+![Receipt](./public/screenshots/receipt.png)
+
+### Store Settings & Apps
+![Settings](./public/screenshots/settings.png)
+
 ## Setup
 
 1. `npm install`
