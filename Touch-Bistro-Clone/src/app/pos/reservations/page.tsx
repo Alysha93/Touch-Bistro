@@ -12,7 +12,7 @@ export default async function ReservationsPage() {
         <h1 className="text-2xl font-bold">Waitlist & Reservations</h1>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 h-full min-h-0">
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '1.5rem', height: '100%', minHeight: 0 }}>
         
         {/* ADD TO WAITLIST */}
         <div className="surface p-4 flex flex-col h-full">

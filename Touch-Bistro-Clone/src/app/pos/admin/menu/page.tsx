@@ -22,7 +22,7 @@ export default async function AdminMenuPage() {
           return (
             <div key={cat.id} className="mb-8">
               <h2 className="text-xl font-bold mb-4 capitalize">{cat.name}</h2>
-              <div className="grid grid-cols-3 gap-4">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
                 {catItems.map(item => (
                   <div key={item.id} className="p-4 border rounded surface flex justify-between items-center gap-4">
                     <div>
