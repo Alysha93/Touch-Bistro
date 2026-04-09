@@ -68,8 +68,9 @@ export default function CheckoutClient({ table, order, items }: any) {
               </div>
               <div onClick={handlePay} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Push to Customer Display (CFD) &gt;</div>
               <div onClick={handlePay} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Cash &gt;</div>
+              <div onClick={() => window.print()} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Print Receipt &gt;</div>
               <div onClick={() => setShowLoyalty(true)} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                 <span style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.2rem', backgroundColor: '#e0f2fe', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>@</span> 
+                 <span style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.2rem', backgroundColor: '#ccfbf1', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>@</span> 
                  Loyalty
               </div>
            </>
@@ -77,8 +78,8 @@ export default function CheckoutClient({ table, order, items }: any) {
       </div>
 
       {/* RIGHT PANE - Receipt */}
-      <div className="flex flex-col items-center justify-center" style={{ flex: '1', backgroundColor: '#9ca3af', height: '100%', overflowY: 'auto' }}>
-        <div style={{ width: '400px', backgroundColor: '#fff', padding: '2rem 1.5rem', boxShadow: '0 4px 10px rgba(0,0,0,0.15)', fontFamily: 'monospace', margin: 'auto' }}>
+      <div className="flex flex-col items-center justify-center custom-print-container" style={{ flex: '1', backgroundColor: '#9ca3af', height: '100%', overflowY: 'auto' }}>
+        <div className="receipt-content" style={{ width: '400px', backgroundColor: '#fff', padding: '2rem 1.5rem', boxShadow: '0 4px 10px rgba(0,0,0,0.15)', fontFamily: 'monospace', margin: 'auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>TouchBistro</h2>
             <p>1407 Broadway #3701</p>
@@ -111,7 +112,7 @@ export default function CheckoutClient({ table, order, items }: any) {
 
       {/* LOYALTY MODAL OMITTED FOR BREVITY, using previous logic... */}
       {showLoyalty && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="no-print" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
            <div style={{ width: '450px', backgroundColor: 'white', borderRadius: '8px', padding: '2.5rem', position: 'relative', boxShadow: 'var(--shadow-lg)' }}>
               <button onClick={() => setShowLoyalty(false)} style={{ position: 'absolute', top: '15px', left: '15px', fontSize: '1.5rem', background: 'transparent', border: 'none', color: '#666' }}>✕</button>
               
@@ -135,6 +136,29 @@ export default function CheckoutClient({ table, order, items }: any) {
            </div>
         </div>
       )}
+      
+      {/* Dynamic Print Stylesheet */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          .receipt-content, .receipt-content * {
+            visibility: visible;
+          }
+          .receipt-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}} />
     </div>
   );
 }

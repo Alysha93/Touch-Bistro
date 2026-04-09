@@ -2,6 +2,7 @@ import { db } from '@/db';
 import { orders, orderItems } from '@/db/schema';
 import { sql } from 'drizzle-orm';
 import Link from 'next/link';
+import AdminCharts from './AdminCharts';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,10 @@ export default async function AdminDashboardPage() {
      itemCounts[name] = (itemCounts[name] || 0) + item.qty;
   }
   const topItems = Object.entries(itemCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+  const orderTimeline = allOrders.slice(-20).map(o => ({
+    name: `#${o.id}`,
+    total: o.total || 0
+  }));
 
   return (
     <div className="flex flex-col h-full overflow-hidden p-6 gap-6 bg-[#f8fafc]">
@@ -52,6 +57,8 @@ export default async function AdminDashboardPage() {
            <p className="text-3xl font-bold text-blue-600">${avgTicket.toFixed(2)}</p>
         </div>
       </div>
+
+      <AdminCharts topItems={topItems} orderTimeline={orderTimeline} />
 
       <div className="flex gap-6 mt-4">
         <div className="flex-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200">

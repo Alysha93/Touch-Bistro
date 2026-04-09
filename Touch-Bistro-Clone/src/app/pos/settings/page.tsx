@@ -23,7 +23,7 @@ export default function SettingsAppsPage() {
               {icon: '💳', label: 'Payments'},
               {icon: '🧾', label: 'Bill & Order Tickets'},
               {icon: '📐', label: 'Floorplan'},
-              {icon: '🖨️', label: 'Printers & Kitchen Displays', link: '/pos/settings/kds'},
+              {icon: '🖨️', label: 'Kitchen Display System (KDS)', link: '/pos/kds'},
               {icon: '📱', label: 'TouchBistro Apps', active: true},
               {icon: '🧩', label: 'App Marketplace'},
               {icon: '❓', label: 'Help'},
