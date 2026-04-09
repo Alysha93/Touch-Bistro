@@ -49,3 +49,33 @@ export async function submitOrder(tableId: number, staffId: number, items: Array
   revalidatePath(`/pos/table/${tableId}`);
   return { success: true, orderId: order!.id };
 }
+
+export async function initiateCFDPayment(orderId: number) {
+  db.update(orders).set({ status: 'awaiting_payment' }).where(eq(orders.id, orderId)).run();
+  revalidatePath('/pos/table');
+}
+
+export async function completeCFDPayment(orderId: number, tipAmount: number) {
+  db.update(orders).set({ status: 'paid', tipAmount }).where(eq(orders.id, orderId)).run();
+  revalidatePath('/pos/table');
+}
+
+export async function getActiveCFDOrder() {
+  const order = db.select().from(orders).where(eq(orders.status, 'awaiting_payment')).get();
+  if (!order) return null;
+  const items = db.select({
+      qty: orderItems.qty,
+      unitPrice: orderItems.unitPrice,
+      name: menuItems.name
+    })
+    .from(orderItems)
+    .innerJoin(menuItems, eq(orderItems.menuItemId, menuItems.id))
+    .where(eq(orderItems.orderId, order.id)).all();
+    
+  return { order, items };
+}
+
+export async function checkOrderStatus(orderId: number) {
+  const o = db.select().from(orders).where(eq(orders.id, orderId)).get();
+  return o?.status;
+}

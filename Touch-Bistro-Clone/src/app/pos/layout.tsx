@@ -2,6 +2,9 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { logout } from '../actions';
+import { db } from '@/db';
+import { orders } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export default async function POSLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -10,6 +13,8 @@ export default async function POSLayout({ children }: { children: React.ReactNod
   if (!staffName) {
     redirect('/');
   }
+
+  const webOrders = db.select().from(orders).where(eq(orders.source, 'web')).all().length;
 
   return (
     <div className="flex-col h-full w-full">
@@ -20,6 +25,11 @@ export default async function POSLayout({ children }: { children: React.ReactNod
           <span style={{ fontSize: '0.9rem' }}>Staff: {staffName}</span>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          {webOrders > 0 && (
+            <div style={{ backgroundColor: '#ef4444', color: 'white', padding: '0.2rem 0.75rem', borderRadius: '16px', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+               <span>📦</span> {webOrders} Online
+            </div>
+          )}
           <Link href="/pos/settings" style={{ color: 'white', textDecoration: 'underline', fontSize: '0.9rem' }}>⚙️ Settings</Link>
           <form action={logout}>
             <button className="btn" style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', backgroundColor: '#333', color: 'white' }}>Logout</button>

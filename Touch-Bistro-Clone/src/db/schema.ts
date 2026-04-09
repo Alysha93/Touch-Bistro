@@ -36,8 +36,10 @@ export const orders = sqliteTable('orders', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   tableId: integer('table_id').references(() => tables.id),
   staffId: integer('staff_id').references(() => staff.id),
-  status: text('status').notNull().default('open'),
+  status: text('status').notNull().default('open'), // 'open', 'awaiting_payment', 'paid'
   total: real('total').default(0),
+  tipAmount: real('tip_amount').notNull().default(0),
+  source: text('source').notNull().default('pos'), // 'pos', 'web'
 });
 
 export const orderItems = sqliteTable('order_items', {
