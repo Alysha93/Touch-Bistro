@@ -23,13 +23,15 @@ export default function SettingsAppsPage() {
               {icon: '💳', label: 'Payments'},
               {icon: '🧾', label: 'Bill & Order Tickets'},
               {icon: '📐', label: 'Floorplan'},
-              {icon: '🖨️', label: 'Printers & Kitchen Displays'},
+              {icon: '🖨️', label: 'Printers & Kitchen Displays', link: '/pos/settings/kds'},
               {icon: '📱', label: 'Woodframe Apps', active: true},
               {icon: '🧩', label: 'App Marketplace'},
               {icon: '❓', label: 'Help'},
               {icon: '⚙️', label: 'Advanced'},
             ].map(item => (
-               <div key={item.label} style={{ 
+               <div key={item.label} 
+                 onClick={() => { if(item.link) router.push(item.link); }}
+                 style={{ 
                  padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem',
                  borderBottom: '1px solid #eee', cursor: 'pointer',
                  backgroundColor: item.active ? '#e2e8f0' : 'transparent',
