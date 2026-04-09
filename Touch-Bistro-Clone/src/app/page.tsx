@@ -1,22 +1,25 @@
 'use client'
 
 import { useState } from 'react';
-import { loginWithPin } from './actions';
+import { loginWithPin, clockInOrOut } from './actions';
 
 export default function LoginScreen() {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   const handlePress = (num: string) => {
     if (pin.length < 4) {
       setPin(prev => prev + num);
       setError('');
+      setMessage('');
     }
   };
 
   const handleClear = () => {
     setPin('');
     setError('');
+    setMessage('');
   };
 
   const handleSubmit = async () => {
@@ -28,13 +31,24 @@ export default function LoginScreen() {
     }
   };
 
+  const handleClockIn = async () => {
+    if (pin.length === 0) return;
+    const res = await clockInOrOut(pin);
+    if (res?.error) {
+      setError(res.error);
+    } else if (res?.success) {
+      setMessage(res.success);
+    }
+    setPin('');
+  };
+
   return (
     <div className="flex h-full w-full items-center justify-center" style={{ backgroundColor: 'var(--bg-app)' }}>
       <div className="surface flex flex-col items-center" style={{ padding: '3rem', width: '400px' }}>
         <h1 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 600 }}>TouchBistro POS</h1>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Enter passcode</p>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Enter passcode</p>
         
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
           {[0, 1, 2, 3].map((i) => (
             <div key={i} style={{ 
               width: '20px', height: '20px', 
@@ -45,10 +59,11 @@ export default function LoginScreen() {
           ))}
         </div>
 
-        {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem', height: '20px' }}>{error}</p>}
-        {!error && <div style={{ height: '20px', marginBottom: '1rem' }} />}
+        {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem', height: '20px', fontWeight: 'bold' }}>{error}</p>}
+        {message && <p style={{ color: '#10b981', marginBottom: '1rem', height: '20px', fontWeight: 'bold' }}>{message}</p>}
+        {!error && !message && <div style={{ height: '20px', marginBottom: '1rem' }} />}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%', marginBottom: '1.5rem' }}>
           {[1,2,3,4,5,6,7,8,9].map(num => (
             <button 
               key={num}
@@ -85,6 +100,12 @@ export default function LoginScreen() {
             ✓
           </button>
         </div>
+
+        <button 
+           onClick={handleClockIn}
+           style={{ width: '100%', padding: '1rem', backgroundColor: '#e2e8f0', color: '#334155', borderRadius: 'var(--radius-sm)', border: 'none', fontWeight: 'bold', fontSize: '1.1rem' }}>
+           Clock In / Clock Out
+        </button>
       </div>
     </div>
   );

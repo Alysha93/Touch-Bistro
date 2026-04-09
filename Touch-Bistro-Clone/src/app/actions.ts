@@ -1,8 +1,8 @@
 'use server'
 
 import { db } from '@/db';
-import { staff } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { staff, timeclocks } from '@/db/schema';
+import { eq, desc, and, isNull } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -23,4 +23,34 @@ export async function logout() {
   cookieStore.delete('staffId');
   cookieStore.delete('staffName');
   redirect('/');
+}
+export async function clockInOrOut(pin: string) {
+  const user = db.select().from(staff).where(eq(staff.pin, pin)).get();
+  if (!user) {
+    return { error: 'Invalid passcode' };
+  }
+
+  // Check if currently clocked in
+  const activeSession = db.select().from(timeclocks)
+    .where(and(eq(timeclocks.staffId, user.id), isNull(timeclocks.clockOut)))
+    .orderBy(desc(timeclocks.clockIn))
+    .get();
+
+  const now = Math.floor(Date.now() / 1000);
+
+  if (activeSession) {
+    // Clock Out
+    db.update(timeclocks)
+      .set({ clockOut: now })
+      .where(eq(timeclocks.id, activeSession.id))
+      .run();
+    return { success: `Clocked out ${user.name} at ${new Date().toLocaleTimeString()}` };
+  } else {
+    // Clock In
+    db.insert(timeclocks).values({
+      staffId: user.id,
+      clockIn: now
+    }).run();
+    return { success: `Clocked in ${user.name} at ${new Date().toLocaleTimeString()}` };
+  }
 }

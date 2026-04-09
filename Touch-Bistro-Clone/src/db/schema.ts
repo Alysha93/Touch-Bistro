@@ -30,6 +30,7 @@ export const menuItems = sqliteTable('menu_items', {
   name: text('name').notNull(),
   price: real('price').notNull(),
   imageColor: text('image_color'),
+  isAvailable: integer('is_available', { mode: 'boolean' }).notNull().default(true),
 });
 
 export const orders = sqliteTable('orders', {
@@ -66,4 +67,28 @@ export const loyaltyAccounts = sqliteTable('loyalty_accounts', {
   phone: text('phone').notNull().unique(),
   name: text('name').notNull(),
   points: integer('points').notNull().default(0),
+});
+
+export const menuModifiers = sqliteTable('menu_modifiers', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  menuItemId: integer('menu_item_id').references(() => menuItems.id).notNull(),
+  name: text('name').notNull(),
+  price: real('price').notNull().default(0),
+});
+
+export const timeclocks = sqliteTable('timeclocks', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  staffId: integer('staff_id').references(() => staff.id).notNull(),
+  clockIn: integer('clock_in').notNull(),
+  clockOut: integer('clock_out'),
+});
+
+export const reservations = sqliteTable('reservations', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  phone: text('phone').notNull(),
+  time: integer('time').notNull(),
+  partySize: integer('party_size').notNull().default(2),
+  tableId: integer('table_id').references(() => tables.id),
+  notified: integer('notified', { mode: 'boolean' }).notNull().default(false),
 });

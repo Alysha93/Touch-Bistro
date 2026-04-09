@@ -58,17 +58,23 @@ export default function OrderInterface({ table, categories, menuItems, staffId }
 
         {/* Menu Items Grid */}
         <div style={{ padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.75rem', overflowY: 'auto' }}>
-          {displayedItems.map((item: MenuItem) => (
+          {displayedItems.map((item: MenuItem & { isAvailable?: boolean }) => (
              <div 
                key={item.id} 
-               onClick={() => addItem(item)}
+               onClick={() => { if (item.isAvailable !== false) addItem(item) }}
                style={{
                  height: '130px', borderRadius: 'var(--radius-sm)',
                  backgroundColor: item.imageColor || '#333',
-                 color: 'white', position: 'relative', cursor: 'pointer',
-                 boxShadow: 'inset 0 -40px 40px rgba(0,0,0,0.5)', overflow: 'hidden'
+                 color: 'white', position: 'relative', cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed',
+                 boxShadow: 'inset 0 -40px 40px rgba(0,0,0,0.5)', overflow: 'hidden',
+                 opacity: item.isAvailable !== false ? 1 : 0.5
                }}
              >
+               {item.isAvailable === false && (
+                 <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                    <span style={{ fontWeight: 'bold', letterSpacing: '2px', color: '#ffaaaa', transform: 'rotate(-15deg)', border: '2px solid #ffaaaa', padding: '4px 8px' }}>86'd</span>
+                 </div>
+               )}
                <div style={{ position: 'absolute', bottom: 8, left: 8, right: 8, textAlign: 'center' }}>
                  <p style={{ fontWeight: 600, fontSize: '0.85rem', lineHeight: '1.1', marginBottom: '4px' }}>{item.name}</p>
                  <p style={{ fontSize: '0.8rem', opacity: 0.9 }}>${item.price.toFixed(2)}</p>

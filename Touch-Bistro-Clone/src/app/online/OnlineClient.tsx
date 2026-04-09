@@ -87,11 +87,18 @@ export default function OnlineClient({ categories, items }: any) {
              {/* Items Grids */}
              <div style={{ flex: 1, overflowY: 'auto', padding: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '2rem', alignContent: 'start' }}>
                 {displayedItems.map((item: any) => (
-                   <div key={item.id} onClick={() => addToCart(item)} style={{ cursor: 'pointer', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--shadow-md)', border: '1px solid #e2e8f0', transition: 'transform 0.2s', ':hover': { transform: 'scale(1.02)' } }}>
+                   <div key={item.id} onClick={() => { if(item.isAvailable) addToCart(item) }} style={{ cursor: item.isAvailable ? 'pointer' : 'not-allowed', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--shadow-md)', border: '1px solid #e2e8f0', transition: 'transform 0.2s', opacity: item.isAvailable ? 1 : 0.5 }}>
                       <div style={{ height: '160px', backgroundColor: item.imageColor || '#94a3b8', position: 'relative' }}>
-                         <div style={{ position: 'absolute', bottom: '0', right: '0', backgroundColor: 'white', padding: '0.5rem 1rem', borderTopLeftRadius: '12px', fontWeight: 'bold', color: 'var(--primary)' }}>
-                            + Add
-                         </div>
+                         {item.isAvailable && (
+                           <div style={{ position: 'absolute', bottom: '0', right: '0', backgroundColor: 'white', padding: '0.5rem 1rem', borderTopLeftRadius: '12px', fontWeight: 'bold', color: 'var(--primary)' }}>
+                              + Add
+                           </div>
+                         )}
+                         {!item.isAvailable && (
+                           <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                              Sold Out
+                           </div>
+                         )}
                       </div>
                       <div style={{ padding: '1.25rem' }}>
                          <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.2rem', fontWeight: 'bold', color: '#0f172a' }}>{item.name}</h3>

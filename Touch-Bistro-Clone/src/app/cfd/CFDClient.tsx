@@ -5,6 +5,7 @@ import { getActiveCFDOrder, completeCFDPayment } from '../pos/table/actions';
 export default function CFDClient() {
   const [activeData, setActiveData] = useState<any>(null);
   const [tipScreen, setTipScreen] = useState(false);
+  const [payScreen, setPayScreen] = useState(false);
   const [signScreen, setSignScreen] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
 
@@ -45,7 +46,13 @@ export default function CFDClient() {
   const handleTip = (percent: number) => {
     setTipAmount(subtotal * percent);
     setTipScreen(false);
-    setSignScreen(true);
+    setPayScreen(true);
+    
+    // Simulate payment processing time, then transition to sign screen
+    setTimeout(() => {
+      setPayScreen(false);
+      setSignScreen(true);
+    }, 2000);
   };
 
   const handleDone = async () => {
@@ -93,7 +100,7 @@ export default function CFDClient() {
       {/* RIGHT PANE - Interaction */}
       <div style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '4rem' }}>
          
-         {!tipScreen && !signScreen && (
+         {!tipScreen && !payScreen && !signScreen && (
             <div style={{ textAlign: 'center' }}>
                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '2rem' }}>Please Verify Your Order</h1>
                <div style={{ display: 'inline-block', backgroundColor: 'white', padding: '2rem', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
@@ -125,6 +132,18 @@ export default function CFDClient() {
                <button onClick={() => handleTip(0)} style={{ padding: '1rem 3rem', background: 'transparent', border: 'none', color: '#64748b', fontSize: '1.5rem', textDecoration: 'underline', cursor: 'pointer' }}>
                   No Tip
                </button>
+            </div>
+         )}
+
+         {payScreen && (
+            <div style={{ textAlign: 'center', width: '100%', maxWidth: '600px' }}>
+               <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '3rem' }}>Please Tap, Insert, or Swipe Your Card</h1>
+               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  <div className="animate-pulse" style={{ width: '120px', height: '120px', backgroundColor: 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <span style={{ fontSize: '4rem' }}>💳</span>
+                  </div>
+                  <p style={{ color: '#64748b', fontSize: '1.5rem', marginTop: '1rem' }}>Awaiting terminal payment...</p>
+               </div>
             </div>
          )}
          

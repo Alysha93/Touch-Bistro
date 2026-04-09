@@ -75,11 +75,11 @@ export default function SettingsAppsPage() {
             <div className="surface" style={{ backgroundColor: 'white', cursor: 'pointer' }}>
                {[
                  {title: 'TouchBistro Loyalty', desc: 'A customer relationship management (CRM) and engagement platform...'},
-                 {title: 'TouchBistro Gift Cards', desc: 'Create and sell gift cards directly from your restaurant’s POS...'},
-                 {title: 'eCard Physical Gift Cards', desc: 'Create and sell physical cards that help build awareness...'},
-                 {title: 'TouchBistro Reservations', desc: 'The complete reservation and guest management platform.'},
+                 {title: 'TouchBistro Reservations', desc: 'The complete reservation and guest management platform.', href: '/pos/reservations'},
+                 {title: 'Management Dashboard', desc: 'End-of-day sales, ticket averages, and top-selling items.', href: '/pos/admin'},
+                 {title: 'Menu Configuration', desc: 'Manage 86s and dynamic catalog pricing.', href: '/pos/admin/menu'},
                ].map((itm, i) => (
-                 <div key={itm.title} style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: i === 3 ? 'none' : '1px solid #eee' }}>
+                 <div key={itm.title} onClick={() => { if(itm.href) router.push(itm.href) }} style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: i === 3 ? 'none' : '1px solid #eee' }}>
                    <div>
                       <div style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{itm.title}</div>
                       <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{itm.desc}</div>
