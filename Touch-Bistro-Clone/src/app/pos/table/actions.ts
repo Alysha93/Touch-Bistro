@@ -4,7 +4,7 @@ import { orders, orderItems, tables, menuItems, kdsTickets } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
-export async function submitOrder(tableId: number, staffId: number, items: Array<{menuItemId: number, seatNumber: number, qty: number, unitPrice: number}>) {
+export async function submitOrder(tableId: number, staffId: number, items: Array<{menuItemId: number, name: string, seatNumber: number, qty: number, unitPrice: number}>) {
   let order = db.select().from(orders).where(and(eq(orders.tableId, tableId), eq(orders.status, 'open'))).get();
   
   if (!order) {
@@ -15,6 +15,7 @@ export async function submitOrder(tableId: number, staffId: number, items: Array
   const dataToInsert = items.map(item => ({
     orderId: order!.id,
     menuItemId: item.menuItemId,
+    name: item.name,
     seatNumber: item.seatNumber,
     qty: item.qty,
     unitPrice: item.unitPrice,
@@ -96,4 +97,14 @@ export async function fastCheckout(tableId: number, staffId: number, items: Arra
   // Complete the payment
   await completeLocalPayment(res.orderId, tipAmount, paymentMethod);
   return res;
+}
+
+export async function deleteOrderItem(itemId: number, tableId: number) {
+  db.delete(orderItems).where(eq(orderItems.id, itemId)).run();
+  
+  // also delete associated KDS tickets? In a real system, you'd send a void ticket.
+  // For simplicity, we just delete or ignore it.
+  
+  revalidatePath(`/pos/table/${tableId}`);
+  return { success: true };
 }

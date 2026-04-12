@@ -1,16 +1,24 @@
 'use client'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOrder, fastCheckout } from '../actions';
+import { submitOrder, fastCheckout, deleteOrderItem } from '../actions';
 
-type MenuItem = { id: number, categoryId: number, name: string, price: number, imageColor: string | null };
+type MenuItem = { id?: number, categoryId: number, name: string, price: number, imageColor: string | null };
 type Modifier = { id: number, menuItemId: number, name: string, price: number };
 
-export default function OrderInterface({ table, categories, menuItems, modifiers = [], staffId }: any) {
+export default function OrderInterface({ table, categories, menuItems, modifiers = [], staffId, staffRole, initialOrderItems = [] }: any) {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState(categories[0]?.id || 1);
-  const [orderItems, setOrderItems] = useState<any[]>([]);
   const [activeSeat, setActiveSeat] = useState(1);
+  
+  // Initialize with the Database's persisted open orders
+  const [orderItems, setOrderItems] = useState<any[]>(() => {
+    return initialOrderItems.map((oi: any) => ({
+      ...oi,
+      originalName: oi.name, // Fallback for UI
+      price: oi.unitPrice
+    }));
+  });
 
   // Modifiers Modal State
   const [selectedItemForModifiers, setSelectedItemForModifiers] = useState<MenuItem | null>(null);
@@ -40,7 +48,8 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
     }
     
     setOrderItems([...orderItems, { 
-      ...item, 
+      ...item,
+      id: undefined, // Explicitly undefined to track that it hasn't been submitted to DB
       originalName: item.name,
       name: finalName,
       menuItemId: item.id, 
@@ -60,15 +69,43 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
     }
   };
 
+  const handleSendOrder = async () => {
+    const unsubmittedItems = orderItems.filter(oi => !oi.id);
+    if (unsubmittedItems.length > 0) {
+      await submitOrder(table.id, staffId, unsubmittedItems);
+    }
+    router.push('/pos/floorplan');
+  };
+
   const handleCheckout = async () => {
     if (orderItems.length === 0) {
       router.push(`/pos/table/${table.id}/checkout`);
       return;
     }
-    const res = await submitOrder(table.id, staffId, orderItems);
-    if (res.success) {
-      router.push(`/pos/table/${table.id}/checkout?orderId=${res.orderId}`);
+    const unsubmittedItems = orderItems.filter(oi => !oi.id);
+    let finalOrderId = null;
+    
+    if (unsubmittedItems.length > 0) {
+      const res = await submitOrder(table.id, staffId, unsubmittedItems);
+      finalOrderId = res.orderId;
+    } else {
+      // Just find the active order ID from the first mapped item if everything is submitted
+      finalOrderId = orderItems[0]?.orderId;
     }
+    
+    if (finalOrderId) {
+      router.push(`/pos/table/${table.id}/checkout?orderId=${finalOrderId}`);
+    } else {
+      router.push(`/pos/table/${table.id}/checkout`);
+    }
+  };
+
+  const handleFastCheckout = async (label: string) => {
+    if (orderItems.length === 0) return;
+    const unsubmittedItems = orderItems.filter(oi => !oi.id);
+    await fastCheckout(table.id, staffId, unsubmittedItems, 0, label);
+    alert(`Fast Checkout successful: ${label} for $${total.toFixed(2)}`);
+    router.push('/pos/floorplan');
   };
 
   const total = orderItems.reduce((acc, curr) => acc + (curr.price * curr.qty), 0);
@@ -78,7 +115,6 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
     <div className="flex h-full w-full" style={{ position: 'relative' }}>
       {/* LEFT PANE - MENU */}
       <div className="flex-col" style={{ flex: '2', borderRight: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)', height: '100%' }}>
-        {/* Top Header categories */}
         <div className="flex" style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'white', overflowX: 'auto', flexShrink: 0 }}>
            <div style={{ padding: '1rem', cursor: 'pointer', borderRight: '1px solid #333' }} onClick={() => router.push('/pos/floorplan')}>
              &larr; Back
@@ -99,7 +135,6 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
            ))}
         </div>
 
-        {/* Menu Items Grid */}
         <div style={{ padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.75rem', overflowY: 'auto' }}>
           {displayedItems.map((item: MenuItem & { isAvailable?: boolean }) => (
              <div 
@@ -108,7 +143,7 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
                style={{
                  height: '130px', borderRadius: 'var(--radius-sm)',
                  backgroundColor: item.imageColor || '#333',
-                 color: 'white', position: 'relative', cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed',
+                 color: 'var(--text-inverse)', position: 'relative', cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed',
                  boxShadow: 'inset 0 -40px 40px rgba(0,0,0,0.5)', overflow: 'hidden',
                  opacity: item.isAvailable !== false ? 1 : 0.5
                }}
@@ -128,7 +163,7 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
       </div>
 
       {/* RIGHT PANE - CURRENT ORDER */}
-      <div className="flex flex-col" style={{ flex: '1', backgroundColor: '#f8fafc', height: '100%' }}>
+      <div className="flex flex-col" style={{ flex: '1', backgroundColor: '#f8fafc', height: '100%', color: 'black' }}>
         <div className="flex justify-between items-center" style={{ backgroundColor: '#2d1b11', color: 'white', padding: '0.75rem 1rem', flexShrink: 0 }}>
           <span style={{ fontSize: '0.9rem' }}>{isRegister ? 'Current Order For Cash Register' : `Shared Order For Table ${table.name}`}</span>
         </div>
@@ -142,7 +177,7 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
                   style={{
                     flex: 1, textAlign: 'center', padding: '0.5rem', cursor: 'pointer',
                     backgroundColor: activeSeat === seat ? 'var(--accent)' : '#e5e7eb',
-                    color: activeSeat === seat ? 'white' : 'var(--text-main)',
+                    color: activeSeat === seat ? 'white' : 'black',
                     fontWeight: activeSeat === seat ? 'bold' : 'normal',
                     fontSize: '0.9rem'
                   }}>
@@ -180,35 +215,22 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
             <span>${total.toFixed(2)}</span>
           </div>
           
-          {/* Fast Checkout Bar */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1px', backgroundColor: '#94a3b8' }}>
-             {['Exact', '$10', '$20', '$50', 'Cash', 'Debit', 'Credit', 'Tab'].map(label => (
-               <button 
-                 key={label}
-                 onClick={async () => {
-                   if (orderItems.length === 0) return;
-                   const res = await fastCheckout(table.id, staffId, orderItems, 0, label);
-                   if (res.success) {
-                     alert(`Fast Checkout successful: ${label} for $${total.toFixed(2)}`);
-                     router.push('/pos/floorplan');
-                   }
-                 }}
-                 style={{ padding: '0.75rem 0', backgroundColor: '#64748b', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
-               >
-                 {label}
-               </button>
-             ))}
+          {/* Action Buttons Hub */}
+          <div style={{ display: 'flex', gap: '2px', backgroundColor: '#94a3b8' }}>
+            <button onClick={handleSendOrder} style={{ flex: 1, padding: '1rem', backgroundColor: '#475569', color: 'white', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
+               Send Order 🎟️
+            </button>
+            <button onClick={handleCheckout} style={{ flex: 1, padding: '1rem', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
+               Checkout / Pay &rarr;
+            </button>
           </div>
-          <button onClick={handleCheckout} className="btn-primary w-full" style={{ padding: '1rem', borderRadius: 0, fontSize: '1.1rem', cursor: 'pointer' }}>
-            Checkout / Print &rarr;
-          </button>
         </div>
       </div>
 
       {/* MODIFIERS MODAL */}
       {selectedItemForModifiers && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '500px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: 'var(--shadow-xl)' }}>
+          <div style={{ width: '500px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: 'var(--shadow-xl)', color: 'black' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
                <h2 style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>Modify: {selectedItemForModifiers.name}</h2>
                <button onClick={() => setSelectedItemForModifiers(null)} style={{ border: 'none', background: 'transparent', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>✕</button>
@@ -244,7 +266,7 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
       {/* EDIT ITEM MODAL */}
       {editItemIndex !== null && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '400px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: 'var(--shadow-xl)' }}>
+          <div style={{ width: '400px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: 'var(--shadow-xl)', color: 'black' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '1.5rem', textAlign: 'center' }}>Edit Item</h2>
             
             <p style={{ textAlign: 'center', fontSize: '1.2rem', marginBottom: '2rem', color: 'var(--primary)', fontWeight: 'bold' }}>
@@ -278,7 +300,16 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
             </div>
 
             <button 
-              onClick={() => {
+              onClick={async () => {
+                const item = orderItems[editItemIndex];
+                if (item.id) {
+                  // Admin override required for DB items
+                  if (staffRole !== 'admin') {
+                    alert('Admin Role Required: This item has already been submitted to the kitchen ticket.');
+                    return;
+                  }
+                  await deleteOrderItem(item.id, table.id);
+                }
                 const newItems = [...orderItems];
                 newItems.splice(editItemIndex, 1);
                 setOrderItems(newItems);
@@ -286,7 +317,7 @@ export default function OrderInterface({ table, categories, menuItems, modifiers
               }} 
               style={{ width: '100%', padding: '1rem', backgroundColor: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', borderRadius: '8px', fontWeight: 'bold', marginBottom: '1rem', cursor: 'pointer' }}
             >
-              Remove from Order
+              Remove from Order  (Void)
             </button>
             
             <button onClick={() => setEditItemIndex(null)} className="btn-secondary w-full" style={{ padding: '1rem' }}>

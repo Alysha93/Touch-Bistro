@@ -9,7 +9,7 @@ export default async function FloorplanPage() {
 
   return (
     <div className="flex flex-col h-full" style={{ padding: '2rem', overflowY: 'auto' }}>
-      <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', fontWeight: 'bold' }}>Main Floorplan</h2>
+      <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', fontWeight: 'bold', color: 'var(--text-light)' }}>Main Floorplan</h2>
       <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
         {allTables.map(table => (
           <Link 
@@ -19,10 +19,10 @@ export default async function FloorplanPage() {
               width: '140px', height: '140px', 
               borderRadius: table.name === 'Cash Register' ? 'var(--radius-md)' : '50%', 
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              backgroundColor: table.status === 'reserved' ? '#eab308' : (table.status === 'open' ? 'var(--bg-panel)' : 'var(--primary)'),
-              color: table.status === 'open' ? 'var(--text-main)' : 'var(--text-inverse)',
+              backgroundColor: table.status === 'open' ? 'var(--success)' : (table.status === 'seated' ? '#F59E0B' : 'var(--danger)'),
+              color: 'var(--text-inverse)',
               border: '2px solid',
-              borderColor: table.status === 'reserved' ? '#ca8a04' : (table.status === 'open' ? 'var(--border-color)' : 'var(--primary)'),
+              borderColor: table.status === 'open' ? '#059669' : (table.status === 'seated' ? '#D97706' : '#B91C1C'),
               fontSize: '1.25rem', fontWeight: 600,
               boxShadow: 'var(--shadow-md)',
               textDecoration: 'none',

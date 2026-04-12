@@ -47,6 +47,7 @@ export const orderItems = sqliteTable('order_items', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   orderId: integer('order_id').references(() => orders.id).notNull(),
   menuItemId: integer('menu_item_id').references(() => menuItems.id).notNull(),
+  name: text('name').notNull().default('Item'),
   seatNumber: integer('seat_number').notNull().default(1),
   qty: integer('qty').notNull().default(1),
   unitPrice: real('unit_price').notNull(),

@@ -1,6 +1,6 @@
 import { db } from '@/db';
-import { tables, menuCategories, menuItems, menuModifiers } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { tables, menuCategories, menuItems, menuModifiers, orders, orderItems, staff } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 import OrderInterface from './OrderInterface';
 import { cookies } from 'next/headers';
 
@@ -15,7 +15,16 @@ export default async function TablePage({ params }: { params: Promise<{ id: stri
   const modifiers = db.select().from(menuModifiers).all();
   
   const cookieStore = await cookies();
-  const staffId = cookieStore.get('staffId')?.value || '1';
+  const staffIdStr = cookieStore.get('staffId')?.value || '1';
+  const staffId = parseInt(staffIdStr);
+  const staffMember = db.select().from(staff).where(eq(staff.id, staffId)).get();
+  
+  // Loading Persistent Table State
+  const activeOrder = db.select().from(orders).where(and(eq(orders.tableId, tableId), eq(orders.status, 'open'))).get();
+  let existingItems: any[] = [];
+  if (activeOrder) {
+    existingItems = db.select().from(orderItems).where(eq(orderItems.orderId, activeOrder.id)).all();
+  }
   
   if (!table) return <div style={{ padding: '2rem' }}>Table not found</div>;
 
@@ -25,7 +34,9 @@ export default async function TablePage({ params }: { params: Promise<{ id: stri
       categories={categories} 
       menuItems={items} 
       modifiers={modifiers}
-      staffId={parseInt(staffId)} 
+      staffId={staffId}
+      staffRole={staffMember?.role || 'server'}
+      initialOrderItems={existingItems}
     />
   );
 }
