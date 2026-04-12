@@ -8,9 +8,9 @@ export default async function AdminMenuPage() {
   const items = await db.select().from(menuItems).all();
 
   return (
-    <div className="flex flex-col h-full overflow-hidden p-6 gap-6 bg-[#f8fafc] text-black">
+    <div className="flex flex-col h-full overflow-hidden p-6 gap-6 bg-[#f8fafc]" style={{ color: 'black' }}>
       <div className="flex space-between items-center w-full mb-4">
-        <h1 className="text-2xl font-bold text-black">Menu Management Backend</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'black' }}>Menu Management Backend</h1>
         <p className="text-gray-500">Toggle items on or off ("86ing")</p>
       </div>
 
