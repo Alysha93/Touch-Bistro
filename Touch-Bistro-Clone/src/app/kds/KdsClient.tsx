@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 export default function KdsClient({ station, allStations, initialTickets }: any) {
   const router = useRouter();
   const [tickets, setTickets] = useState(initialTickets);
-  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
 
   useEffect(() => {
     setTickets(initialTickets);

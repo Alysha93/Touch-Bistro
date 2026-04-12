@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/db';
-import { kdsTickets, orderItems, menuItems, orders, prepStations } from '@/db/schema';
+import { kdsTickets, orderItems, menuItems, prepStations } from '@/db/schema';
 import { eq, and, ne } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
@@ -21,7 +21,7 @@ export async function getActiveTickets() {
 
   // For each ticket, fetch corresponding items
   const populatedTickets = tickets.map(ticket => {
-     let items = db.select({
+     const items = db.select({
         id: orderItems.id,
         qty: orderItems.qty,
         name: menuItems.name,

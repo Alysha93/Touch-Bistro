@@ -29,7 +29,7 @@ export async function submitOnlineOrder(items: Array<{menuItemId: number, qty: n
   for (const dataItem of dataToInsert) {
     const menuItem = db.select().from(menuItems).where(eq(menuItems.id, dataItem.menuItemId)).get();
     if (menuItem && menuItem.prepStationId) {
-      let ticket = db.select().from(kdsTickets)
+      const ticket = db.select().from(kdsTickets)
         .where(and(
            eq(kdsTickets.orderId, order.id), 
            eq(kdsTickets.stationId, menuItem.prepStationId),

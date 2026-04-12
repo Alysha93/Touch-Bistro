@@ -28,7 +28,7 @@ export async function submitOrder(tableId: number, staffId: number, items: Array
     for (const dataItem of dataToInsert) {
       const menuItem = db.select().from(menuItems).where(eq(menuItems.id, dataItem.menuItemId)).get();
       if (menuItem && menuItem.prepStationId) { // Only route items that have a station (ignores drinks)
-        let ticket = db.select().from(kdsTickets)
+        const ticket = db.select().from(kdsTickets)
           .where(and(
              eq(kdsTickets.orderId, order!.id), 
              eq(kdsTickets.stationId, menuItem.prepStationId),
@@ -81,7 +81,7 @@ export async function checkOrderStatus(orderId: number) {
   return o?.status;
 }
 
-export async function completeLocalPayment(orderId: number, tipAmount: number, paymentMethod: string) {
+export async function completeLocalPayment(orderId: number, tipAmount: number, _paymentMethod: string) {
   const order = db.select().from(orders).where(eq(orders.id, orderId)).get();
   if (order) {
     db.update(orders).set({ status: 'paid', tipAmount: tipAmount }).where(eq(orders.id, orderId)).run();

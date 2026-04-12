@@ -1,0 +1,1 @@
+{ sonarlint.rules: { Web:S1143: { level: off } }, htmlhint.options: { attr-no-style: false } }

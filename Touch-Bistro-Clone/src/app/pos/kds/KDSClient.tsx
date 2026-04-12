@@ -7,7 +7,7 @@ import { getActiveTickets, advanceTicketStatus } from './actions';
 export default function KDSClient({ initialTickets }: { initialTickets: any[] }) {
   const router = useRouter();
   const [tickets, setTickets] = useState(initialTickets);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
 
   // Timer for ticket durations
   useEffect(() => {
