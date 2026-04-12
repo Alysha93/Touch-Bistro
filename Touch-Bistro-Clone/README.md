@@ -27,6 +27,38 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 ### Secure Tip Checkout Modal
 ![Checkout Logic](./public/screenshots/showcase_5.png)
 
+### Extended System Walkthrough
+
+<details>
+<summary><b>Click to expand full interface gallery (24+ HD Screenshots)</b></summary>
+
+![POS Walkthrough](./public/screenshots/gallery/gallery_1.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_2.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_3.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_4.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_5.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_6.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_7.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_8.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_9.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_10.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_11.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_12.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_13.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_14.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_15.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_16.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_17.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_18.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_19.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_20.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_21.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_22.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_23.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_24.png)
+
+</details>
+
 ## Setup
 
 1. `npm install`
