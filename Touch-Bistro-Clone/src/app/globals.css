@@ -1,25 +1,25 @@
 :root {
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
-  /* Color Palette - Authentic POS Branding */
-  --bg-app: #1F2A37; /* Dark navy */
+  /* Color Palette - Light Teal & Green Accents */
+  --bg-app: #F8FAFC; /* Mainly white / light slate */
   --bg-panel: #ffffff;
-  --bg-dark: #111827; /* Pure Dark Navy */
+  --bg-dark: #0D9488; /* Light Teal Header */
   
-  --primary: #F15A24; /* Brilliant Orange */
-  --primary-hover: #D94D1D;
-  --accent: #F15A24; /* Action Orange */
+  --primary: #0D9488; /* Light Teal primary buttons */
+  --primary-hover: #0F766E;
+  --accent: #10B981; /* Light Green accents */
   
   --success: #10b981;
   --danger: #ef4444;
   --danger-hover: #dc2626;
   
-  --text-main: #000000; /* Pure Black for inner panels */
+  --text-main: #000000; /* Dark text on white bgs */
   --text-muted: #6b7280;
-  --text-inverse: #ffffff; /* White for dark app backgrounds and orange buttons */
+  --text-inverse: #ffffff; /* White text on Teal bgs */
   
-  --border-color: #D1D5DB; /* Soft Gray */
-  --border-focus: #F15A24;
+  --border-color: #e5e7eb;
+  --border-focus: #0D9488;
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
