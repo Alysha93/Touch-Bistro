@@ -10,6 +10,16 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 - **Online Takeout Web App (`/online`)**: A distinct customer-facing menu portal supporting shopping carts and Loyalty point retrieval. Web orders bypass the floorplan entirely, alerting the local POS register via a live badge and injecting the tickets straight into the Kitchen Display queue.
 
 
+## Application Showcase
+
+### Active Table Session
+![Table Order Interface](./public/screenshots/showcase_2.png)
+
+### Kitchen Display Engine
+![Red Dark Mode KDS Ticket Array](./public/screenshots/showcase_1.png)
+
+### Kitchen Display Grid View
+![White Light Mode KDS Grid](./public/screenshots/showcase_3.png)
 
 ## Setup
 
