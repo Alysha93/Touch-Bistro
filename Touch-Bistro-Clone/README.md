@@ -9,13 +9,7 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 - **Customer Facing Display (`/cfd`)**: A connected tablet interface designed to face the customer that syncs to active Register checkouts in real-time, prompting for on-screen Tips and Signatures.
 - **Online Takeout Web App (`/online`)**: A distinct customer-facing menu portal supporting shopping carts and Loyalty point retrieval. Web orders bypass the floorplan entirely, alerting the local POS register via a live badge and injecting the tickets straight into the Kitchen Display queue.
 
-## Demo Video
 
-> *Note: If GitHub says "generating video" or the preview is blank, please click the direct hyperlink below!*
-
-### [▶️ Click Here to View Full Authentic System Demo](https://raw.githubusercontent.com/Alysha93/Touch-Bistro/main/public/demo.webp)
-
-<img src="./public/demo.webp" alt="TouchBistro System Demo" width="900" />
 
 ## Setup
 
