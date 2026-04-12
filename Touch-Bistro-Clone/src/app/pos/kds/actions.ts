@@ -42,9 +42,10 @@ export async function getActiveTickets() {
   return populatedTickets;
 }
 
-export async function bumpTicket(ticketId: number) {
+export async function advanceTicketStatus(ticketId: number, currentStatus: string) {
+  const newStatus = currentStatus === 'new' ? 'cooking' : 'ready';
   db.update(kdsTickets)
-    .set({ status: 'ready', completedAt: Date.now() })
+    .set({ status: newStatus, completedAt: newStatus === 'ready' ? Date.now() : null })
     .where(eq(kdsTickets.id, ticketId))
     .run();
     

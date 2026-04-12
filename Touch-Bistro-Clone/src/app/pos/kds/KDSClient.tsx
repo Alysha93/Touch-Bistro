@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getActiveTickets, bumpTicket } from './actions';
+import { getActiveTickets, advanceTicketStatus } from './actions';
 
 export default function KDSClient({ initialTickets }: { initialTickets: any[] }) {
   const router = useRouter();
@@ -19,15 +19,31 @@ export default function KDSClient({ initialTickets }: { initialTickets: any[] })
   useEffect(() => {
      const p = setInterval(async () => {
          const latest = await getActiveTickets();
+         // Only update if there's no optimistic local interaction happening blindly
          setTickets(latest);
      }, 3000);
      return () => clearInterval(p);
   }, []);
 
-  const handleBump = async (id: number) => {
-     // Optimistic update
-     setTickets(prev => prev.filter(t => t.id !== id));
-     await bumpTicket(id);
+  const handleBump = async (id: number, currentStatus: string) => {
+     // Optimistic local state update
+     setTickets(prev => {
+        if (currentStatus === 'new') {
+           return prev.map(t => t.id === id ? { ...t, status: 'cooking' } : t);
+        } else {
+           // It's going to Ready -> Green -> Removed
+           return prev.map(t => t.id === id ? { ...t, status: 'ready' } : t);
+        }
+     });
+     
+     await advanceTicketStatus(id, currentStatus);
+     
+     // Remove it slowly so they see the green flash!
+     if (currentStatus === 'cooking') {
+         setTimeout(() => {
+            setTickets(prev => prev.filter(t => t.id !== id));
+         }, 1000);
+     }
   };
 
   const getTimerString = (msString: number) => {
@@ -52,7 +68,7 @@ export default function KDSClient({ initialTickets }: { initialTickets: any[] })
 
        {/* Tickets Grid */}
        <div style={{ padding: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', overflowY: 'auto', flex: 1, alignItems: 'start' }}>
-          {tickets.length === 0 ? (
+          {tickets.filter(t => t.status !== 'ready').length === 0 && tickets.length === 0 ? (
              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#6b7280', fontSize: '1.5rem', marginTop: '10rem' }}>
                 No active tickets right now. Good job!
              </div>
@@ -61,21 +77,27 @@ export default function KDSClient({ initialTickets }: { initialTickets: any[] })
                 const diffSecs = Math.floor((now - t.createdAt) / 1000);
                 const isLate = diffSecs > 600; // 10 minutes
 
+                // Color mappings based on strict enterprise flow
+                let headerBg = t.status === 'new' ? '#374151' : (t.status === 'cooking' ? '#ea580c' : '#10b981'); // Gray -> Orange -> Green
+                if (t.status === 'new' && isLate) headerBg = '#991b1b'; // Dark red if late and untouched
+                
+                let cardBg = t.status === 'ready' ? '#064e3b' : '#1f2937';
+
                 return (
-                   <div key={t.id} style={{ backgroundColor: '#1f2937', border: `2px solid ${isLate ? '#ef4444' : '#374151'}`, borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                      <div style={{ backgroundColor: isLate ? '#7f1d1d' : '#374151', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                   <div key={t.id} style={{ backgroundColor: cardBg, border: `3px solid ${headerBg}`, borderRadius: '12px', overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.3s ease', opacity: t.status === 'ready' ? 0.3 : 1 }}>
+                      <div style={{ backgroundColor: headerBg, padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background-color 0.3s ease' }}>
                          <div>
-                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Order #{t.orderId}</div>
-                            <div style={{ color: '#d1d5db', fontSize: '0.9rem' }}>{t.stationName}</div>
+                            <div style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>Order #{t.orderId}</div>
+                            <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase' }}>{t.status} - {t.stationName}</div>
                          </div>
-                         <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: isLate ? '#fca5a5' : '#9ca3af' }}>
+                         <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
                             {getTimerString(t.createdAt)}
                          </div>
                       </div>
                       
-                      <div style={{ padding: '1rem', flex: 1 }}>
+                      <div style={{ padding: '1.5rem', flex: 1 }}>
                          {t.items.map((i: any) => (
-                           <div key={i.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', fontSize: '1.1rem', borderBottom: '1px dashed #374151', paddingBottom: '0.5rem' }}>
+                           <div key={i.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', fontSize: '1.2rem', borderBottom: '1px dashed #374151', paddingBottom: '0.5rem' }}>
                               <span><span style={{ color: '#10b981', fontWeight: 'bold', marginRight: '0.5rem' }}>{i.qty}</span> {i.name}</span>
                            </div>
                          ))}
@@ -83,10 +105,10 @@ export default function KDSClient({ initialTickets }: { initialTickets: any[] })
 
                       <div style={{ padding: '1rem', borderTop: '1px solid #374151' }}>
                          <button 
-                           onClick={() => handleBump(t.id)}
-                           style={{ width: '100%', padding: '1rem', fontSize: '1.25rem', fontWeight: 'bold', backgroundColor: '#2563eb', color: 'white', borderRadius: '4px', cursor: 'pointer', border: 'none' }}
+                           onClick={() => handleBump(t.id, t.status)}
+                           style={{ width: '100%', padding: '1rem', fontSize: '1.25rem', fontWeight: 'bold', backgroundColor: t.status === 'new' ? '#2563eb' : '#10b981', color: 'white', borderRadius: '8px', cursor: 'pointer', border: 'none', transition: 'all 0.2s ease' }}
                          >
-                           BUMP
+                           {t.status === 'new' ? 'START COOKING' : 'MARK READY (BUMP)'}
                          </button>
                       </div>
                    </div>

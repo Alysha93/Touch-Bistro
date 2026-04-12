@@ -85,7 +85,7 @@ export async function completeLocalPayment(orderId: number, tipAmount: number, p
   const order = db.select().from(orders).where(eq(orders.id, orderId)).get();
   if (order) {
     db.update(orders).set({ status: 'paid', tipAmount: tipAmount }).where(eq(orders.id, orderId)).run();
-    db.update(tables).set({ status: 'paid' }).where(eq(tables.id, order.tableId!)).run();
+    db.update(tables).set({ status: 'open' }).where(eq(tables.id, order.tableId!)).run();
     revalidatePath(`/pos/table`);
     revalidatePath(`/pos/floorplan`);
   }
