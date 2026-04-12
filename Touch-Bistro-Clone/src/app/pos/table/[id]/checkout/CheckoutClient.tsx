@@ -1,13 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { initiateCFDPayment, checkOrderStatus } from '../../actions';
+import { initiateCFDPayment, checkOrderStatus, completeLocalPayment } from '../../actions';
 
 export default function CheckoutClient({ table, order, items }: any) {
   const router = useRouter();
   const [showLoyalty, setShowLoyalty] = useState(false);
+  const [showTipModal, setShowTipModal] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [points, setPoints] = useState<number | null>(null);
   const [awaitingCFD, setAwaitingCFD] = useState(false);
+  const [customTip, setCustomTip] = useState('');
 
   const subtotal = items.reduce((acc: number, item: any) => acc + item.unitPrice, 0);
   const tax = subtotal * 0.13;
@@ -17,9 +20,21 @@ export default function CheckoutClient({ table, order, items }: any) {
     setPoints(198);
   };
 
-  const handlePay = async () => {
+  const handleCFDPay = async () => {
     await initiateCFDPayment(order.id);
     setAwaitingCFD(true);
+  };
+
+  const startLocalPayment = (method: string) => {
+    setPaymentMethod(method);
+    setShowTipModal(true);
+  };
+
+  const processPaymentWithTip = async (tipValue: number) => {
+    await completeLocalPayment(order.id, tipValue, paymentMethod);
+    setShowTipModal(false);
+    alert(`Payment of $${(total + tipValue).toFixed(2)} completed successfully via ${paymentMethod}!`);
+    router.push('/pos/floorplan');
   };
 
   // Poll for payment completion
@@ -43,7 +58,7 @@ export default function CheckoutClient({ table, order, items }: any) {
       {/* LEFT PANE - Checkout options */}
       <div className="flex flex-col" style={{ width: '40%', borderRight: '1px solid var(--border-color)', backgroundColor: '#f9fafb', height: '100%', overflowY: 'auto' }}>
         <div style={{ padding: '1.25rem 1rem', borderBottom: '1px solid #ccc', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-           <button onClick={() => router.back()} style={{ marginRight: '1rem', background: 'transparent', fontSize: '1rem', color: 'var(--primary)' }}>&lt; Back</button>
+           <button onClick={() => router.back()} style={{ marginRight: '1rem', background: 'transparent', fontSize: '1rem', color: 'var(--primary)', border: 'none', cursor: 'pointer' }}>&lt; Back</button>
            <span style={{ fontSize: '1.1rem' }}>Checkout - {table.name}</span>
         </div>
         
@@ -66,8 +81,9 @@ export default function CheckoutClient({ table, order, items }: any) {
               <div style={{ padding: '0.75rem 1rem', fontSize: '0.85rem', color: '#666', backgroundColor: '#e5e7eb', textTransform: 'uppercase', fontWeight: 'bold' }}>
                 Payment Options
               </div>
-              <div onClick={handlePay} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Push to Customer Display (CFD) &gt;</div>
-              <div onClick={handlePay} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Cash &gt;</div>
+              <div onClick={() => startLocalPayment('Credit')} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer', fontWeight: 'bold', color: 'var(--primary)' }}>Credit / Debit (Local) &gt;</div>
+              <div onClick={() => startLocalPayment('Cash')} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer', fontWeight: 'bold', color: 'var(--primary)' }}>Cash &gt;</div>
+              <div onClick={handleCFDPay} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Push to Customer Display (CFD) &gt;</div>
               <div onClick={() => window.print()} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer' }}>Print Receipt &gt;</div>
               <div onClick={() => setShowLoyalty(true)} style={{ padding: '1rem', borderBottom: '1px solid #eee', backgroundColor: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                  <span style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.2rem', backgroundColor: '#ccfbf1', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>@</span> 
@@ -110,11 +126,41 @@ export default function CheckoutClient({ table, order, items }: any) {
         </div>
       </div>
 
-      {/* LOYALTY MODAL OMITTED FOR BREVITY, using previous logic... */}
+      {/* TIP MODAL */}
+      {showTipModal && (
+        <div className="no-print" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
+           <div style={{ width: '500px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
+              <button onClick={() => setShowTipModal(false)} style={{ position: 'absolute', top: '15px', right: '15px', fontSize: '1.5rem', background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>✕</button>
+              
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem', textAlign: 'center' }}>Enter Tip</h2>
+              <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '2rem' }}>Payment Method: <span style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{paymentMethod}</span></p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                 <button onClick={() => processPaymentWithTip(total * 0.15)} className="btn-secondary" style={{ padding: '1rem', fontSize: '1.1rem', backgroundColor: '#f1f5f9' }}>15%<br/><span style={{fontSize:'0.85rem'}}>${(total * 0.15).toFixed(2)}</span></button>
+                 <button onClick={() => processPaymentWithTip(total * 0.18)} className="btn-secondary" style={{ padding: '1rem', fontSize: '1.1rem', backgroundColor: '#f1f5f9' }}>18%<br/><span style={{fontSize:'0.85rem'}}>${(total * 0.18).toFixed(2)}</span></button>
+                 <button onClick={() => processPaymentWithTip(total * 0.20)} className="btn-secondary" style={{ padding: '1rem', fontSize: '1.1rem', backgroundColor: '#f1f5f9' }}>20%<br/><span style={{fontSize:'0.85rem'}}>${(total * 0.20).toFixed(2)}</span></button>
+              </div>
+
+              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', display: 'flex', gap: '1rem' }}>
+                 <div style={{ flex: '1' }}>
+                   <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>Custom Tip Amount ($)</label>
+                   <input type="number" value={customTip} onChange={(e) => setCustomTip(e.target.value)} style={{ width: '100%', padding: '0.75rem', fontSize: '1.2rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="0.00" />
+                 </div>
+                 <button onClick={() => processPaymentWithTip(Number(customTip) || 0)} className="btn-primary" style={{ flex: '1', padding: '0.75rem', fontSize: '1.1rem' }}>Apply Tip</button>
+              </div>
+
+              <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                 <button onClick={() => processPaymentWithTip(0)} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer' }}>No Tip</button>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* LOYALTY MODAL */}
       {showLoyalty && (
         <div className="no-print" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
            <div style={{ width: '450px', backgroundColor: 'white', borderRadius: '8px', padding: '2.5rem', position: 'relative', boxShadow: 'var(--shadow-lg)' }}>
-              <button onClick={() => setShowLoyalty(false)} style={{ position: 'absolute', top: '15px', left: '15px', fontSize: '1.5rem', background: 'transparent', border: 'none', color: '#666' }}>✕</button>
+              <button onClick={() => setShowLoyalty(false)} style={{ position: 'absolute', top: '15px', right: '15px', fontSize: '1.5rem', background: 'transparent', border: 'none', color: '#666', cursor: 'pointer' }}>✕</button>
               
               <div style={{ textAlign: 'center' }}>
                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>

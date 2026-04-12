@@ -1,20 +1,63 @@
 'use client'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOrder } from '../actions';
+import { submitOrder, fastCheckout } from '../actions';
 
 type MenuItem = { id: number, categoryId: number, name: string, price: number, imageColor: string | null };
+type Modifier = { id: number, menuItemId: number, name: string, price: number };
 
-export default function OrderInterface({ table, categories, menuItems, staffId }: any) {
+export default function OrderInterface({ table, categories, menuItems, modifiers = [], staffId }: any) {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState(categories[0]?.id || 1);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [activeSeat, setActiveSeat] = useState(1);
 
+  // Modifiers Modal State
+  const [selectedItemForModifiers, setSelectedItemForModifiers] = useState<MenuItem | null>(null);
+  const [selectedModifiers, setSelectedModifiers] = useState<Modifier[]>([]);
+  
+  // Edit Item Modal State
+  const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
+
   const displayedItems = menuItems.filter((i: MenuItem) => i.categoryId === activeCategory);
 
-  const addItem = (item: MenuItem) => {
-    setOrderItems([...orderItems, { ...item, menuItemId: item.id, seatNumber: activeSeat, qty: 1, unitPrice: item.price }]);
+  const handleItemClick = (item: MenuItem) => {
+    const itemModifiers = modifiers.filter((m: Modifier) => m.menuItemId === item.id);
+    if (itemModifiers.length > 0) {
+      setSelectedItemForModifiers(item);
+      setSelectedModifiers([]);
+    } else {
+      addItemToOrder(item, []);
+    }
+  };
+
+  const addItemToOrder = (item: MenuItem, itemModifiers: Modifier[]) => {
+    let finalName = item.name;
+    let finalPrice = item.price;
+    if (itemModifiers.length > 0) {
+      finalName += ` (${itemModifiers.map(m => m.name).join(', ')})`;
+      finalPrice += itemModifiers.reduce((acc, m) => acc + m.price, 0);
+    }
+    
+    setOrderItems([...orderItems, { 
+      ...item, 
+      originalName: item.name,
+      name: finalName,
+      menuItemId: item.id, 
+      seatNumber: activeSeat, 
+      qty: 1, 
+      unitPrice: finalPrice, 
+      price: finalPrice 
+    }]);
+    setSelectedItemForModifiers(null);
+  };
+
+  const toggleModifier = (mod: Modifier) => {
+    if (selectedModifiers.find(m => m.id === mod.id)) {
+      setSelectedModifiers(selectedModifiers.filter(m => m.id !== mod.id));
+    } else {
+      setSelectedModifiers([...selectedModifiers, mod]);
+    }
   };
 
   const handleCheckout = async () => {
@@ -28,11 +71,11 @@ export default function OrderInterface({ table, categories, menuItems, staffId }
     }
   };
 
-  const total = orderItems.reduce((acc, curr) => acc + curr.price, 0);
+  const total = orderItems.reduce((acc, curr) => acc + (curr.price * curr.qty), 0);
   const isRegister = table.name.includes("Register");
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full" style={{ position: 'relative' }}>
       {/* LEFT PANE - MENU */}
       <div className="flex-col" style={{ flex: '2', borderRight: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)', height: '100%' }}>
         {/* Top Header categories */}
@@ -61,7 +104,7 @@ export default function OrderInterface({ table, categories, menuItems, staffId }
           {displayedItems.map((item: MenuItem & { isAvailable?: boolean }) => (
              <div 
                key={item.id} 
-               onClick={() => { if (item.isAvailable !== false) addItem(item) }}
+               onClick={() => { if (item.isAvailable !== false) handleItemClick(item) }}
                style={{
                  height: '130px', borderRadius: 'var(--radius-sm)',
                  backgroundColor: item.imageColor || '#333',
@@ -85,7 +128,7 @@ export default function OrderInterface({ table, categories, menuItems, staffId }
       </div>
 
       {/* RIGHT PANE - CURRENT ORDER */}
-      <div className="flex flex-col" style={{ flex: '1', backgroundColor: 'var(--bg-panel)', height: '100%' }}>
+      <div className="flex flex-col" style={{ flex: '1', backgroundColor: '#f8fafc', height: '100%' }}>
         <div className="flex justify-between items-center" style={{ backgroundColor: '#2d1b11', color: 'white', padding: '0.75rem 1rem', flexShrink: 0 }}>
           <span style={{ fontSize: '0.9rem' }}>{isRegister ? 'Current Order For Cash Register' : `Shared Order For Table ${table.name}`}</span>
         </div>
@@ -111,12 +154,22 @@ export default function OrderInterface({ table, categories, menuItems, staffId }
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
            {orderItems.map((oi, idx) => (
-              <div key={idx} className="flex justify-between items-center" style={{ padding: '0.5rem 0', borderBottom: '1px solid var(--border-color)' }}>
-                 <div className="flex items-center gap-2">
-                   {!isRegister && <span style={{ fontSize: '0.75rem', backgroundColor: '#eee', padding: '2px 6px', borderRadius: '4px' }}>S{oi.seatNumber}</span>}
-                   <span style={{ fontSize: '0.95rem' }}>{oi.name}</span>
+              <div 
+                key={idx} 
+                onClick={() => setEditItemIndex(idx)}
+                className="flex items-center justify-between" 
+                style={{ padding: '0.75rem 0', borderBottom: '1px solid #e2e8f0', cursor: 'pointer', backgroundColor: editItemIndex === idx ? '#f1f5f9' : 'transparent' }}
+              >
+                 <div className="flex flex-col gap-1">
+                   <div className="flex items-center gap-2">
+                     {!isRegister && <span style={{ fontSize: '0.75rem', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>S{oi.seatNumber}</span>}
+                     <span style={{ fontSize: '0.95rem', fontWeight: '500' }}>{oi.qty > 1 ? `${oi.qty}x ` : ''}{oi.originalName}</span>
+                   </div>
+                   {oi.name !== oi.originalName && (
+                     <span style={{ fontSize: '0.8rem', color: '#64748b', paddingLeft: isRegister ? '0' : '28px' }}>{oi.name.replace(`${oi.originalName} `, '')}</span>
+                   )}
                  </div>
-                 <span style={{ fontWeight: 600 }}>${oi.price.toFixed(2)}</span>
+                 <span style={{ fontWeight: 600 }}>${(oi.price * oi.qty).toFixed(2)}</span>
               </div>
            ))}
         </div>
@@ -132,17 +185,116 @@ export default function OrderInterface({ table, categories, menuItems, staffId }
              {['Exact', '$10', '$20', '$50', 'Cash', 'Debit', 'Credit', 'Tab'].map(label => (
                <button 
                  key={label}
-                 style={{ padding: '0.75rem 0', backgroundColor: '#64748b', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: '600' }}
+                 onClick={async () => {
+                   if (orderItems.length === 0) return;
+                   const res = await fastCheckout(table.id, staffId, orderItems, 0, label);
+                   if (res.success) {
+                     alert(`Fast Checkout successful: ${label} for $${total.toFixed(2)}`);
+                     router.push('/pos/floorplan');
+                   }
+                 }}
+                 style={{ padding: '0.75rem 0', backgroundColor: '#64748b', color: 'white', border: 'none', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
                >
                  {label}
                </button>
              ))}
           </div>
-          <button onClick={handleCheckout} className="btn-primary w-full" style={{ padding: '1rem', borderRadius: 0, fontSize: '1.1rem' }}>
+          <button onClick={handleCheckout} className="btn-primary w-full" style={{ padding: '1rem', borderRadius: 0, fontSize: '1.1rem', cursor: 'pointer' }}>
             Checkout / Print &rarr;
           </button>
         </div>
       </div>
+
+      {/* MODIFIERS MODAL */}
+      {selectedItemForModifiers && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '500px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: 'var(--shadow-xl)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+               <h2 style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>Modify: {selectedItemForModifiers.name}</h2>
+               <button onClick={() => setSelectedItemForModifiers(null)} style={{ border: 'none', background: 'transparent', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>✕</button>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+              {modifiers.filter((m: Modifier) => m.menuItemId === selectedItemForModifiers.id).map((mod: Modifier) => {
+                const isSelected = !!selectedModifiers.find(selected => selected.id === mod.id);
+                return (
+                  <div 
+                    key={mod.id} 
+                    onClick={() => toggleModifier(mod)}
+                    style={{ 
+                      padding: '1rem', border: `2px solid ${isSelected ? 'var(--primary)' : '#e2e8f0'}`, 
+                      borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
+                      backgroundColor: isSelected ? '#f0fdf4' : 'transparent', fontWeight: isSelected ? 'bold' : 'normal'
+                    }}
+                  >
+                     <span>{mod.name}</span>
+                     <span>{mod.price > 0 ? `+$${mod.price.toFixed(2)}` : 'Free'}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <button onClick={() => addItemToOrder(selectedItemForModifiers, selectedModifiers)} className="btn-primary w-full" style={{ padding: '1rem', fontSize: '1.1rem' }}>
+              Add to Order
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT ITEM MODAL */}
+      {editItemIndex !== null && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '400px', backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: 'var(--shadow-xl)' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '1.5rem', textAlign: 'center' }}>Edit Item</h2>
+            
+            <p style={{ textAlign: 'center', fontSize: '1.2rem', marginBottom: '2rem', color: 'var(--primary)', fontWeight: 'bold' }}>
+              {orderItems[editItemIndex].originalName}
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
+               <button 
+                 onClick={() => {
+                   const newItems = [...orderItems];
+                   if (newItems[editItemIndex].qty > 1) {
+                     newItems[editItemIndex].qty -= 1;
+                     setOrderItems(newItems);
+                   }
+                 }} 
+                 style={{ width: '50px', height: '50px', borderRadius: '25px', border: '1px solid #cbd5e1', fontSize: '1.5rem', background: '#f8fafc', cursor: 'pointer' }}
+               >-</button>
+               
+               <span style={{ fontSize: '2rem', fontWeight: 'bold', width: '40px', textAlign: 'center' }}>
+                 {orderItems[editItemIndex].qty}
+               </span>
+
+               <button 
+                 onClick={() => {
+                   const newItems = [...orderItems];
+                   newItems[editItemIndex].qty += 1;
+                   setOrderItems(newItems);
+                 }} 
+                 style={{ width: '50px', height: '50px', borderRadius: '25px', border: '1px solid #cbd5e1', fontSize: '1.5rem', background: '#f8fafc', cursor: 'pointer' }}
+               >+</button>
+            </div>
+
+            <button 
+              onClick={() => {
+                const newItems = [...orderItems];
+                newItems.splice(editItemIndex, 1);
+                setOrderItems(newItems);
+                setEditItemIndex(null);
+              }} 
+              style={{ width: '100%', padding: '1rem', backgroundColor: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', borderRadius: '8px', fontWeight: 'bold', marginBottom: '1rem', cursor: 'pointer' }}
+            >
+              Remove from Order
+            </button>
+            
+            <button onClick={() => setEditItemIndex(null)} className="btn-secondary w-full" style={{ padding: '1rem' }}>
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

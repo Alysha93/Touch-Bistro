@@ -36,3 +36,21 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 2. `npx drizzle-kit push` (to synchronize the SQLite schema)
 3. `npm run seed` (to populate Staff PINs, menu items, and prep stations)
 4. `npm run dev`
+
+## Schema
+
+The database is built using SQLite and Drizzle ORM. The core schema includes:
+- **`prep_stations`**: Kitchen stations (e.g., Grill, Expo).
+- **`staff`**: Staff members with roles and secure PINs.
+- **`tables`**: Restaurant tables with statuses (`open`, `seated`, `paid`).
+- **`menu_categories` & `menu_items`**: Menu catalog with pricing and prep station assignments.
+- **`orders` & `order_items`**: Active and past orders, linking tables, staff, and individual item status.
+- **`kds_tickets`**: Kitchen Display System tickets for tracking prep times.
+- **`loyalty_accounts`**: Customer loyalty tracking via phone number.
+- **`menu_modifiers`**: Customizations for menu items.
+- **`timeclocks`**: Staff clock-in/out tracking.
+- **`reservations`**: Customer table reservations.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

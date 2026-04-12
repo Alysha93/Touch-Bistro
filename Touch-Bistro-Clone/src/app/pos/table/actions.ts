@@ -79,3 +79,21 @@ export async function checkOrderStatus(orderId: number) {
   const o = db.select().from(orders).where(eq(orders.id, orderId)).get();
   return o?.status;
 }
+
+export async function completeLocalPayment(orderId: number, tipAmount: number, paymentMethod: string) {
+  const order = db.select().from(orders).where(eq(orders.id, orderId)).get();
+  if (order) {
+    db.update(orders).set({ status: 'paid', tipAmount: tipAmount }).where(eq(orders.id, orderId)).run();
+    db.update(tables).set({ status: 'paid' }).where(eq(tables.id, order.tableId!)).run();
+    revalidatePath(`/pos/table`);
+    revalidatePath(`/pos/floorplan`);
+  }
+}
+
+export async function fastCheckout(tableId: number, staffId: number, items: Array<any>, tipAmount: number, paymentMethod: string) {
+  // Submit the order items internally
+  const res = await submitOrder(tableId, staffId, items);
+  // Complete the payment
+  await completeLocalPayment(res.orderId, tipAmount, paymentMethod);
+  return res;
+}
