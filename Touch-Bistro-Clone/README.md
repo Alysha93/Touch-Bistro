@@ -21,6 +21,12 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 ### Kitchen Display Grid View
 ![White Light Mode KDS Grid](./public/screenshots/showcase_3.png)
 
+### Active Category Filtering
+![Menu Spirits Tab Filter](./public/screenshots/showcase_4.png)
+
+### Secure Tip Checkout Modal
+![Checkout Logic](./public/screenshots/showcase_5.png)
+
 ## Setup
 
 1. `npm install`
