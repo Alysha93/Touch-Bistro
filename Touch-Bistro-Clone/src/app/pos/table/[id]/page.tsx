@@ -26,11 +26,14 @@ export default async function TablePage({ params }: { params: Promise<{ id: stri
     existingItems = db.select().from(orderItems).where(eq(orderItems.orderId, activeOrder.id)).all();
   }
   
+  const allTables = db.select().from(tables).all();
+
   if (!table) return <div style={{ padding: '2rem' }}>Table not found</div>;
 
   return (
     <OrderInterface 
       table={table} 
+      allTables={allTables}
       categories={categories} 
       menuItems={items} 
       modifiers={modifiers}
