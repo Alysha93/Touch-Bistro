@@ -2,6 +2,9 @@
 
 A full-stack, tablet-optimized restaurant operating system inspired by TouchBistro, built with Next.js 15 (App Router), Drizzle ORM, and SQLite.
 
+## Live System Demo 🚀
+![Full System Walkthrough Video](./public/touch_bistro_app_demo.webp)
+
 ## Modules Included
 
 - **Main Register (`/pos`)**: Staff Login via PIN keypad, interactive Floorplan, complex Table Ordering features (seat grouping, quick-add), and complete receipt Checkout with Loyalty integration.
