@@ -56,6 +56,8 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 ![POS Walkthrough](./public/screenshots/gallery/gallery_22.png)
 ![POS Walkthrough](./public/screenshots/gallery/gallery_23.png)
 ![POS Walkthrough](./public/screenshots/gallery/gallery_24.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_25.png)
+![POS Walkthrough](./public/screenshots/gallery/gallery_26.png)
 
 </details>
 

@@ -34,6 +34,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-user-select: none;
   user-select: none; /* Prevent text selection in a POS */
 }
 
@@ -58,6 +59,7 @@ button {
 }
 
 input, textarea {
+  -webkit-user-select: auto;
   user-select: auto; /* Allow text selection inside inputs */
   font-family: inherit;
   border: 1px solid var(--border-color);

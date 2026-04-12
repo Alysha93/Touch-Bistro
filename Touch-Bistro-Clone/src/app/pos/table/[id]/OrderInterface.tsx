@@ -100,13 +100,6 @@ export default function OrderInterface({ table, allTables = [], categories, menu
     }
   };
 
-  const handleFastCheckout = async (label: string) => {
-    if (orderItems.length === 0) return;
-    const unsubmittedItems = orderItems.filter(oi => !oi.id);
-    await fastCheckout(table.id, staffId, unsubmittedItems, 0, label);
-    alert(`Fast Checkout successful: ${label} for $${total.toFixed(2)}`);
-    router.push('/pos/floorplan');
-  };
 
   const total = orderItems.reduce((acc, curr) => acc + (curr.price * curr.qty), 0);
   const isRegister = table.name.includes("Register");
@@ -281,7 +274,7 @@ export default function OrderInterface({ table, allTables = [], categories, menu
              >
                {item.isAvailable === false && (
                  <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                    <span style={{ fontWeight: 'bold', letterSpacing: '2px', color: '#ffaaaa', transform: 'rotate(-15deg)', border: '2px solid #ffaaaa', padding: '4px 8px' }}>86'd</span>
+                    <span style={{ fontWeight: 'bold', letterSpacing: '2px', color: '#ffaaaa', transform: 'rotate(-15deg)', border: '2px solid #ffaaaa', padding: '4px 8px' }}>86&apos;d</span>
                  </div>
                )}
                <div style={{ position: 'absolute', bottom: 12, left: 10, right: 10, textAlign: 'center' }}>

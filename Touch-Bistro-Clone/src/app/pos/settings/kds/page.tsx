@@ -19,7 +19,7 @@ export default function KDSSettingsPage() {
                    Configuration Name
                 </div>
                 <div style={{ flex: 1, padding: '1.5rem' }}>
-                   <input type="text" defaultValue="KDS" style={{ width: '100%', border: 'none', fontSize: '1.2rem', outline: 'none' }} />
+                   <input title="KDS Station Alias" type="text" defaultValue="KDS" style={{ width: '100%', border: 'none', fontSize: '1.2rem', outline: 'none' }} />
                 </div>
              </div>
              

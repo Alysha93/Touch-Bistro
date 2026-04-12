@@ -28,7 +28,7 @@ export default async function ReservationsPage() {
             </div>
              <div>
               <label className="text-sm text-gray-500 mb-1 block">Party Size</label>
-              <select name="partySize" className="w-full p-3 rounded bg-[var(--bg-app)] border border-[var(--border-color)]">
+              <select name="partySize" title="Select Party Size" className="w-full p-3 rounded bg-[var(--bg-app)] border border-[var(--border-color)]">
                 {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n} Guests</option>)}
               </select>
             </div>
@@ -60,7 +60,7 @@ export default async function ReservationsPage() {
                           const tblId = formData.get('tableId') as string;
                           await assignTable(reservation.id, tblId ? parseInt(tblId) : null);
                        }} className="flex items-center gap-1">
-                          <select name="tableId" className="p-2 rounded border border-[var(--border-color)] bg-white text-sm" defaultValue={reservation.tableId?.toString() || ""}>
+                          <select name="tableId" title="Assign Table Number" className="p-2 rounded border border-[var(--border-color)] bg-white text-sm" defaultValue={reservation.tableId?.toString() || ""}>
                             <option value="">Assign Table...</option>
                             {allTables.map(t => (
                               <option key={t.id} value={t.id}>{t.name}</option>
