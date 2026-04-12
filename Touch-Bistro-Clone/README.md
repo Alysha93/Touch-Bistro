@@ -11,7 +11,11 @@ A full-stack, tablet-optimized restaurant operating system inspired by TouchBist
 
 ## Demo Video
 
-![TouchBistro Demo](./public/demo.webp)
+> *Note: If GitHub says "generating video" or the preview is blank, please click the direct hyperlink below!*
+
+### [▶️ Click Here to View Full Authentic System Demo](https://raw.githubusercontent.com/Alysha93/Touch-Bistro/main/public/demo.webp)
+
+<img src="./public/demo.webp" alt="TouchBistro System Demo" width="900" />
 
 ## Screenshots
 
