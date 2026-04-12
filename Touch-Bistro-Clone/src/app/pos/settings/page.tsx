@@ -359,7 +359,7 @@ export default function SettingsAppsPage() {
   };
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full" style={{ color: 'var(--text-main)' }}>
       {/* LEFT PANE - Nav Sidebar */}
       <div className="flex-col" style={{ width: '30%', borderRight: '1px solid var(--border-color)', backgroundColor: 'var(--bg-panel)' }}>
          <div style={{ padding: '1rem', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center' }}>

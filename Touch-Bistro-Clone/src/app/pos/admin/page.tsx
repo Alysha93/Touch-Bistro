@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
   }));
 
   return (
-    <div className="flex flex-col h-full overflow-hidden p-6 gap-6 bg-[#f8fafc]">
+    <div className="flex flex-col h-full overflow-hidden p-6 gap-6 bg-[#f8fafc] text-black">
       <div className="flex justify-between items-center w-full">
         <h1 className="text-3xl font-bold text-gray-800">Management Dashboard</h1>
         <Link href="/pos/admin/menu" className="btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '8px' }}>
