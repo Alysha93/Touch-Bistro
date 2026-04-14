@@ -1,395 +1,387 @@
 'use client'
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const Toggle = ({ active, onChange }: { active: boolean, onChange: () => void }) => (
   <div 
     onClick={onChange}
+    className="transition-all"
     style={{
-      width: '44px', height: '24px', borderRadius: '12px',
+      width: '48px', height: '24px', borderRadius: '12px',
       backgroundColor: active ? 'var(--primary)' : '#cbd5e1',
-      position: 'relative', cursor: 'pointer', transition: 'background-color 0.2s'
+      position: 'relative', cursor: 'pointer'
     }}
   >
     <div style={{
       width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'white',
-      position: 'absolute', top: '2px', left: active ? '22px' : '2px',
-      transition: 'left 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+      position: 'absolute', top: '2px', left: active ? '26px' : '2px',
+      transition: 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1)', boxShadow: 'var(--shadow-sm)'
     }} />
   </div>
 );
 
-export default function SettingsAppsPage() {
+export default function SettingsPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('TouchBistro Apps');
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'Dashboard';
   
   const sidebarItems = [
-    {icon: 'ℹ️', label: 'Restaurant Information'},
-    {icon: '🍴', label: 'Menu', link: '/pos/admin/menu'},
-    {icon: '👤', label: 'Staff'},
-    {icon: '💳', label: 'Payments'},
-    {icon: '🧾', label: 'Bill & Order Tickets'},
-    {icon: '📐', label: 'Floorplan', link: '/pos/floorplan'},
-    {icon: '🖨️', label: 'Kitchen Display System (KDS)', link: '/pos/kds'},
-    {icon: '📱', label: 'TouchBistro Apps'},
-    {icon: '🧩', label: 'App Marketplace'},
-    {icon: '❓', label: 'Help'},
-    {icon: '⚙️', label: 'Advanced'},
+    {id: 'Dashboard', icon: '📊', label: 'Dashboard'},
+    {id: 'Restaurant Information', icon: 'ℹ️', label: 'Restaurant Information'},
+    {id: 'Staff', icon: '👥', label: 'Staff Configuration'},
+    {id: 'Payments', icon: '💳', label: 'Payments & Taxes'},
+    {id: 'Marketplace', icon: '🧩', label: 'App Marketplace'},
+    {id: 'Advanced', icon: '⚙️', label: 'Advanced Settings'},
   ];
-
-  const handleTabClick = (item: { link?: string, label: string }) => {
-    if (item.link) {
-      router.push(item.link);
-    } else {
-      setActiveTab(item.label);
-    }
-  };
 
   const renderContent = () => {
     switch(activeTab) {
-      case 'TouchBistro Apps': return <TouchBistroApps />;
+      case 'Dashboard': return <StatsDashboard />;
       case 'Restaurant Information': return <RestaurantInfo />;
       case 'Staff': return <StaffSettings />;
       case 'Payments': return <PaymentsSettings />;
-      case 'Bill & Order Tickets': return <BillTicketsSettings />;
-      case 'App Marketplace': return <AppMarketplace />;
-      case 'Help': return <HelpSettings />;
+      case 'Marketplace': return <AppMarketplace />;
       case 'Advanced': return <AdvancedSettings />;
-      case 'TouchBistro Loyalty': return <LoyaltySettings />;
-      default: return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
-           <span style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚙️</span>
-           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{activeTab}</h2>
-        </div>
-      );
+      default: return <StatsDashboard />;
     }
   };
 
-  // --- Subcomponents ---
-
-  const TouchBistroApps = () => (
-    <>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>TouchBistro Apps</h1>
-      
-      <div style={{ marginBottom: '2rem' }}>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Active Apps</p>
-        <div className="surface" onClick={() => router.push('/cfd')} style={{ padding: '1rem', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-           <div>
-              <div style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Customer Facing Display</div>
-              <div style={{ color: '#64748b', fontSize: '0.9rem' }}>Let guests see and confirm orders in real time.</div>
-           </div>
-           <span style={{ color: '#cbd5e1' }}>&gt;</span>
-        </div>
-      </div>
-
-      <div style={{ marginBottom: '2rem' }}>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Online Ordering</p>
-        <div className="surface" onClick={() => router.push('/online')} style={{ padding: '1rem', backgroundColor: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-           <div>
-              <div style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>TouchBistro Online Ordering</div>
-              <div style={{ color: '#64748b', fontSize: '0.9rem' }}>Let diners order takeout and delivery directly from you!</div>
-           </div>
-           <span style={{ color: '#cbd5e1' }}>&gt;</span>
-        </div>
-      </div>
-
-      <div style={{ marginBottom: '2rem' }}>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Loyalty & Marketing</p>
-        <div className="surface" style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-           {[
-             {title: 'TouchBistro Loyalty', desc: 'Customer relationship management and engagement platform.', action: () => setActiveTab('TouchBistro Loyalty')},
-             {title: 'TouchBistro Reservations', desc: 'Complete reservation and guest management platform.', action: () => router.push('/pos/reservations')},
-             {title: 'Management Dashboard', desc: 'End-of-day sales, ticket averages, and selling items.', action: () => router.push('/pos/admin')},
-             {title: 'Menu Configuration', desc: 'Manage 86s and dynamic catalog pricing.', action: () => router.push('/pos/admin/menu')},
-           ].map((itm, i) => (
-             <div key={itm.title} onClick={itm.action} style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: i === 3 ? 'none' : '1px solid #eee', cursor: 'pointer' }}>
-               <div>
-                  <div style={{ fontSize: '1.1rem', marginBottom: '0.25rem', color: itm.title.includes('Loyalty') ? 'var(--primary)' : 'inherit' }}>{itm.title}</div>
-                  <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{itm.desc}</div>
-               </div>
-               <span style={{ color: '#cbd5e1' }}>&gt;</span>
-             </div>
-           ))}
-        </div>
-      </div>
-    </>
-  );
-
-  const RestaurantInfo = () => (
-    <div style={{ maxWidth: '600px' }}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Restaurant Information</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <label>
-          <span style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.25rem' }}>Restaurant Name</span>
-          <input type="text" defaultValue="The TouchBistro Cafe" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-        </label>
-        <label>
-          <span style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.25rem' }}>Phone Number</span>
-          <input type="text" defaultValue="(555) 123-4567" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-        </label>
-        <label>
-          <span style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.25rem' }}>Business Address</span>
-          <textarea defaultValue="123 Cuisine Ave, Food District, NY 10001" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', minHeight: '80px' }} />
-        </label>
-        <label>
-          <span style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.25rem' }}>Tax Rate (%)</span>
-          <input type="number" defaultValue="8.5" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-        </label>
-        <button style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
-          Save Configuration
-        </button>
-      </div>
-    </div>
-  );
-
-  const StaffSettings = () => (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-         <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Staff Management</h1>
-         <button style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold', border: 'none' }}>+ Add Staff Member</button>
-      </div>
-      <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-        {[
-          {name: 'Admin', role: 'Manager/Admin', pin: '1234'},
-          {name: 'Server Darko', role: 'Server', pin: '1111'},
-          {name: 'Chef Gordon', role: 'Kitchen', pin: '8888'},
-        ].map((s, i) => (
-          <div key={s.name} style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: i === 2 ? 'none' : '1px solid #eee' }}>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#64748b' }}>
-                  {s.name.charAt(0)}
-                </div>
-                <div>
-                  <div style={{ fontWeight: 'bold' }}>{s.name}</div>
-                  <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Role: {s.role} &nbsp;•&nbsp; PIN: {s.pin}</div>
-                </div>
-             </div>
-             <button style={{ padding: '0.5rem 1rem', backgroundColor: '#f1f5f9', color: 'var(--primary)', borderRadius: '8px', fontWeight: 'bold', border: 'none' }}>Edit</button>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-
-  const PaymentsSettings = () => {
-    const [t1, setT1] = useState(true);
-    const [t2, setT2] = useState(true);
-    return (
-      <div style={{ maxWidth: '700px' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Payments & Checkout</h1>
-        
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1rem', marginBottom: '2rem' }}>
-           <h2 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Payment Methods</h2>
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid #eee', marginBottom: '1rem' }}>
-              <div>
-                <div style={{ fontWeight: 'bold' }}>Enable Credit Card Processing</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Accept Visa, MasterCard, Amex via local terminal</div>
-              </div>
-              <Toggle active={t1} onChange={() => setT1(!t1)} />
-           </div>
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 'bold' }}>Enable Cash Management</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Track cash drawer operations and tip outs</div>
-              </div>
-              <Toggle active={t2} onChange={() => setT2(!t2)} />
-           </div>
-        </div>
-
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1rem' }}>
-           <h2 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Suggested Tip Percentages</h2>
-           <div style={{ display: 'flex', gap: '1rem' }}>
-             {['15', '18', '20'].map(val => (
-                <div key={val} style={{ flex: 1, padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '8px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary)' }}>{val}%</span>
-                </div>
-             ))}
-           </div>
-        </div>
-      </div>
-    );
-  };
-
-  const BillTicketsSettings = () => {
-    const [t1, setT1] = useState(true);
-    return (
-      <div style={{ maxWidth: '600px' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Bill & Order Tickets</h1>
-        
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1rem', marginBottom: '2rem' }}>
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 'bold' }}>Auto-Print Kitchen Tickets</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Send tickets to KDS and Printers automatically</div>
-              </div>
-              <Toggle active={t1} onChange={() => setT1(!t1)} />
-           </div>
-        </div>
-
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1rem' }}>
-           <h2 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Receipt Footer Message</h2>
-           <textarea 
-             defaultValue={"Thank you for dining with us!\\nFollow us on Instagram @TouchBistroCafe"} 
-             style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', minHeight: '100px', marginBottom: '1rem' }} 
-           />
-           <button style={{ padding: '0.75rem 1.5rem', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold', border: 'none' }}>Save Footer</button>
-        </div>
-      </div>
-    );
-  };
-
-  const AppMarketplace = () => (
-    <>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>App Marketplace</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
-        {[
-          {name: 'QuickBooks Desktop', type: 'Accounting', status: 'Connected'},
-          {name: 'Deliveroo Integration', type: 'Online Ordering', status: 'Install'},
-          {name: 'UberEats Integration', type: 'Online Ordering', status: 'Install'},
-          {name: 'Mailchimp', type: 'Marketing', status: 'Install'},
-          {name: '7shifts', type: 'Staff Scheduling', status: 'Connected'},
-        ].map(app => (
-          <div key={app.name} style={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.25rem' }}>{app.name}</div>
-              <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.5rem' }}>{app.type}</div>
-            </div>
-            <button style={{ 
-              width: '100%', padding: '0.75rem', borderRadius: '8px', fontWeight: 'bold', border: 'none', cursor: 'pointer',
-              backgroundColor: app.status === 'Connected' ? '#f1f5f9' : 'var(--primary)',
-              color: app.status === 'Connected' ? 'var(--text-main)' : 'white'
-             }}>
-              {app.status}
-            </button>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-
-  const HelpSettings = () => (
-    <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center', paddingTop: '3rem' }}>
-       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎧</div>
-       <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>We&apos;re here to help!</h1>
-       <p style={{ color: '#64748b', fontSize: '1.1rem', marginBottom: '2rem' }}>Contact our 24/7 world-class support team at any time.</p>
-       
-       <div style={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '2rem', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-          <div>
-            <div style={{ color: '#64748b', marginBottom: '0.5rem', textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: 'bold' }}>Phone Support</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>1-800-YOUR-POS</div>
-          </div>
-          <div style={{ width: '1px', height: '60px', backgroundColor: '#e2e8f0' }}></div>
-          <div>
-            <div style={{ color: '#64748b', marginBottom: '0.5rem', textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: 'bold' }}>Email Support</div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>support@touchbistro.com</div>
-          </div>
-       </div>
-    </div>
-  );
-
-  const AdvancedSettings = () => {
-    const [t1, setT1] = useState(false);
-    return (
-      <div style={{ maxWidth: '600px' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Advanced Settings</h1>
-        
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1rem', marginBottom: '2rem' }}>
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 'bold' }}>Developer Debug Logging</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Store verbose errors in local cache (affects performance)</div>
-              </div>
-              <Toggle active={t1} onChange={() => setT1(!t1)} />
-           </div>
-        </div>
-
-        <div style={{ border: '1px solid #ef4444', borderRadius: '8px', padding: '1.5rem', backgroundColor: '#fef2f2' }}>
-           <h2 style={{ fontWeight: 'bold', color: '#b91c1c', marginBottom: '0.5rem' }}>Danger Zone</h2>
-           <p style={{ fontSize: '0.85rem', color: '#991b1b', marginBottom: '1rem' }}>These actions cannot be undone and will affect local POS operation.</p>
-           <button style={{ padding: '0.75rem 1.5rem', backgroundColor: '#ef4444', color: 'white', borderRadius: '8px', fontWeight: 'bold', border: 'none', cursor: 'pointer', display: 'block', width: '100%', marginBottom: '1rem' }}>Clear Local Database Cache</button>
-           <button style={{ padding: '0.75rem 1.5rem', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'block', width: '100%' }}>Force Sync with Cloud</button>
-        </div>
-      </div>
-    );
-  };
-
-  const LoyaltySettings = () => {
-    const [t1, setT1] = useState(true);
-    return (
-      <div style={{ maxWidth: '600px' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem', color: 'var(--primary)' }}>TouchBistro Loyalty</h1>
-        
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1.5rem', marginBottom: '2rem' }}>
-           <h2 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Reward Multiplier</h2>
-           <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '1rem' }}>Configure how many points guests earn per dollar spent before tax.</p>
-           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ fontWeight: 'bold' }}>$1.00 spent  =</span>
-              <input type="number" defaultValue="1" style={{ width: '80px', padding: '0.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', textAlign: 'center', fontWeight: 'bold' }} />
-              <span style={{ fontWeight: 'bold' }}>Points</span>
-           </div>
-           <button style={{ marginTop: '1.5rem', padding: '0.75rem 1.5rem', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold', border: 'none' }}>Update Reward Rules</button>
-        </div>
-
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1rem', marginBottom: '2rem' }}>
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 'bold' }}>Customer Facing Display Sign-up</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Prompt guests to enter phone number on CFD checkout</div>
-              </div>
-              <Toggle active={t1} onChange={() => setT1(!t1)} />
-           </div>
-        </div>
-
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '1.5rem' }}>
-           <h2 style={{ fontWeight: 'bold', marginBottom: '1rem' }}>Top Members</h2>
-           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid #e2e8f0' }}>
-              <span style={{ fontWeight: 'bold', color: '#64748b' }}>Customer</span>
-              <span style={{ fontWeight: 'bold', color: '#64748b' }}>Points Balance</span>
-           </div>
-           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0' }}>
-              <div>
-                <div style={{ fontWeight: 'bold' }}>Lana Avery</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>(555) 999-3434</div>
-              </div>
-              <div style={{ fontWeight: 'bold', color: 'var(--primary)', fontSize: '1.2rem' }}>198 pts</div>
-           </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="flex h-full w-full" style={{ color: 'var(--text-main)' }}>
-      {/* LEFT PANE - Nav Sidebar */}
-      <div className="flex-col" style={{ width: '30%', borderRight: '1px solid var(--border-color)', backgroundColor: 'var(--bg-panel)' }}>
-         <div style={{ padding: '1rem', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center' }}>
-            <span onClick={() => router.push('/pos/floorplan')} style={{ color: 'var(--primary)', cursor: 'pointer', marginRight: '1rem' }}>&lt; Back</span>
-            <span style={{ fontWeight: 'bold', fontSize: '1.2rem', margin: '0 auto' }}>Settings</span>
-         </div>
-         <div style={{ padding: '0.5rem 1rem' }}>
-            <input type="text" placeholder="Search" style={{ width: '100%', padding: '0.5rem', borderRadius: '8px', border: 'none', backgroundColor: '#f1f5f9' }} />
-         </div>
-         <div style={{ overflowY: 'auto', height: 'calc(100vh - 120px)' }}>
-            {sidebarItems.map(item => (
-               <div key={item.label} 
-                 onClick={() => handleTabClick(item)}
-                 style={{ 
-                 padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem',
-                 borderBottom: '1px solid #eee', cursor: 'pointer',
-                 backgroundColor: activeTab === item.label && !item.link ? '#e2e8f0' : 'transparent',
-                 color: activeTab === item.label && !item.link ? 'var(--primary)' : 'var(--text-main)'
-               }}>
-                 <span style={{ width: '2rem', textAlign: 'center' }}>{item.icon}</span>
-                 <span style={{ fontSize: '1rem' }}>{item.label}</span>
-               </div>
-            ))}
-         </div>
-      </div>
+    <div className="flex h-full animate-fade-in" style={{ backgroundColor: '#F8FAFC' }}>
       
-      {/* RIGHT PANE */}
-      <div className="flex-col" style={{ flex: '1', backgroundColor: '#f8fafc', padding: '2rem', overflowY: 'auto' }}>
+      {/* Sidebar Navigation */}
+      <div className="flex flex-col" style={{ width: '320px', borderRight: '1px solid var(--border-color)', backgroundColor: 'white' }}>
+        <div style={{ padding: '2rem', borderBottom: '1px solid var(--border-color)' }}>
+          <div className="flex items-center gap-3 mb-6">
+             <button 
+               onClick={() => router.push('/pos/floorplan')}
+               className="flex items-center justify-center"
+               style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#F1F5F9', border: 'none', color: 'var(--text-main)', fontWeight: 'bold' }}
+             >
+               ←
+             </button>
+             <h1 style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.5px' }}>Management</h1>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>Settings & Config</p>
+        </div>
+        
+        <div style={{ padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {sidebarItems.map(item => (
+            <Link 
+              key={item.id}
+              href={`/pos/settings?tab=${item.id}`}
+              className={`flex items-center gap-3 px-4 py-4 rounded-xl transition-all font-bold ${activeTab === item.id ? 'bg-teal-50 text-teal-700' : 'text-slate-500 hover:bg-slate-50'}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
+              <span style={{ fontSize: '0.95rem' }}>{item.label}</span>
+              {activeTab === item.id && <div style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--primary)' }}></div>}
+            </Link>
+          ))}
+        </div>
+        
+        <div className="mt-auto p-8 border-t border-slate-100">
+           <div className="pos-card bg-slate-50 border-none p-4 text-center">
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.5rem' }}>Version 2.4.1 Premium</p>
+              <button className="btn w-full" style={{ fontSize: '0.75rem', padding: '0.5rem' }}>Check for Updates</button>
+           </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-y-auto" style={{ padding: '3.5rem' }}>
         {renderContent()}
       </div>
     </div>
-  )
+  );
 }
+
+const StatsDashboard = () => (
+  <div className="flex flex-col gap-10">
+    <header>
+      <h2 style={{ fontSize: '2.25rem', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' }}>Performance Overview</h2>
+      <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>Business metrics and operational insights for today.</p>
+    </header>
+
+    <div className="grid grid-cols-3 gap-8">
+      {[
+        { label: 'Total Revenue', value: '$12,482.50', trend: '+14.2%', color: 'var(--primary)' },
+        { label: 'Average Check', value: '$42.90', trend: '+5.1%', color: 'var(--accent)' },
+        { label: 'Guest Count', value: '284', trend: '-2.4%', color: 'var(--warning)' },
+      ].map((stat, i) => (
+        <div key={i} className="surface" style={{ padding: '2rem', borderLeft: `6px solid ${stat.color}` }}>
+           <p style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-light)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>{stat.label}</p>
+           <h3 style={{ fontSize: '2.5rem', fontWeight: '900' }}>{stat.value}</h3>
+           <div className="flex items-center gap-2 mt-4">
+              <span className={`badge ${stat.trend.startsWith('+') ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.8rem' }}>{stat.trend}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>vs. last week</span>
+           </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="grid grid-cols-2 gap-10">
+       <div className="surface" style={{ padding: '2rem' }}>
+          <h4 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem' }}>Revenue by Category</h4>
+          <div className="flex flex-col gap-6">
+             {[
+               { name: 'Mains', amount: '$6,240', percent: 50 },
+               { name: 'Starters', amount: '$1,820', percent: 15 },
+               { name: 'Beverages', amount: '$3,120', percent: 25 },
+               { name: 'Desserts', amount: '$1,302', percent: 10 },
+             ].map((cat, i) => (
+               <div key={i} className="flex flex-col gap-2">
+                 <div className="flex justify-between items-end">
+                    <span style={{ fontWeight: '700' }}>{cat.name}</span>
+                    <span style={{ fontWeight: '800', color: 'var(--primary)' }}>{cat.amount}</span>
+                 </div>
+                 <div style={{ width: '100%', height: '8px', backgroundColor: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
+                    <div style={{ width: `${cat.percent}%`, height: '100%', backgroundColor: 'var(--primary)', borderRadius: '4px' }}></div>
+                 </div>
+               </div>
+             ))}
+          </div>
+       </div>
+
+       <div className="surface" style={{ padding: '2rem' }}>
+          <h4 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem' }}>Popular Items Today</h4>
+          <div className="flex flex-col gap-2">
+             {[
+               { name: 'Classic Burger + Fries', count: 48, color: 'var(--success)' },
+               { name: 'Margarita Pizza', count: 32, color: 'var(--success)' },
+               { name: 'Garlic Bread', count: 29, color: 'var(--warning)' },
+               { name: 'Cola', count: 25, color: 'var(--warning)' },
+               { name: 'Tiramisu', count: 18, color: 'var(--danger)' },
+             ].map((item, i) => (
+               <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50">
+                  <span style={{ fontWeight: '600' }}>{item.name}</span>
+                  <span className="badge badge-primary">{item.count} orders</span>
+               </div>
+             ))}
+          </div>
+       </div>
+    </div>
+  </div>
+);
+
+const RestaurantInfo = () => (
+  <div className="flex flex-col gap-10 max-w-3xl">
+    <header>
+      <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Restaurant Identity</h2>
+      <p style={{ color: 'var(--text-light)' }}>Manage your business profile and public information.</p>
+    </header>
+
+    <div className="surface p-10 flex flex-col gap-8">
+       <div className="grid grid-cols-2 gap-8">
+          <div className="flex flex-col gap-2">
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Business Name</label>
+            <input type="text" className="input" defaultValue="The TouchBistro Cafe" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Contact Phone</label>
+            <input type="text" className="input" defaultValue="(555) 123-4567" />
+          </div>
+       </div>
+
+       <div className="flex flex-col gap-2">
+          <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Mailing Address</label>
+          <textarea className="input" style={{ minHeight: '100px' }} defaultValue="123 Cuisine Ave, Food District, NY 10001" />
+       </div>
+
+       <div className="grid grid-cols-2 gap-8">
+          <div className="flex flex-col gap-2">
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Primary Currency</label>
+            <select className="input">
+              <option>USD ($)</option>
+              <option>CAD ($)</option>
+              <option>GBP (£)</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Timezone</label>
+            <select className="input">
+              <option>Eastern Time (ET)</option>
+              <option>Pacific Time (PT)</option>
+            </select>
+          </div>
+       </div>
+
+       <button className="btn btn-primary py-4 text-lg">Save Updated Profile</button>
+    </div>
+  </div>
+);
+
+const StaffSettings = () => (
+  <div className="flex flex-col gap-10">
+    <header className="flex justify-between items-end">
+      <div>
+        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Staff Configuration</h2>
+        <p style={{ color: 'var(--text-light)' }}>Manage employee roles, access permissions, and PIN codes.</p>
+      </div>
+      <button className="btn btn-primary">+ Add New Staff</button>
+    </header>
+
+    <div className="surface overflow-hidden">
+       <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid var(--border-color)' }}>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Employee</th>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Role</th>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Daily Sales</th>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>PIN</th>
+              <th style={{ padding: '1.25rem', textAlign: 'right' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { name: 'Admin User', role: 'Global Administrator', sales: '$2,402', pin: '••••', status: 'admin' },
+              { name: 'Darko V.', role: 'Server', sales: '$1,820', pin: '••••', status: 'primary' },
+              { name: 'Elena R.', role: 'Kitchen Lead', sales: '-', pin: '••••', status: 'accent' },
+              { name: 'Marcus T.', role: 'Server / Host', sales: '$1,105', pin: '••••', status: 'primary' },
+            ].map((s, i) => (
+              <tr key={i} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                <td style={{ padding: '1.5rem' }}>
+                   <div className="flex items-center gap-4">
+                     <div style={{ width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#F1F5F9', border: '2px solid white', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: 'var(--primary)' }}>
+                        {s.name.charAt(0)}
+                     </div>
+                     <span style={{ fontWeight: '700', fontSize: '1.05rem' }}>{s.name}</span>
+                   </div>
+                </td>
+                <td style={{ padding: '1.5rem' }}>
+                  <span className={`badge badge-${s.status === 'admin' ? 'danger' : 'primary'}`}>{s.role}</span>
+                </td>
+                <td style={{ padding: '1.5rem', fontWeight: '600' }}>{s.sales}</td>
+                <td style={{ padding: '1.5rem', fontFamily: 'monospace', letterSpacing: '4px' }}>{s.pin}</td>
+                <td style={{ padding: '1.5rem', textAlign: 'right' }}>
+                   <div className="flex justify-end gap-2">
+                      <button className="btn" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>Edit</button>
+                      <button className="btn" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', color: 'var(--danger)' }}>Revoke</button>
+                   </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+       </table>
+    </div>
+  </div>
+);
+
+const PaymentsSettings = () => {
+  const [credit, setCredit] = useState(true);
+  const [tips, setTips] = useState(true);
+  return (
+    <div className="flex flex-col gap-10 max-w-3xl">
+      <header>
+        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Payments & Accounting</h2>
+        <p style={{ color: 'var(--text-light)' }}>Configure payment processing, tax rates, and checkout behavior.</p>
+      </header>
+
+      <div className="flex flex-col gap-8">
+         <div className="surface p-8">
+            <h4 style={{ fontWeight: '800', marginBottom: '1.5rem' }}>Processing Configuration</h4>
+            <div className="flex flex-col gap-6">
+               <div className="flex items-center justify-between">
+                  <div>
+                    <p style={{ fontWeight: '700' }}>In-App Credit Card Payments</p>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Allow direct payment via integrated terminals.</p>
+                  </div>
+                  <Toggle active={credit} onChange={() => setCredit(!credit)} />
+               </div>
+               <div style={{ height: '1px', backgroundColor: '#F1F5F9' }} />
+               <div className="flex items-center justify-between">
+                  <div>
+                    <p style={{ fontWeight: '700' }}>Suggested Gratuity</p>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Show 15%, 18%, 20% buttons on checkout screen.</p>
+                  </div>
+                  <Toggle active={tips} onChange={() => setTips(!tips)} />
+               </div>
+            </div>
+         </div>
+
+         <div className="surface p-8">
+            <h4 style={{ fontWeight: '800', marginBottom: '1.5rem' }}>Tax Rates</h4>
+            <div className="grid grid-cols-2 gap-8">
+               <div className="flex flex-col gap-2">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>HST / GST (%)</label>
+                  <input type="number" className="input" defaultValue="13" />
+               </div>
+               <div className="flex flex-col gap-2">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Service Charge (%)</label>
+                  <input type="number" className="input" defaultValue="0" />
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      <button className="btn btn-primary py-4">Save Payment Logic</button>
+    </div>
+  );
+};
+
+const AppMarketplace = () => (
+  <div className="flex flex-col gap-10">
+    <header>
+      <h2 style={{ fontSize: '2.25rem', fontWeight: '900' }}>Marketplace</h2>
+      <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>Powerful integrations to supercharge your restaurant.</p>
+    </header>
+
+    <div className="grid grid-cols-2 gap-8">
+      {[
+        { name: 'UberEats Integration', desc: 'Sync your menu and inject orders directly into the POS/KDS pipeline.', price: '$29/mo', icon: '🛵', color: '#06C167' },
+        { name: '7shifts Payroll', desc: 'Automated staff scheduling and labor cost analysis synced with timeclocks.', price: '$49/mo', icon: '⏰', color: '#1E40AF' },
+        { name: 'Mailchimp Sync', desc: 'Sync customer names and emails from Loyalty accounts into segmented campaigns.', price: 'Free', icon: '✉️', color: '#FFE01B' },
+        { name: 'TouchBistro Reservations', desc: 'Full-service host stand and online booking engine for your website.', price: 'Installed', icon: '📅', color: '#059669', active: true },
+      ].map((app, i) => (
+        <div key={i} className="pos-card flex gap-6 p-8">
+           <div style={{ width: '70px', height: '70px', borderRadius: '18px', backgroundColor: app.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', flexShrink: 0, boxShadow: 'var(--shadow-sm)' }}>
+             {app.icon}
+           </div>
+           <div className="flex flex-col justify-between flex-1">
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                   <h4 style={{ fontWeight: '800', fontSize: '1.1rem' }}>{app.name}</h4>
+                   <span style={{ fontWeight: '800', fontSize: '0.85rem', color: 'var(--text-main)' }}>{app.price}</span>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{app.desc}</p>
+              </div>
+              <div className="flex justify-end mt-6">
+                 {app.active ? (
+                   <span className="badge badge-success" style={{ padding: '0.5rem 1rem' }}>System Native</span>
+                 ) : (
+                   <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>Install Integration</button>
+                 )}
+              </div>
+           </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const AdvancedSettings = () => (
+  <div className="flex flex-col gap-10 max-w-2xl">
+    <header>
+      <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Advanced Operations</h2>
+      <p style={{ color: 'var(--text-light)' }}>Technical configurations and database maintenance.</p>
+    </header>
+
+    <div className="flex flex-col gap-6">
+       <div className="surface p-8">
+          <h4 style={{ fontWeight: '800', marginBottom: '1rem' }}>System Cache</h4>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Clearing the cache will force a fresh sync of all menu items and images. Use if changes aren&apos;t appearing.</p>
+          <button className="btn w-full">Purge Local Cache</button>
+       </div>
+
+       <div className="surface p-8" style={{ border: '2px solid #FEE2E2', backgroundColor: '#FEF2F2' }}>
+          <h4 style={{ fontWeight: '800', color: 'var(--danger)', marginBottom: '1rem' }}>Dangerous Actions</h4>
+          <p style={{ fontSize: '0.9rem', color: '#991B1B', marginBottom: '1.5rem' }}>These actions are permanent. Ensure you have a database backup before proceeding.</p>
+          <div className="flex flex-col gap-3">
+             <button className="btn" style={{ backgroundColor: 'white', border: '1px solid #FCA5A5', color: 'var(--danger)', fontWeight: '800' }}>Wipe Transaction History</button>
+             <button className="btn" style={{ backgroundColor: 'var(--danger)', border: 'none', color: 'white', fontWeight: '800' }}>Factory Reset Terminal</button>
+          </div>
+       </div>
+    </div>
+  </div>
+);

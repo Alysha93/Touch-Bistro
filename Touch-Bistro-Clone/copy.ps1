@@ -1,15 +1,13 @@
-$screenshotDir = 'C:\Users\nicol\OneDrive\Pictures\Screenshots'
-$destinationDir = 'public\screenshots\gallery'
-New-Item -ItemType Directory -Force -Path $destinationDir | Out-Null
+$sourceDir = 'C:\Users\nicol\.gemini\antigravity\brain\01e2c442-5137-4d8a-9090-88388b0002f6'
+$destDir = 'C:\Users\nicol\Touch-Bistro-Clone\public\screenshots\gallery'
+$StartingIndex = 27
 
-$files = Get-ChildItem -Path $screenshotDir -File | Where-Object { 
-  ($_.Name -match '^Screenshot 2026-04-12 11(4[6-9]|5[0-8])\d{2}\.png$') -and ($_.Name -notmatch 'Copy') 
-} | Sort-Object LastWriteTime
+$files = Get-ChildItem -Path $sourceDir -Filter 'media__*.png' | Sort-Object CreationTime
 
-$counter = 1
 foreach ($file in $files) {
-    $newName = "gallery_$counter.png"
-    Copy-Item $file.FullName -Destination (Join-Path $destinationDir $newName)
-    Write-Output "Copied $($file.Name) to $newName"
-    $counter++
+    $newName = "gallery_${StartingIndex}.png"
+    Copy-Item -Path $file.FullName -Destination (Join-Path $destDir $newName)
+    $StartingIndex++
 }
+
+Write-Host "Copied $($files.Count) files."

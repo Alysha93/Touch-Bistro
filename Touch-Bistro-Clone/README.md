@@ -1,116 +1,77 @@
-# TouchBistro Clone
+# ProServe POS • Enterprise Restaurant Solution
 
-A full-stack, tablet-optimized restaurant operating system inspired by TouchBistro, built with Next.js 15 (App Router), Drizzle ORM, and SQLite.
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle-ORM-C5F74F?style=for-the-badge&logo=drizzle)](https://orm.drizzle.team/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite)](https://www.sqlite.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 
-## Live System Demo 🚀
-![Full System Walkthrough Video](./public/touch_bistro_app_demo.webp)
+**ProServe POS** is a high-performance, enterprise-grade restaurant management system built for the modern hospitality industry. Inspired by industry leaders like TouchBistro, ProServe offers a refined, tablet-first experience that bridges the gap between front-of-house hospitality and back-of-house efficiency.
 
-## Modules Included
+---
 
-- **Main Register (`/pos`)**: Staff Login via PIN keypad, interactive Floorplan, complex Table Ordering features (seat grouping, quick-add), and complete receipt Checkout with Loyalty integration.
-- **Kitchen Display System (`/kds`)**: Independent back-of-house ticketing interface featuring specialized station filtering (Grill vs Expo), item-level strike-offs, ticket bumping, and elapsed-time visualization.
-- **Customer Facing Display (`/cfd`)**: A connected tablet interface designed to face the customer that syncs to active Register checkouts in real-time, prompting for on-screen Tips and Signatures.
-- **Online Takeout Web App (`/online`)**: A distinct customer-facing menu portal supporting shopping carts and Loyalty point retrieval. Web orders bypass the floorplan entirely, alerting the local POS register via a live badge and injecting the tickets straight into the Kitchen Display queue.
+## 📸 Premium Visual Experience
 
+### 1. Advanced Floorplan Management
+A high-contrast, interactive floorplan designed for rapid seating and real-time status tracking.
+![Floorplan](./public/assets/screenshots/floorplan.png)
 
-## Application Showcase
+### 2. High-Fidelity Order Interface
+Features artisanal food imagery, 3-pane workflow (Navigation, Ticket, Menu), and intelligent seat-based order tracking.
+![Order Interface](./public/assets/screenshots/order_interface.png)
 
-### Active Table Session
-![Table Order Interface](./public/screenshots/showcase_2.png)
+### 3. Kitchen Display System (KDS)
+Mission-critical display with color-coded priority timers and streamlined 'Bump' capabilities.
+![KDS](./public/assets/screenshots/kds.png)
 
-### Kitchen Display Engine
-![Red Dark Mode KDS Ticket Array](./public/screenshots/showcase_1.png)
+### 4. Administrative Dashboard
+Comprehensive business analytics, staff management, and an integrated App Marketplace.
+![Settings Dashboard](./public/assets/screenshots/dashboard.png)
 
-### Kitchen Display Grid View
-![White Light Mode KDS Grid](./public/screenshots/showcase_3.png)
+### 5. Customer Facing Display (CFD)
+Retail-grade Guest experience for order verification, gratuity selection, and digital payments.
+![CFD](./public/assets/screenshots/cfd.png)
 
-### Active Category Filtering
-![Menu Spirits Tab Filter](./public/screenshots/showcase_4.png)
+---
 
-### Secure Tip Checkout Modal
-![Checkout Logic](./public/screenshots/showcase_5.png)
+## 🛠️ Core Technology Stack
 
-### Extended System Walkthrough
+- **Frontend**: Next.js 15 (App Router) with high-fidelity Vanilla CSS design system.
+- **Database**: Drizzle ORM paired with SQLite for ultra-fast local operations.
+- **State Management**: Server-side synchronization for multi-terminal consistency.
+- **Design**: "Teal & Slate" Premium Design System with glassmorphism and micro-animations.
 
-<details>
-<summary><b>Click to expand full interface gallery (24+ HD Screenshots)</b></summary>
+## ✨ Key Features
 
-![POS Walkthrough](./public/screenshots/gallery/gallery_1.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_2.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_3.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_4.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_5.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_6.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_7.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_8.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_9.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_10.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_11.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_12.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_13.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_14.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_15.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_16.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_17.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_18.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_19.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_20.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_21.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_22.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_23.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_24.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_25.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_26.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_27.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_28.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_29.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_30.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_31.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_32.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_33.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_34.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_35.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_36.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_37.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_38.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_39.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_40.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_41.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_42.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_43.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_44.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_45.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_46.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_47.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_48.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_49.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_50.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_51.png)
-![POS Walkthrough](./public/screenshots/gallery/gallery_52.png)
+- **Artisanal Menu**: High-definition AI-generated imagery for a visual-first ordering experience.
+- **Table-First Workflow**: Seamless transition between Floorplan, Ordering, and Checkout.
+- **Real-Time KDS**: Instant synchronization between POS terminals and kitchen displays.
+- **Guest-Centric CFD**: Streamlined payment flow with integrated tip logic and digital signing.
+- **Admin Insights**: Real-time sales analytics and role-based staff permissions.
 
-</details>
+## 🚀 Getting Started
 
-## Setup
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Alysha93/Touch-Bistro.git
+   ```
 
-1. `npm install`
-2. `npx drizzle-kit push` (to synchronize the SQLite schema)
-3. `npm run seed` (to populate Staff PINs, menu items, and prep stations)
-4. `npm run dev`
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-## Schema
+3. **Initialize Database**:
+   ```bash
+   npm run db:push
+   npm run db:seed
+   ```
 
-The database is built using SQLite and Drizzle ORM. The core schema includes:
-- **`prep_stations`**: Kitchen stations (e.g., Grill, Expo).
-- **`staff`**: Staff members with roles and secure PINs.
-- **`tables`**: Restaurant tables with statuses (`open`, `seated`, `paid`).
-- **`menu_categories` & `menu_items`**: Menu catalog with pricing and prep station assignments.
-- **`orders` & `order_items`**: Active and past orders, linking tables, staff, and individual item status.
-- **`kds_tickets`**: Kitchen Display System tickets for tracking prep times.
-- **`loyalty_accounts`**: Customer loyalty tracking via phone number.
-- **`menu_modifiers`**: Customizations for menu items.
-- **`timeclocks`**: Staff clock-in/out tracking.
-- **`reservations`**: Customer table reservations.
+4. **Launch Dev Server**:
+   ```bash
+   npm run dev
+   ```
 
-## License
+---
 
-This project is licensed under the [MIT License](LICENSE).
+## 👨‍💻 Developed by Antigravity
+*Crafting next-generation enterprise tools for the hospitality sector.*

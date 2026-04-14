@@ -30,6 +30,7 @@ export const menuItems = sqliteTable('menu_items', {
   name: text('name').notNull(),
   price: real('price').notNull(),
   imageColor: text('image_color'),
+  imageUrl: text('image_url'),
   isAvailable: integer('is_available', { mode: 'boolean' }).notNull().default(true),
 });
 

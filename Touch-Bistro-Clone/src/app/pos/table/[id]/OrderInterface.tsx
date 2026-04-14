@@ -1,9 +1,9 @@
-'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOrder, fastCheckout, deleteOrderItem } from '../actions';
+import { submitOrder, deleteOrderItem } from '../actions';
+import Image from 'next/image';
 
-type MenuItem = { id?: number, categoryId: number, name: string, price: number, imageColor: string | null };
+type MenuItem = { id?: number, categoryId: number, name: string, price: number, imageColor: string | null, imageUrl?: string };
 type Modifier = { id: number, menuItemId: number, name: string, price: number };
 
 export default function OrderInterface({ table, allTables = [], categories, menuItems, modifiers = [], staffId, staffRole, initialOrderItems = [] }: any) {
@@ -11,21 +11,22 @@ export default function OrderInterface({ table, allTables = [], categories, menu
   const [activeCategory, setActiveCategory] = useState(categories[0]?.id || 1);
   const [activeSeat, setActiveSeat] = useState(1);
   
-  // Initialize with the Database's persisted open orders
   const [orderItems, setOrderItems] = useState<any[]>(() => {
     return initialOrderItems.map((oi: any) => ({
       ...oi,
-      originalName: oi.name, // Fallback for UI
+      originalName: oi.name,
       price: oi.unitPrice
     }));
   });
 
-  // Modifiers Modal State
   const [selectedItemForModifiers, setSelectedItemForModifiers] = useState<MenuItem | null>(null);
   const [selectedModifiers, setSelectedModifiers] = useState<Modifier[]>([]);
-  
-  // Edit Item Modal State
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const displayedItems = menuItems.filter((i: MenuItem) => i.categoryId === activeCategory);
 
@@ -49,7 +50,7 @@ export default function OrderInterface({ table, allTables = [], categories, menu
     
     setOrderItems([...orderItems, { 
       ...item,
-      id: undefined, // Explicitly undefined to track that it hasn't been submitted to DB
+      id: undefined,
       originalName: item.name,
       name: finalName,
       menuItemId: item.id, 
@@ -74,7 +75,6 @@ export default function OrderInterface({ table, allTables = [], categories, menu
     if (unsubmittedItems.length > 0) {
       await submitOrder(table.id, staffId, unsubmittedItems);
     }
-    // Refresh the table visual status directly
     router.refresh();
   };
 
@@ -100,186 +100,175 @@ export default function OrderInterface({ table, allTables = [], categories, menu
     }
   };
 
-
   const total = orderItems.reduce((acc, curr) => acc + (curr.price * curr.qty), 0);
   const isRegister = table.name.includes("Register");
 
   return (
-    <div className="flex h-full w-full" style={{ position: 'relative', overflow: 'hidden' }}>
+    <div className="flex h-full w-full animate-fade-in" style={{ backgroundColor: '#F8FAFC' }}>
       
-      {/* PANE 1 - TABLES GRID (LEFT) */}
-      <div className="flex-col" style={{ width: '280px', borderRight: '1px solid var(--border-color)', backgroundColor: '#f1f5f9', height: '100%', overflowY: 'auto' }}>
-         <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'var(--text-inverse)', textAlign: 'center', fontWeight: 'bold' }}>
-           Tables & Rooms
+      {/* PANE 1 - TABLES SIDEBAR */}
+      <div className="flex flex-col" style={{ width: '240px', borderRight: '1px solid var(--border-color)', backgroundColor: 'white' }}>
+         <div className="flex items-center justify-center" style={{ height: '60px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-secondary)', color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>
+           Service Areas
          </div>
-         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', padding: '1rem' }}>
+         <div style={{ padding: '1rem', overflowY: 'auto' }} className="flex flex-col gap-2">
            {allTables.map((t: any) => (
               <div 
                 key={t.id}
-                onClick={() => {
-                  if (t.id !== table.id) {
-                     router.push(`/pos/table/${t.id}`);
-                  }
-                }}
+                onClick={() => t.id !== table.id && router.push(`/pos/table/${t.id}`)}
+                className="pos-card flex flex-col items-center justify-center"
                 style={{
-                  height: '100px',
-                  borderRadius: t.name.includes('Register') ? 'var(--radius-sm)' : '50%',
-                  backgroundColor: t.id === table.id ? 'var(--primary)' : (t.status === 'open' ? 'var(--success)' : (t.status === 'seated' ? '#F59E0B' : 'var(--danger)')),
-                  color: 'white',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-                  fontWeight: 'bold', fontSize: '1.2rem',
+                  height: '90px',
+                  padding: '0.5rem',
                   cursor: 'pointer',
-                  border: t.id === table.id ? '4px solid #1e293b' : 'none',
-                  boxShadow: 'var(--shadow-sm)',
-                  transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                  transform: 'scale(1)'
+                  backgroundColor: t.id === table.id ? 'var(--primary-light)' : 'white',
+                  borderColor: t.id === table.id ? 'var(--primary)' : 'var(--border-color)',
+                  borderRadius: t.name.includes('Register') ? 'var(--radius-md)' : 'var(--radius-full)',
+                  borderWidth: t.id === table.id ? '2px' : '1px'
                 }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
               >
-                {t.name}
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>{t.name.includes('Register') ? 'Register' : 'Table'}</span>
+                <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: t.id === table.id ? 'var(--primary)' : 'var(--text-main)' }}>{t.name.replace('Register', '01')}</span>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: t.status === 'open' ? 'var(--success)' : (t.status === 'seated' ? 'var(--warning)' : 'var(--danger)'), marginTop: '0.5rem' }}></div>
               </div>
            ))}
          </div>
       </div>
 
-      {/* PANE 2 - ACTIVE ORDER (MIDDLE) */}
-      <div className="flex flex-col" style={{ minWidth: '380px', flex: '1', borderRight: '1px solid var(--border-color)', backgroundColor: '#ffffff', height: '100%', color: 'black' }}>
-        <div className="flex justify-between items-center" style={{ backgroundColor: '#2d1b11', color: 'white', padding: '0.75rem 1rem', flexShrink: 0 }}>
-          <span style={{ fontSize: '0.95rem', fontWeight: 'bold' }}>{isRegister ? 'Current Order For Cash Register' : `Order For Table ${table.name}`}</span>
+      {/* PANE 2 - ACTIVE TICKET */}
+      <div className="flex flex-col" style={{ width: '400px', borderRight: '1px solid var(--border-color)', backgroundColor: 'white', boxShadow: '0 0 20px rgba(0,0,0,0.03)' }}>
+        <div className="flex flex-col" style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', backgroundColor: 'white' }}>
+          <span className="badge badge-success" style={{ alignSelf: 'flex-start', marginBottom: '0.5rem' }}>{isRegister ? 'Direct Sale' : 'Dine In'}</span>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.5px' }}>{isRegister ? 'Cash Register' : `Table ${table.name}`}</h2>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+            Order #{(orderItems[0]?.orderId || 'NEW').toString().padStart(4, '0')} {mounted && `• ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
+          </span>
         </div>
         
         {!isRegister && (
-           <div className="flex" style={{ borderBottom: '1px solid var(--border-color)', flexShrink: 0 }}>
-              {[1,2,3].map(seat => (
-                <div 
+           <div className="flex" style={{ backgroundColor: '#F1F5F9', padding: '0.5rem', gap: '0.5rem' }}>
+              {[1,2,3,4].map(seat => (
+                <button 
                   key={seat}
                   onClick={() => setActiveSeat(seat)}
+                  className={`flex-1 py-2 rounded-md font-bold text-sm transition-all ${activeSeat === seat ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200'}`}
                   style={{
-                    flex: 1, textAlign: 'center', padding: '0.75rem', cursor: 'pointer',
-                    backgroundColor: activeSeat === seat ? 'var(--accent)' : '#e5e7eb',
-                    color: activeSeat === seat ? 'white' : '#334155',
-                    fontWeight: activeSeat === seat ? 'bold' : 'normal',
-                    fontSize: '0.9rem',
-                    transition: 'background-color 0.2s ease'
+                    backgroundColor: activeSeat === seat ? 'white' : 'transparent',
+                    color: activeSeat === seat ? 'var(--primary)' : 'var(--text-muted)',
+                    boxShadow: activeSeat === seat ? 'var(--shadow-sm)' : 'none'
                   }}>
                   Seat {seat}
-                </div>
+                </button>
               ))}
            </div>
         )}
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem' }} className="flex flex-col gap-1">
            {orderItems.length === 0 ? (
-             <div style={{ color: '#94a3b8', textAlign: 'center', marginTop: '3rem', fontStyle: 'italic' }}>Ticket is empty. Add items from the menu.</div>
+             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.3, textAlign: 'center' }}>
+               <span style={{ fontSize: '3rem' }}>🧾</span>
+               <p style={{ marginTop: '1rem', fontWeight: '500' }}>Ticket is empty</p>
+             </div>
            ) : (
              orderItems.map((oi, idx) => (
                 <div 
                   key={idx} 
                   onClick={() => setEditItemIndex(idx)}
-                  className="flex items-center justify-between" 
-                  style={{ padding: '0.75rem 0.5rem', borderBottom: '1px solid #e2e8f0', cursor: 'pointer', backgroundColor: editItemIndex === idx ? '#f1f5f9' : 'transparent', borderRadius: '4px' }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = editItemIndex === idx ? '#f1f5f9' : 'transparent'}
+                  className="flex items-center justify-between p-3 rounded-xl transition-all cursor-pointer hover:bg-slate-50 border border-transparent hover:border-slate-100"
+                  style={{ backgroundColor: editItemIndex === idx ? 'var(--primary-light)' : 'transparent', borderLeft: editItemIndex === idx ? '4px solid var(--primary)' : '1px solid transparent' }}
                 >
-                   <div className="flex flex-col gap-1">
+                   <div className="flex flex-col flex-1">
                      <div className="flex items-center gap-2">
-                       {!isRegister && <span style={{ fontSize: '0.75rem', backgroundColor: '#e2e8f0', color: '#1e293b', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>S{oi.seatNumber}</span>}
-                       <span style={{ fontSize: '1.05rem', fontWeight: '600', color: oi.id ? '#0f172a' : '#10b981' }}>
+                       {!isRegister && <span style={{ fontSize: '0.7rem', backgroundColor: '#E2E8F0', color: '#475569', padding: '2px 6px', borderRadius: '4px', fontWeight: '800' }}>S{oi.seatNumber}</span>}
+                       <span style={{ fontSize: '1rem', fontWeight: '600', color: oi.id ? 'var(--text-main)' : 'var(--success)' }}>
                          {oi.qty > 1 ? `${oi.qty}x ` : ''}{oi.originalName} 
-                         {!oi.id && <span style={{ fontSize: '0.7rem', verticalAlign: 'top', color: '#10b981' }}>*</span>}
+                         {!oi.id && <span style={{ marginLeft: '4px', color: 'var(--success)', fontSize: '1.2rem', verticalAlign: 'middle' }}>•</span>}
                        </span>
                      </div>
                      {oi.name !== oi.originalName && (
-                       <span style={{ fontSize: '0.85rem', color: '#64748b', paddingLeft: isRegister ? '0' : '28px' }}>{oi.name.replace(`${oi.originalName} `, '')}</span>
+                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>+ {oi.name.replace(`${oi.originalName} `, '').replace('(', '').replace(')', '')}</span>
                      )}
                    </div>
-                   <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>${(oi.price * oi.qty).toFixed(2)}</span>
+                   <span style={{ fontWeight: '700', fontSize: '1rem' }}>${(oi.price * oi.qty).toFixed(2)}</span>
                 </div>
              ))
            )}
         </div>
 
-        <div style={{ borderTop: '2px solid var(--border-color)', flexShrink: 0 }}>
-          <div className="flex justify-between" style={{ padding: '1.25rem 1rem', fontWeight: 'bold', fontSize: '1.4rem', backgroundColor: '#f8fafc' }}>
-            <span>Total:</span>
-            <span>${total.toFixed(2)}</span>
+        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', backgroundColor: 'white' }}>
+          <div className="flex justify-between items-center mb-4">
+            <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>Subtotal</span>
+            <span style={{ fontWeight: '600' }}>${total.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between items-center mb-6">
+            <span style={{ fontSize: '1.25rem', fontWeight: '800' }}>Total</span>
+            <span style={{ fontSize: '1.5rem', fontWeight: '900', color: 'var(--primary)' }}>${total.toFixed(2)}</span>
           </div>
           
-          <div style={{ display: 'flex', gap: '2px', backgroundColor: '#cbd5e1' }}>
+          <div className="flex gap-2">
             <button 
               onClick={handleSendOrder} 
-              style={{ flex: 1, padding: '1.25rem', backgroundColor: '#334155', color: 'white', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', transition: 'background-color 0.2s ease' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#334155'}
+              className="btn flex-1"
+              style={{ backgroundColor: '#F1F5F9', color: 'var(--text-main)' }}
             >
-               Send Order 🎟️
+               Send & Stay
             </button>
             <button 
               onClick={handleCheckout} 
-              style={{ flex: 1, padding: '1.25rem', backgroundColor: 'var(--primary)', color: 'white', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', transition: 'background-color 0.2s ease' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-hover)'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--primary)'}
+              className="btn btn-primary flex-1"
             >
-               Checkout / Pay &rarr;
+               Pay & Finish
             </button>
           </div>
         </div>
       </div>
 
-      {/* PANE 3 - MENU (RIGHT) */}
-      <div className="flex-col" style={{ flex: '2', backgroundColor: 'var(--bg-app)', height: '100%' }}>
-        <div className="flex" style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'var(--text-inverse)', overflowX: 'auto', flexShrink: 0 }}>
+      {/* PANE 3 - MENU GRID */}
+      <div className="flex flex-col flex-1" style={{ backgroundColor: '#F8FAFC' }}>
+        <div className="flex" style={{ padding: '0.75rem 1.5rem', gap: '1rem', backgroundColor: 'white', borderBottom: '1px solid var(--border-color)', overflowX: 'auto' }}>
            {categories.map((c: any) => (
-             <div 
+             <button 
                key={c.id} 
                onClick={() => setActiveCategory(c.id)}
-               style={{ 
-                 padding: '1.25rem 1.5rem', cursor: 'pointer', whiteSpace: 'nowrap',
-                 backgroundColor: activeCategory === c.id ? 'var(--primary-hover)' : 'transparent',
-                 fontWeight: activeCategory === c.id ? 'bold' : 'normal',
-                 borderBottom: activeCategory === c.id ? '4px solid var(--accent)' : '4px solid transparent',
-                 transition: 'background-color 0.2s ease'
+               className={`px-6 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap ${activeCategory === c.id ? 'bg-teal-600 text-white shadow-lg' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+               style={{
+                 backgroundColor: activeCategory === c.id ? 'var(--primary)' : '#F1F5F9',
+                 color: activeCategory === c.id ? 'white' : 'var(--text-muted)'
                }}
              >
                {c.name}
-             </div>
+             </button>
            ))}
         </div>
 
-        <div style={{ padding: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem', overflowY: 'auto', height: 'calc(100% - 65px)' }}>
+        <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1.25rem', overflowY: 'auto' }}>
           {displayedItems.map((item: MenuItem & { isAvailable?: boolean }) => (
              <div 
                key={item.id} 
-               onClick={() => { if (item.isAvailable !== false) handleItemClick(item) }}
-               style={{
-                 height: '140px', borderRadius: 'var(--radius-md)',
-                 backgroundColor: item.imageColor || '#475569',
-                 color: 'var(--text-inverse)', position: 'relative', cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed',
-                 boxShadow: 'inset 0 -50px 50px rgba(0,0,0,0.6)', overflow: 'hidden',
-                 opacity: item.isAvailable !== false ? 1 : 0.5,
-                 transition: 'transform 0.1s ease, box-shadow 0.1s ease',
-                 transform: 'scale(1)'
-               }}
-               onMouseOver={(e) => { 
-                 if (item.isAvailable !== false) {
-                   e.currentTarget.style.transform = 'scale(1.05)'; 
-                   e.currentTarget.style.boxShadow = 'inset 0 -50px 50px rgba(0,0,0,0.4), 0 10px 15px -3px rgba(0,0,0,0.3)';
-                 }
-               }}
-               onMouseOut={(e) => { 
-                 e.currentTarget.style.transform = 'scale(1)'; 
-                 e.currentTarget.style.boxShadow = 'inset 0 -50px 50px rgba(0,0,0,0.6)';
-               }}
+               onClick={() => item.isAvailable !== false && handleItemClick(item)}
+               className="pos-card flex flex-col p-0 overflow-hidden"
+               style={{ opacity: item.isAvailable !== false ? 1 : 0.5, cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed' }}
              >
-               {item.isAvailable === false && (
-                 <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                    <span style={{ fontWeight: 'bold', letterSpacing: '2px', color: '#ffaaaa', transform: 'rotate(-15deg)', border: '2px solid #ffaaaa', padding: '4px 8px' }}>86&apos;d</span>
-                 </div>
-               )}
-               <div style={{ position: 'absolute', bottom: 12, left: 10, right: 10, textAlign: 'center' }}>
-                 <p style={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1.2', marginBottom: '6px' }}>{item.name}</p>
-                 <p style={{ fontSize: '0.9rem', opacity: 0.9 }}>${item.price.toFixed(2)}</p>
+               <div style={{ position: 'relative', width: '100%', height: '140px' }}>
+                 {item.imageUrl ? (
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                 ) : (
+                    <div style={{ width: '100%', height: '100%', backgroundColor: item.imageColor || '#E2E8F0' }} />
+                 )}
+                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }} />
+                 <span style={{ position: 'absolute', bottom: '10px', right: '10px', backgroundColor: 'rgba(255,255,255,0.95)', color: 'var(--text-main)', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '800' }}>
+                   ${item.price.toFixed(2)}
+                 </span>
+               </div>
+               <div style={{ padding: '1rem' }}>
+                 <p style={{ fontWeight: '700', fontSize: '1rem', lineHeight: '1.2' }}>{item.name}</p>
+                 {item.isAvailable === false && (
+                    <span style={{ fontSize: '0.75rem', fontWeight: '900', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '1px' }}>Out of Stock</span>
+                 )}
                </div>
              </div>
           ))}
@@ -288,39 +277,39 @@ export default function OrderInterface({ table, allTables = [], categories, menu
 
       {/* MODIFIERS MODAL */}
       {selectedItemForModifiers && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '500px', backgroundColor: 'white', borderRadius: '16px', padding: '2.5rem', boxShadow: 'var(--shadow-xl)', color: 'black' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
-               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Modify: {selectedItemForModifiers.name}</h2>
-               <button onClick={() => setSelectedItemForModifiers(null)} style={{ border: 'none', background: 'transparent', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>✕</button>
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '550px', padding: '2rem' }}>
+            <div className="flex justify-between items-center mb-6">
+               <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Add Modifiers</h2>
+               <button onClick={() => setSelectedItemForModifiers(null)} style={{ fontSize: '1.5rem', color: 'var(--text-light)' }}>✕</button>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+            <p className="mb-4" style={{ fontWeight: '600', color: 'var(--primary)' }}>MODIFYING: {selectedItemForModifiers.name}</p>
+            
+            <div className="grid grid-cols-2 gap-3 mb-8">
               {modifiers.filter((m: Modifier) => m.menuItemId === selectedItemForModifiers.id).map((mod: Modifier) => {
                 const isSelected = !!selectedModifiers.find(selected => selected.id === mod.id);
                 return (
                   <div 
                     key={mod.id} 
                     onClick={() => toggleModifier(mod)}
+                    className="pos-card flex justify-between items-center"
                     style={{ 
-                      padding: '1.25rem', border: `2px solid ${isSelected ? 'var(--primary)' : '#e2e8f0'}`, 
-                      borderRadius: '12px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
-                      backgroundColor: isSelected ? '#f0fdf4' : 'transparent', fontWeight: isSelected ? 'bold' : 'normal',
-                      transition: 'all 0.15s ease',
-                      transform: 'scale(1)'
+                      padding: '1.25rem', 
+                      borderColor: isSelected ? 'var(--primary)' : 'var(--border-color)', 
+                      backgroundColor: isSelected ? 'var(--primary-light)' : 'white',
+                      borderWidth: isSelected ? '2px' : '1px'
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                   >
-                     <span style={{ fontSize: '1.1rem' }}>{mod.name}</span>
-                     <span style={{ fontSize: '1.1rem' }}>{mod.price > 0 ? `+$${mod.price.toFixed(2)}` : 'Free'}</span>
+                     <span style={{ fontWeight: '600' }}>{mod.name}</span>
+                     <span style={{ color: 'var(--text-muted)' }}>{mod.price > 0 ? `+$${mod.price.toFixed(2)}` : 'Free'}</span>
                   </div>
                 );
               })}
             </div>
 
-            <button onClick={() => addItemToOrder(selectedItemForModifiers, selectedModifiers)} className="w-full" style={{ padding: '1.25rem', fontSize: '1.2rem', backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-              Add to Order
+            <button onClick={() => addItemToOrder(selectedItemForModifiers, selectedModifiers)} className="btn btn-primary w-full py-4 text-lg">
+              Confirm & Add to Ticket
             </button>
           </div>
         </div>
@@ -328,15 +317,12 @@ export default function OrderInterface({ table, allTables = [], categories, menu
 
       {/* EDIT ITEM MODAL */}
       {editItemIndex !== null && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '450px', backgroundColor: 'white', borderRadius: '16px', padding: '2.5rem', boxShadow: 'var(--shadow-xl)', color: 'black' }}>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 'bold', marginBottom: '1.5rem', textAlign: 'center' }}>Edit Item</h2>
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '400px', padding: '2.5rem', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Edit Item</h2>
+            <h3 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '2rem' }}>{orderItems[editItemIndex].originalName}</h3>
             
-            <p style={{ textAlign: 'center', fontSize: '1.3rem', marginBottom: '2.5rem', color: 'var(--primary)', fontWeight: 'bold' }}>
-              {orderItems[editItemIndex].originalName}
-            </p>
-
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
+            <div className="flex items-center justify-center gap-6 mb-8">
                <button 
                  onClick={() => {
                    const newItems = [...orderItems];
@@ -345,12 +331,10 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                      setOrderItems(newItems);
                    }
                  }} 
-                 style={{ width: '60px', height: '60px', borderRadius: '30px', border: '2px solid #cbd5e1', fontSize: '2rem', background: '#f8fafc', cursor: 'pointer', transition: 'background 0.1s ease' }}
-                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
-                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                 style={{ width: '60px', height: '60px', borderRadius: 'var(--radius-full)', backgroundColor: '#F1F5F9', fontSize: '1.5rem', fontWeight: 'bold' }}
                >-</button>
                
-               <span style={{ fontSize: '2.5rem', fontWeight: 'bold', width: '50px', textAlign: 'center' }}>
+               <span style={{ fontSize: '2.5rem', fontWeight: '900', minWidth: '60px' }}>
                  {orderItems[editItemIndex].qty}
                </span>
 
@@ -360,9 +344,7 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                    newItems[editItemIndex].qty += 1;
                    setOrderItems(newItems);
                  }} 
-                 style={{ width: '60px', height: '60px', borderRadius: '30px', border: '2px solid #cbd5e1', fontSize: '2rem', background: '#f8fafc', cursor: 'pointer', transition: 'background 0.1s ease' }}
-                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
-                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                 style={{ width: '60px', height: '60px', borderRadius: 'var(--radius-full)', backgroundColor: '#F1F5F9', fontSize: '1.5rem', fontWeight: 'bold' }}
                >+</button>
             </div>
 
@@ -370,9 +352,8 @@ export default function OrderInterface({ table, allTables = [], categories, menu
               onClick={async () => {
                 const item = orderItems[editItemIndex];
                 if (item.id) {
-                  // Admin override required for DB items
                   if (staffRole !== 'admin') {
-                    alert('Admin Role Required: This item has already been submitted to the kitchen ticket.');
+                    alert('Admin Permission Required');
                     return;
                   }
                   await deleteOrderItem(item.id, table.id);
@@ -382,20 +363,17 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                 setOrderItems(newItems);
                 setEditItemIndex(null);
               }} 
-              style={{ width: '100%', padding: '1.25rem', backgroundColor: '#fee2e2', color: '#b91c1c', border: '2px solid #fca5a5', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem', cursor: 'pointer', transition: 'background 0.1s ease' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fecaca'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fee2e2'}
+              className="btn w-full mb-3"
+              style={{ backgroundColor: '#FEF2F2', color: 'var(--danger)', border: '1px solid #FCA5A5' }}
             >
-              Remove from Order (Void)
+              Remove / Void Item
             </button>
             
             <button 
               onClick={() => setEditItemIndex(null)} 
-              style={{ width: '100%', padding: '1.25rem', backgroundColor: '#f1f5f9', color: '#334155', border: '2px solid #cbd5e1', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer', transition: 'background 0.1s ease' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+              className="btn btn-secondary w-full"
             >
-              Done
+              Close
             </button>
           </div>
         </div>
