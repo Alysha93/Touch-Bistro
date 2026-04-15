@@ -18,7 +18,7 @@ export default async function POSLayout({ children }: { children: React.ReactNod
   const webOrders = db.select().from(orders).where(eq(orders.source, 'web')).all().length;
 
   return (
-    <div className="flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full">
       <header className="header-bar flex justify-between">
         <div className="flex items-center" style={{ gap: '0.75rem' }}>
           <span style={{ fontSize: '1.4rem' }}>🍽</span>
