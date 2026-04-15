@@ -10,9 +10,7 @@
 
 ---
 
-## 📺 Workflow Demonstration
-![TouchBistro Workflow Demo](./Touch-Bistro-Clone/public/touch_bistro_final_demo.webp)
-*Interactive walkthrough showcasing the Glassmorphism transition and real-time synchronization.*
+
 
 ---
 
