@@ -45,8 +45,8 @@ export default function LoginScreen() {
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="surface flex flex-col items-center animate-fade-in" style={{ padding: '3.5rem', width: '450px' }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem', fontWeight: 800, letterSpacing: '-1px' }}>TouchBistro</h1>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1.1rem' }}>Enter passcode</p>
+        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.25rem', fontWeight: 950, letterSpacing: '-1.5px', color: '#50c7c7' }}>TouchBistro</h1>
+        <p style={{ color: '#F61B8D', marginBottom: '2.5rem', fontSize: '1.2rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px' }}>Enter passcode</p>
         
         <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem' }}>
           {[0, 1, 2, 3].map((i) => (
@@ -60,8 +60,8 @@ export default function LoginScreen() {
           ))}
         </div>
 
-        {error && <p style={{ color: '#fca5a5', marginBottom: '1.5rem', height: '24px', fontWeight: 600 }}>{error}</p>}
-        {message && <p style={{ color: '#6ee7b7', marginBottom: '1.5rem', height: '24px', fontWeight: 600 }}>{message}</p>}
+        {error && <p style={{ color: '#F61B8D', marginBottom: '1.5rem', height: '24px', fontWeight: 800, fontSize: '0.9rem' }}>{error}</p>}
+        {message && <p style={{ color: '#50c7c7', marginBottom: '1.5rem', height: '24px', fontWeight: 800, fontSize: '0.9rem' }}>{message}</p>}
         {!error && !message && <div style={{ height: '24px', marginBottom: '1.5rem' }} />}
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%', marginBottom: '2rem' }}>

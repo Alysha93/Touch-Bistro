@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { submitOrder, deleteOrderItem } from '../actions';
 import Image from 'next/image';
+import Link from 'next/link';
 
 
 type MenuItem = { id?: number, categoryId: number, name: string, price: number, imageColor: string | null, imageUrl?: string, allergenInfo?: string };
@@ -150,7 +151,16 @@ export default function OrderInterface({ table, allTables = [], categories, menu
       <div className="flex flex-col" style={{ width: '420px', borderRight: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)' }}>
         <div className="flex flex-col" style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)' }}>
           <span className="badge badge-success" style={{ alignSelf: 'flex-start', marginBottom: '0.75rem' }}>{isRegister ? 'Direct Sale' : 'Dine In'}</span>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.5px' }}>{isRegister ? 'Cash Register' : `Table ${table.name}`}</h2>
+          <div className="flex justify-between items-center">
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.5px' }}>{isRegister ? 'Cash Register' : `Table ${table.name}`}</h2>
+            <Link 
+              href="/pos/kds" 
+              className="flex items-center gap-1"
+              style={{ fontSize: '0.8rem', fontWeight: '900', color: '#50c7c7', textDecoration: 'none' }}
+            >
+              <span>👨‍🍳</span> VIEW KITCHEN
+            </Link>
+          </div>
           <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>
             Order #{(orderItems[0]?.orderId || 'NEW').toString().padStart(4, '0')} {mounted && `• ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
           </span>
@@ -193,10 +203,10 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                 >
                    <div className="flex flex-col flex-1">
                      <div className="flex items-center gap-2">
-                       {!isRegister && <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.15)', color: 'white', padding: '2px 8px', borderRadius: '6px', fontWeight: '800' }}>S{oi.seatNumber}</span>}
-                       <span style={{ fontSize: '1.1rem', fontWeight: '700', color: oi.id ? 'white' : 'var(--success)' }}>
+                       {!isRegister && <span style={{ fontSize: '0.75rem', background: '#50c7c7', color: 'var(--text-inverse)', padding: '2px 8px', borderRadius: '6px', fontWeight: '900' }}>S{oi.seatNumber}</span>}
+                       <span style={{ fontSize: '1.1rem', fontWeight: '700', color: oi.id ? 'white' : '#50c7c7' }}>
                          {oi.qty > 1 ? `${oi.qty}x ` : ''}{oi.originalName} 
-                         {!oi.id && <span style={{ marginLeft: '6px', color: 'var(--success)', fontSize: '1.5rem', verticalAlign: 'middle' }}>•</span>}
+                         {!oi.id && <span style={{ marginLeft: '6px', color: '#50c7c7', fontSize: '1.5rem', verticalAlign: 'middle' }}>•</span>}
                        </span>
                      </div>
                      {oi.name !== oi.originalName && (
@@ -214,9 +224,9 @@ export default function OrderInterface({ table, allTables = [], categories, menu
             <span style={{ color: 'rgba(255,255,255,0.6)', fontWeight: '600' }}>Subtotal</span>
             <span style={{ fontWeight: '700' }}>${total.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between items-center mb-6">
-            <span style={{ fontSize: '1.4rem', fontWeight: '800' }}>Total</span>
-            <span style={{ fontSize: '1.75rem', fontWeight: '900', color: 'white' }}>${total.toFixed(2)}</span>
+           <div className="flex justify-between items-center mb-6">
+            <span style={{ fontSize: '1.4rem', fontWeight: '800', color: '#F61B8D' }}>Total</span>
+            <span style={{ fontSize: '1.75rem', fontWeight: '900', color: '#F61B8D' }}>${total.toFixed(2)}</span>
           </div>
           <div className="flex gap-3">
             <button 

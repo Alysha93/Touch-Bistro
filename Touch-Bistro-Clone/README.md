@@ -12,47 +12,25 @@
 ---
 
 ## 📺 Workflow Demonstration
-![TouchBistro Workflow Demo](./public/touch_bistro_workflow.webp)
+![TouchBistro Workflow Demo](./public/touch_bistro_final_demo.webp)
 *Interactive walkthrough showcasing the Glassmorphism transition and real-time synchronization.*
 
 ---
 
-## 📸 Premium Glassmorphism UI
+## 📸 Premium Glassmorphism UI Showcase
+A curated visual summary of the core ProServe POS modules featuring high-definition captures of the Glassmorphism design system in action.
 
-### 1. Interactive Floorplan
-A translucent, high-contrast floorplan using vibrant status indicators and background blur for maximum legibility.
-![Floorplan](./public/assets/screenshots/floorplan_glass.png)
+| Component | Description | Visual Interface |
+| :--- | :--- | :--- |
+| **🔐 Login Terminal** | Sophisticated entry point featuring frosted glass panels and vibrant Teal/Pink branding. | ![Login Terminal](./public/screenshots/login.png) |
+| **🗺️ Floorplan** | Translucent, high-contrast dining room layout with real-time status indicators and background blur. | ![Floorplan](./public/screenshots/floorplan.png) |
+| **🍽️ Order Interface** | Multi-pane frosted glass layout with seat-based tracking and artisanal menu photography. | ![Order Interface](./public/screenshots/order_interface.png) |
+| **⚠️ Safety Alerts** | Integrated high-visibility allergy warnings and menu constraint notifications. | ![Allergy Alert](./public/screenshots/allergy_alert.png) |
+| **👨‍🍳 Kitchen (KDS)** | Mission-critical KDS displaying translucent ticket cards and real-time bump timer tracking. | ![KDS](./public/screenshots/kds.png) |
+| **📈 Intelligence** | Management dashboard featuring real-time HSL-tailored sales and labor analytics. | ![Dashboard](./public/screenshots/settings_dashboard.png) |
+| **👥 Staff Config** | Enterprise-grade staff management suite for role-based permissions and access security. | ![Staff](./public/screenshots/settings_staff.png) |
+| **💳 High-Contrast Checkout** | Retail-grade guest checkout using premium mesh gradients for perfect readability. | ![Checkout](./public/screenshots/checkout.png) |
 
-### 2. Artisanal Order Interface
-Features studio-lit food photography integrated into a multi-pane frosted glass layout with intelligent seat-based tracking.
-![Order Interface](./public/assets/screenshots/order_interface_glass.png)
-
-### 3. Kitchen Display System (KDS)
-Mission-critical display with translucent ticket cards and priority-glow notification system.
-![KDS](./public/assets/screenshots/kds_glass.png)
-
-### 4. Admin Intelligence Dashboard
-Frosted glass widgets and charts provide real-time business analytics and staff management.
-![Settings Dashboard](./public/assets/screenshots/dashboard.png)
-
-### 5. Customer Facing Display (CFD)
-A retail-grade Guest experience using premium mesh gradients and glass interaction panels for checkout.
-![CFD](./public/assets/screenshots/cfd_glass.png)
-
----
-
-## 📜 The Build: Technical Narrative & Demo Script
-
-This clone was engineered to exceed the visual and functional standards of modern POS systems. Below is the narrative of the architectural journey:
-
-1.  **Phase 1: Foundation & Relational Schema**: Initialized with Next.js 15 and Drizzle ORM. We designed a robust relational schema supporting real-time state sync across `staff`, `tables`, `orders`, and `menuItems`.
-2.  **Phase 2: Artisanal Asset Initiative**: Curated and custom-generated a library of 30+ artisanal menu images using **Studio Lighting** photography styles to ensure every menu item looks mouth-watering and professional.
-3.  **Phase 3: Real-Time Sync Strategy**: Implemented server-side synchronization for the three core pillars:
-    -   **POS Terminal**: Table management and ticket logic.
-    -   **KDS (Kitchen)**: Priority-based ticket queues with color-coded "Bump" timers.
-    -   **CFD (Customer)**: Transparent checkout experience for guest verification and gratuity.
-4.  **Phase 4: Analytics & Resilience**: Built an Admin suite with PIN-based authentication and real-time sales/labor tracking widgets.
-5.  **Phase 5: Glassmorphism Rebranding**: Overhauled the entire UI/UX from a standard flat theme to a premium **Glassmorphism Design System**. This involved implementing a global mesh gradient engine, sophisticated `backdrop-filter` blurs, and translucent component tokens.
 
 ---
 
@@ -88,7 +66,7 @@ This clone was engineered to exceed the visual and functional standards of moder
 ---
 
 ## 📄 License
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for the full text.
+This project is licensed under the **MIT License**.
 
 ---
 

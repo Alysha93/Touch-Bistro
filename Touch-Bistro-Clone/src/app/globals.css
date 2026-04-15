@@ -1,20 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
 
 :root {
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: 'Macondo', cursive, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
-  /* Glassmorphism Color Palette */
-  --bg-app: #0f172a; /* Deep base for gradient transparency */
-  --bg-panel: rgba(255, 255, 255, 0.15); /* Glass Background */
-  --bg-glass-card: rgba(255, 255, 255, 0.1);
-  --bg-glass-heavy: rgba(255, 255, 255, 0.25);
+  /* User-Defined Glassmorphism Palette */
+  --bg-app: #121417; /* Greyish Black base */
+  --bg-panel: rgba(255, 255, 255, 0.1); /* White Glass */
+  --bg-glass-card: rgba(255, 255, 255, 0.05);
+  --bg-glass-heavy: rgba(255, 255, 255, 0.15);
   
   --primary: #ffffff; 
   --primary-hover: rgba(255, 255, 255, 0.2);
   --primary-light: rgba(255, 255, 255, 0.05);
   
-  --accent: #f472b6; /* Vibrant Pink */
-  --accent-hover: #ec4899;
+  --accent: #F61B8D; /* User Pink */
+  --accent-hover: #d11274;
+  
+  --teal: #50c7c7; /* User Teal */
+  --pink: #F61B8D;
   
   --success: #34d399;
   --warning: #fbbf24;
@@ -24,16 +27,16 @@
   --text-main: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.7);
   --text-light: rgba(255, 255, 255, 0.5);
-  --text-inverse: #0f172a;
+  --text-inverse: #121417;
   
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.12);
   --glass-blur: blur(20px);
   
   /* Radii */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
   --radius-full: 9999px;
 
   /* Transitions */
@@ -54,11 +57,11 @@
 body {
   font-family: var(--font-sans);
   background: 
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%),
-    radial-gradient(at 100% 100%, hsla(11,82%,30%,1) 0, transparent 50%),
-    radial-gradient(at 0% 100%, hsla(222,47%,11%,1) 0, transparent 50%);
+    radial-gradient(at 0% 0%, hsla(180, 50%, 15%, 1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(0, 0%, 10%, 1) 0, transparent 60%), 
+    radial-gradient(at 100% 0%, hsla(330, 80%, 25%, 0.6) 0, transparent 40%),
+    radial-gradient(at 100% 100%, hsla(180, 30%, 10%, 1) 0, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(0, 0%, 7%, 1) 0, transparent 50%);
   background-color: var(--bg-app);
   background-attachment: fixed;
   color: var(--text-main);

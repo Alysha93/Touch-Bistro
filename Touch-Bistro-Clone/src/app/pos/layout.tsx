@@ -35,6 +35,23 @@ export default async function POSLayout({ children }: { children: React.ReactNod
                <span>📦</span> {webOrders} Online
             </div>
           )}
+          <Link 
+            href="/pos/kds" 
+            className="btn glass" 
+            style={{ 
+              padding: '0.4rem 1.25rem', 
+              fontSize: '0.85rem', 
+              background: 'rgba(80, 199, 199, 0.2)', 
+              borderColor: 'rgba(80, 199, 199, 0.3)',
+              color: '#50c7c7',
+              fontWeight: '900',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <span>👨‍🍳</span> Kitchen
+          </Link>
           <Link href="/pos/settings" className="btn btn-secondary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>⚙️ Settings</Link>
           <form action={logout}>
             <button className="btn btn-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>Logout</button>

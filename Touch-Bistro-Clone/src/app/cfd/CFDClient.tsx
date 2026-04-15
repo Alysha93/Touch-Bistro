@@ -42,7 +42,7 @@ export default function CFDClient() {
                </div>
             </div>
          </div>
-         <div style={{ width: '450px', backgroundColor: '#0F172A', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+         <div style={{ width: '450px', backgroundColor: '#121417', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
             <div style={{ transform: 'rotate(-90deg)', whiteSpace: 'nowrap', opacity: 0.1, fontSize: '8rem', fontWeight: '900', marginBottom: '2rem', userSelect: 'none' }}>
                TOUCHBISTRO PRO
             </div>
@@ -73,15 +73,26 @@ export default function CFDClient() {
   };
 
   return (
-    <div className="flex h-screen w-screen animate-fade-in" style={{ backgroundColor: '#0f172a' }}>
+    <div className="flex h-screen w-screen animate-fade-in" style={{ backgroundColor: '#121417', overflow: 'hidden' }}>
       
       {/* Background Mesh Gradient */}
-      <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: 'radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%), radial-gradient(at 100% 100%, hsla(11,82%,30%,1) 0, transparent 50%), radial-gradient(at 0% 100%, hsla(222,47%,11%,1) 0, transparent 50%)' }} />
+      <div style={{ 
+        position: 'fixed', 
+        inset: 0, 
+        zIndex: 0, 
+        background: `
+          radial-gradient(at 0% 0%, hsla(180, 50%, 15%, 1) 0, transparent 50%), 
+          radial-gradient(at 50% 0%, hsla(0, 0%, 10%, 1) 0, transparent 60%), 
+          radial-gradient(at 100% 0%, hsla(330, 80%, 25%, 0.6) 0, transparent 40%),
+          radial-gradient(at 100% 100%, hsla(180, 30%, 10%, 1) 0, transparent 50%),
+          radial-gradient(at 0% 100%, hsla(0, 0%, 7%, 1) 0, transparent 50%)
+        `
+      }} />
 
       {/* LEFT PANE - Itemized Receipt Area */}
       <div className="glass" style={{ width: '42%', borderRight: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
          <div style={{ padding: '3.5rem', borderBottom: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(30px)' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-1.5px', color: 'white' }}>Your Receipt</h2>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-1.5px', color: '#50c7c7' }}>Your Receipt</h2>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontWeight: '700', fontSize: '1.1rem', marginTop: '0.5rem' }}>Table {order.tableName || '01'} • Order #{order.id.toString().padStart(4, '0')}</p>
          </div>
          
@@ -118,8 +129,8 @@ export default function CFDClient() {
               </div>
             )}
             <div className="flex justify-between items-end mt-4">
-               <span style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-2px', color: 'white' }}>Total Due</span>
-               <span style={{ fontSize: '4.5rem', fontWeight: '950', color: 'white', lineHeight: 0.9, textShadow: '0 0 40px rgba(255,255,255,0.1)' }}>${(total + tipAmount).toFixed(2)}</span>
+               <span style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-2px', color: '#F61B8D' }}>Total Due</span>
+               <span style={{ fontSize: '4.5rem', fontWeight: '950', color: '#F61B8D', lineHeight: 0.9, textShadow: '0 0 40px rgba(246, 27, 141, 0.2)' }}>${(total + tipAmount).toFixed(2)}</span>
             </div>
          </div>
       </div>

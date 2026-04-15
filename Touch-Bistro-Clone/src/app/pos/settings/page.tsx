@@ -35,35 +35,42 @@ export default function SettingsPage() {
     {id: 'Advanced', icon: '⚙️', label: 'Advanced Settings'},
   ];
 
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'info'} | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const renderContent = () => {
     switch(activeTab) {
       case 'Dashboard': return <StatsDashboard />;
-      case 'Restaurant Information': return <RestaurantInfo />;
-      case 'Staff': return <StaffSettings />;
-      case 'Payments': return <PaymentsSettings />;
-      case 'Marketplace': return <AppMarketplace />;
-      case 'Advanced': return <AdvancedSettings />;
+      case 'Restaurant Information': return <RestaurantInfo onSave={() => showToast('Profile updated successfully!', 'success')} />;
+      case 'Staff': return <StaffSettings onToast={showToast} />;
+      case 'Payments': return <PaymentsSettings onSave={() => showToast('Payment logic saved!', 'success')} />;
+      case 'Marketplace': return <AppMarketplace onToast={showToast} />;
+      case 'Advanced': return <AdvancedSettings onToast={showToast} />;
       default: return <StatsDashboard />;
     }
   };
 
   return (
-    <div className="flex h-full animate-fade-in" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="flex h-full animate-fade-in" style={{ backgroundColor: 'white', color: '#7c3aed' }}>
       
       {/* Sidebar Navigation */}
-      <div className="flex flex-col" style={{ width: '320px', borderRight: '1px solid var(--border-color)', backgroundColor: 'white' }}>
-        <div style={{ padding: '2rem', borderBottom: '1px solid var(--border-color)' }}>
+      <div className="flex flex-col" style={{ width: '320px', borderRight: '1px solid #f1f5f9', backgroundColor: '#fdfaff' }}>
+        <div style={{ padding: '2rem', borderBottom: '1px solid #f1f5f9' }}>
           <div className="flex items-center gap-3 mb-6">
              <button 
                onClick={() => router.push('/pos/floorplan')}
                className="flex items-center justify-center"
-               style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#F1F5F9', border: 'none', color: 'var(--text-main)', fontWeight: 'bold' }}
+               style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#f1f5f9', border: 'none', color: '#7c3aed', fontWeight: 'bold' }}
              >
                ←
              </button>
              <h1 style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.5px' }}>Management</h1>
           </div>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>Settings & Config</p>
+          <p style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>Settings & Config</p>
         </div>
         
         <div style={{ padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -71,23 +78,44 @@ export default function SettingsPage() {
             <Link 
               key={item.id}
               href={`/pos/settings?tab=${item.id}`}
-              className={`flex items-center gap-3 px-4 py-4 rounded-xl transition-all font-bold ${activeTab === item.id ? 'bg-teal-50 text-teal-700' : 'text-slate-500 hover:bg-slate-50'}`}
+              className={`flex items-center gap-3 px-4 py-4 rounded-xl transition-all font-bold ${activeTab === item.id ? 'bg-[#f61b8d15] text-[#F61B8D]' : 'text-[#7c3aed] hover:bg-slate-50'}`}
               style={{ textDecoration: 'none' }}
             >
               <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
               <span style={{ fontSize: '0.95rem' }}>{item.label}</span>
-              {activeTab === item.id && <div style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--primary)' }}></div>}
+              {activeTab === item.id && <div style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#F61B8D' }}></div>}
             </Link>
           ))}
         </div>
         
-        <div className="mt-auto p-8 border-t border-slate-100">
-           <div className="pos-card bg-slate-50 border-none p-4 text-center">
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.5rem' }}>Version 2.4.1 Premium</p>
-              <button className="btn w-full" style={{ fontSize: '0.75rem', padding: '0.5rem' }}>Check for Updates</button>
+        <div className="mt-auto p-8 border-t border-[#f1f5f9]">
+           <div className="bg-[#f1f5f9] p-4 text-center rounded-xl">
+              <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>Version 2.4.1 Premium</p>
+              <button className="w-full py-2 rounded-lg bg-[#7c3aed] text-white font-bold" style={{ fontSize: '0.75rem' }}>Check for Updates</button>
            </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div 
+          className="fixed bottom-10 right-10 animate-slide-up"
+          style={{ 
+            padding: '1rem 2rem', 
+            backgroundColor: toast.type === 'success' ? '#10b981' : toast.type === 'error' ? '#ef4444' : '#7c3aed',
+            color: 'white', 
+            borderRadius: '12px', 
+            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+            zIndex: 1000,
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}
+        >
+          {toast.type === 'success' ? '✅' : 'ℹ️'} {toast.message}
+        </div>
+      )}
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto" style={{ padding: '3.5rem' }}>
@@ -100,7 +128,6 @@ export default function SettingsPage() {
 const StatsDashboard = () => {
   const [showLabor, setShowLabor] = useState(false);
   
-  // High-fidelity chart data
   const data = [
     { time: '11am', sales: 1200, labor: 450 },
     { time: '12pm', sales: 2100, labor: 450 },
@@ -115,44 +142,44 @@ const StatsDashboard = () => {
     <div className="flex flex-col gap-10">
       <header className="flex justify-between items-end">
         <div>
-          <h2 style={{ fontSize: '2.25rem', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' }}>Performance Overview</h2>
-          <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>Business metrics and operational insights for today.</p>
+          <h2 style={{ fontSize: '2.25rem', fontWeight: '900', color: '#F61B8D', letterSpacing: '-1px' }}>Performance Overview</h2>
+          <p style={{ color: '#7c3aed', opacity: 0.6, fontSize: '1.1rem' }}>Business metrics and operational insights for today.</p>
         </div>
-        <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex p-1 rounded-xl border border-[#f1f5f9]">
            <button 
              onClick={() => setShowLabor(false)}
-             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${!showLabor ? 'bg-teal-600 text-white shadow-md' : 'text-slate-500'}`}
+             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${!showLabor ? 'bg-[#F61B8D] text-white shadow-md' : 'text-[#7c3aed]'}`}
            >Revenue Only</button>
            <button 
              onClick={() => setShowLabor(true)}
-             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${showLabor ? 'bg-teal-600 text-white shadow-md' : 'text-slate-500'}`}
+             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${showLabor ? 'bg-[#F61B8D] text-white shadow-md' : 'text-[#7c3aed]'}`}
            >Labor Adjusted</button>
         </div>
       </header>
 
       <div className="grid grid-cols-3 gap-8">
         {[
-          { label: 'Total Revenue', value: '$12,482.50', trend: '+14.2%', color: 'var(--primary)' },
-          { label: showLabor ? 'Labor Cost' : 'Average Check', value: showLabor ? '$2,450.00' : '$42.90', trend: showLabor ? '+2.1%' : '+5.1%', color: showLabor ? 'var(--danger)' : 'var(--accent)' },
-          { label: showLabor ? 'Net Profit' : 'Guest Count', value: showLabor ? '$10,032.50' : '284', trend: showLabor ? '+18.4%' : '-2.4%', color: showLabor ? 'var(--success)' : 'var(--warning)' },
+          { label: 'Total Revenue', value: '$12,482.50', trend: '+14.2%', color: '#F61B8D' },
+          { label: showLabor ? 'Labor Cost' : 'Average Check', value: showLabor ? '$2,450.00' : '$42.90', trend: showLabor ? '+2.1%' : '+5.1%', color: '#7c3aed' },
+          { label: showLabor ? 'Net Profit' : 'Guest Count', value: showLabor ? '$10,032.50' : '284', trend: showLabor ? '+18.4%' : '-2.4%', color: '#F61B8D' },
         ].map((stat, i) => (
-          <div key={i} className="surface transition-all hover:translate-y-[-4px]" style={{ padding: '2rem', borderLeft: `6px solid ${stat.color}` }}>
-             <p style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-light)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>{stat.label}</p>
-             <h3 style={{ fontSize: '2.5rem', fontWeight: '900' }}>{stat.value}</h3>
+          <div key={i} style={{ padding: '2rem', borderLeft: `6px solid ${stat.color}`, backgroundColor: '#fdfaff', borderRadius: '14px' }}>
+             <p style={{ fontSize: '0.85rem', fontWeight: '900', color: '#7c3aed', textTransform: 'uppercase', marginBottom: '0.75rem', letterSpacing: '1px' }}>{stat.label}</p>
+             <h3 style={{ fontSize: '2.5rem', fontWeight: '900', color: stat.color }}>{stat.value}</h3>
              <div className="flex items-center gap-2 mt-4">
-                <span className={`badge ${stat.trend.startsWith('+') ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.8rem' }}>{stat.trend}</span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>vs. last week</span>
+                <span className={`px-2 py-1 rounded-md text-xs font-bold ${stat.trend.startsWith('+') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{stat.trend}</span>
+                <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>vs. last week</span>
              </div>
           </div>
         ))}
       </div>
 
-      <div className="surface" style={{ padding: '2rem', minHeight: '300px' }}>
-         <div className="flex justify-between items-center mb-8">
-            <h4 style={{ fontSize: '1.25rem', fontWeight: '800' }}>Sales vs. Labor Trend</h4>
+       <div style={{ padding: '2rem', minHeight: '300px', backgroundColor: '#fdfaff', borderRadius: '20px' }}>
+          <div className="flex justify-between items-center mb-8">
+             <h4 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#7c3aed' }}>Sales vs. Labor Trend</h4>
             <div className="flex gap-4">
                <div className="flex items-center gap-2">
-                  <div style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: 'var(--primary)' }}></div>
+                  <div style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: '#F61B8D' }}></div>
                   <span style={{ fontSize: '0.8rem', fontWeight: '600' }}>Gross Sales</span>
                </div>
                <div className="flex items-center gap-2">
@@ -192,7 +219,7 @@ const StatsDashboard = () => {
                       <span style={{ fontWeight: '700' }}>{cat.name}</span>
                       <span style={{ fontWeight: '800', color: 'var(--primary)' }}>{cat.amount}</span>
                    </div>
-                   <div style={{ width: '100%', height: '8px', backgroundColor: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
+                   <div style={{ width: '100%', height: '8px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: `${cat.percent}%`, height: '100%', backgroundColor: 'var(--primary)', borderRadius: '4px' }}></div>
                    </div>
                  </div>
@@ -211,7 +238,7 @@ const StatsDashboard = () => {
                  { name: 'Singapore Sling', count: 25, growth: '-2%', color: 'var(--danger)' },
                  { name: 'Tiramisu', count: 18, growth: '+8%', color: 'var(--success)' },
                ].map((item, i) => (
-                 <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-all">
+                 <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 transition-all">
                     <div className="flex items-center gap-3">
                        <span style={{ fontWeight: '800', color: 'var(--text-light)', width: '20px' }}>{i+1}</span>
                        <span style={{ fontWeight: '700' }}>{item.name}</span>
@@ -229,100 +256,139 @@ const StatsDashboard = () => {
   );
 };
 
-const RestaurantInfo = () => (
-  <div className="flex flex-col gap-10 max-w-3xl">
+const RestaurantInfo = ({ onSave }: { onSave: () => void }) => {
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      onSave();
+    }, 1200);
+  };
+
+  return (
+    <div className="flex flex-col gap-10 max-w-3xl">
     <header>
-      <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Restaurant Identity</h2>
-      <p style={{ color: 'var(--text-light)' }}>Manage your business profile and public information.</p>
+      <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#F61B8D' }}>Restaurant Identity</h2>
+      <p style={{ color: '#7c3aed', opacity: 0.6 }}>Manage your business profile and public information.</p>
     </header>
 
-    <div className="surface p-10 flex flex-col gap-8">
+    <div className="surface p-10 flex flex-col gap-8" style={{ backgroundColor: '#fdfaff', border: '1px solid #f1f5f9', borderRadius: '24px' }}>
        <div className="grid grid-cols-2 gap-8">
           <div className="flex flex-col gap-2">
-            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Business Name</label>
-            <input type="text" className="input" defaultValue="The TouchBistro Cafe" />
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: '#7c3aed' }}>Business Name</label>
+            <input type="text" className="input" style={{ backgroundColor: '#fcf6ff', color: '#7c3aed', border: '1px solid #f1f5f9', padding: '0.75rem', borderRadius: '12px' }} defaultValue="The TouchBistro Cafe" />
           </div>
           <div className="flex flex-col gap-2">
-            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Contact Phone</label>
-            <input type="text" className="input" defaultValue="(555) 123-4567" />
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: '#7c3aed' }}>Contact Phone</label>
+            <input type="text" className="input" style={{ backgroundColor: '#fcf6ff', color: '#7c3aed', border: '1px solid #f1f5f9', padding: '0.75rem', borderRadius: '12px' }} defaultValue="(555) 123-4567" />
           </div>
        </div>
 
        <div className="flex flex-col gap-2">
-          <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Mailing Address</label>
-          <textarea className="input" style={{ minHeight: '100px' }} defaultValue="123 Cuisine Ave, Food District, NY 10001" />
+          <label style={{ fontSize: '0.85rem', fontWeight: '800', color: '#7c3aed' }}>Mailing Address</label>
+          <textarea className="input" style={{ minHeight: '100px', backgroundColor: '#fcf6ff', color: '#7c3aed', border: '1px solid #f1f5f9' }} defaultValue="123 Cuisine Ave, Food District, NY 10001" />
        </div>
 
        <div className="grid grid-cols-2 gap-8">
           <div className="flex flex-col gap-2">
-            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Primary Currency</label>
-            <select className="input">
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: '#7c3aed' }}>Primary Currency</label>
+            <select className="input" style={{ backgroundColor: '#fcf6ff', color: '#7c3aed', border: '1px solid #f1f5f9' }}>
               <option>USD ($)</option>
               <option>CAD ($)</option>
               <option>GBP (£)</option>
             </select>
           </div>
           <div className="flex flex-col gap-2">
-            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--text-muted)' }}>Timezone</label>
-            <select className="input">
+            <label style={{ fontSize: '0.85rem', fontWeight: '800', color: '#7c3aed' }}>Timezone</label>
+            <select className="input" style={{ backgroundColor: '#fcf6ff', color: '#7c3aed', border: '1px solid #f1f5f9' }}>
               <option>Eastern Time (ET)</option>
               <option>Pacific Time (PT)</option>
             </select>
           </div>
        </div>
 
-       <button className="btn btn-primary py-4 text-lg">Save Updated Profile</button>
+       <button 
+         onClick={handleSave}
+         disabled={saving}
+         style={{ width: '100%', padding: '1.25rem', borderRadius: '16px', backgroundColor: '#F61B8D', color: 'white', fontWeight: '900', border: 'none', boxShadow: '0 10px 20px rgba(246, 27, 141, 0.2)', opacity: saving ? 0.7 : 1, cursor: saving ? 'not-allowed' : 'pointer' }}
+       >
+         {saving ? 'Saving Changes...' : 'Save Updated Profile'}
+       </button>
     </div>
   </div>
 );
+};
 
-const StaffSettings = () => (
-  <div className="flex flex-col gap-10">
+const StaffSettings = ({ onToast }: { onToast: (m: string) => void }) => {
+  const [staff, setStaff] = useState([
+    { name: 'Admin User', role: 'Global Administrator', sales: '$2,402', pin: '••••', status: 'admin', id: 1 },
+    { name: 'Darko V.', role: 'Server', sales: '$1,820', pin: '••••', status: 'primary', id: 2 },
+    { name: 'Elena R.', role: 'Kitchen Lead', sales: '-', pin: '••••', status: 'accent', id: 3 },
+    { name: 'Marcus T.', role: 'Server / Host', sales: '$1,105', pin: '••••', status: 'primary', id: 4 },
+  ]);
+
+  const removeStaff = (id: number) => {
+    if (window.confirm('Are you sure you want to revoke access?')) {
+      setStaff(staff.filter(s => s.id !== id));
+      onToast('Staff access revoked.');
+    }
+  };
+
+  const addStaff = () => {
+    const name = window.prompt('Enter staff name:');
+    if (name) {
+      setStaff([...staff, { name, role: 'Server', sales: '-', pin: '••••', status: 'primary', id: Date.now() }]);
+      onToast(`Added ${name} to the team.`);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-10">
     <header className="flex justify-between items-end">
       <div>
-        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Staff Configuration</h2>
-        <p style={{ color: 'var(--text-light)' }}>Manage employee roles, access permissions, and PIN codes.</p>
+        <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#F61B8D' }}>Staff Configuration</h2>
+        <p style={{ color: '#7c3aed', opacity: 0.6 }}>Manage employee roles, access permissions, and PIN codes.</p>
       </div>
-      <button className="btn btn-primary">+ Add New Staff</button>
+      <button 
+        onClick={addStaff}
+        className="py-3 px-6 rounded-xl bg-[#F61B8D] text-white font-bold shadow-lg text-sm"
+      >+ Add New Staff</button>
     </header>
 
-    <div className="surface overflow-hidden">
+    <div style={{ backgroundColor: '#fdfaff', borderRadius: '24px', overflow: 'hidden', border: '1px solid #f1f5f9' }}>
        <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid var(--border-color)' }}>
-              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Employee</th>
-              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Role</th>
-              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Daily Sales</th>
-              <th style={{ padding: '1.25rem', fontWeight: '800', color: 'var(--text-light)', fontSize: '0.8rem', textTransform: 'uppercase' }}>PIN</th>
-              <th style={{ padding: '1.25rem', textAlign: 'right' }}>Actions</th>
+            <tr style={{ backgroundColor: '#fcf6ff', borderBottom: '1px solid #f1f5f9' }}>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: '#7c3aed', fontSize: '0.8rem', textTransform: 'uppercase' }}>Employee</th>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: '#7c3aed', fontSize: '0.8rem', textTransform: 'uppercase' }}>Role</th>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: '#7c3aed', fontSize: '0.8rem', textTransform: 'uppercase' }}>Daily Sales</th>
+              <th style={{ padding: '1.25rem', fontWeight: '800', color: '#7c3aed', fontSize: '0.8rem', textTransform: 'uppercase' }}>PIN</th>
+              <th style={{ padding: '1.25rem', textAlign: 'right', color: '#7c3aed' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {[
-              { name: 'Admin User', role: 'Global Administrator', sales: '$2,402', pin: '••••', status: 'admin' },
-              { name: 'Darko V.', role: 'Server', sales: '$1,820', pin: '••••', status: 'primary' },
-              { name: 'Elena R.', role: 'Kitchen Lead', sales: '-', pin: '••••', status: 'accent' },
-              { name: 'Marcus T.', role: 'Server / Host', sales: '$1,105', pin: '••••', status: 'primary' },
-            ].map((s, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid #F1F5F9' }}>
+            {staff.map((s, i) => (
+              <tr key={s.id} style={{ borderBottom: '1px solid #f8f1ff' }}>
                 <td style={{ padding: '1.5rem' }}>
                    <div className="flex items-center gap-4">
-                     <div style={{ width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#F1F5F9', border: '2px solid white', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: 'var(--primary)' }}>
+                     <div style={{ width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#f3e8ff', border: '2px solid white', boxShadow: '0 4px 10px rgba(124, 58, 237, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: '#7c3aed' }}>
                         {s.name.charAt(0)}
                      </div>
                      <span style={{ fontWeight: '700', fontSize: '1.05rem' }}>{s.name}</span>
                    </div>
                 </td>
                 <td style={{ padding: '1.5rem' }}>
-                  <span className={`badge badge-${s.status === 'admin' ? 'danger' : 'primary'}`}>{s.role}</span>
+                  <span className={`px-3 py-1 rounded-lg text-xs font-bold ${s.status === 'admin' ? 'bg-red-100 text-red-700' : 'bg-purple-100 text-purple-700'}`}>{s.role}</span>
                 </td>
-                <td style={{ padding: '1.5rem', fontWeight: '600' }}>{s.sales}</td>
-                <td style={{ padding: '1.5rem', fontFamily: 'monospace', letterSpacing: '4px' }}>{s.pin}</td>
+                <td style={{ padding: '1.5rem', fontWeight: '600', color: '#7c3aed' }}>{s.sales}</td>
+                <td style={{ padding: '1.5rem', fontFamily: 'monospace', letterSpacing: '4px', color: '#7c3aed' }}>{s.pin}</td>
                 <td style={{ padding: '1.5rem', textAlign: 'right' }}>
-                   <div className="flex justify-end gap-2">
-                      <button className="btn" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>Edit</button>
-                      <button className="btn" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', color: 'var(--danger)' }}>Revoke</button>
-                   </div>
+                    <div className="flex justify-end gap-2">
+                       <button onClick={() => onToast('Edit dialog opened.')} className="py-2 px-4 rounded-lg bg-white border border-[#f1f5f9] text-[#7c3aed] font-bold text-xs">Edit</button>
+                       <button onClick={() => removeStaff(s.id)} className="py-2 px-4 rounded-lg bg-pink-50 text-[#F61B8D] font-bold text-xs">Revoke</button>
+                    </div>
                 </td>
               </tr>
             ))}
@@ -331,15 +397,16 @@ const StaffSettings = () => (
     </div>
   </div>
 );
+};
 
-const PaymentsSettings = () => {
+const PaymentsSettings = ({ onSave }: { onSave: () => void }) => {
   const [credit, setCredit] = useState(true);
   const [tips, setTips] = useState(true);
   return (
     <div className="flex flex-col gap-10 max-w-3xl">
       <header>
-        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Payments & Accounting</h2>
-        <p style={{ color: 'var(--text-light)' }}>Configure payment processing, tax rates, and checkout behavior.</p>
+        <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#F61B8D' }}>Payments & Accounting</h2>
+        <p style={{ color: '#7c3aed', opacity: 0.6 }}>Configure payment processing, tax rates, and checkout behavior.</p>
       </header>
 
       <div className="flex flex-col gap-8">
@@ -353,7 +420,7 @@ const PaymentsSettings = () => {
                   </div>
                   <Toggle active={credit} onChange={() => setCredit(!credit)} />
                </div>
-               <div style={{ height: '1px', backgroundColor: '#F1F5F9' }} />
+               <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                <div className="flex items-center justify-between">
                   <div>
                     <p style={{ fontWeight: '700' }}>Suggested Gratuity</p>
@@ -379,26 +446,37 @@ const PaymentsSettings = () => {
          </div>
       </div>
       
-      <button className="btn btn-primary py-4">Save Payment Logic</button>
+      <button onClick={() => onSave()} className="py-4 rounded-xl bg-[#F61B8D] text-white font-bold shadow-xl">Save Payment Logic</button>
     </div>
   );
 };
 
-const AppMarketplace = () => (
-  <div className="flex flex-col gap-10">
+const AppMarketplace = ({ onToast }: { onToast: (m: string) => void }) => {
+  const [apps, setApps] = useState([
+    { id: 'uber', name: 'UberEats Integration', desc: 'Sync your menu and inject orders directly into the POS/KDS pipeline.', price: '$29/mo', icon: '🛵', color: '#06C167', active: false },
+    { id: '7shifts', name: '7shifts Payroll', desc: 'Automated staff scheduling and labor cost analysis synced with timeclocks.', price: '$49/mo', icon: '⏰', color: '#1E40AF', active: false },
+    { id: 'mailchimp', name: 'Mailchimp Sync', desc: 'Sync customer names and emails from Loyalty accounts into segmented campaigns.', price: 'Free', icon: '✉️', color: '#FFE01B', active: false },
+    { id: 'res', name: 'TouchBistro Reservations', desc: 'Full-service host stand and online booking engine for your website.', price: 'Installed', icon: '📅', color: '#059669', active: true },
+  ]);
+
+  const installApp = (id: string, name: string) => {
+    onToast(`Initiating connection to ${name}...`);
+    setTimeout(() => {
+      setApps(apps.map(a => a.id === id ? { ...a, active: true } : a));
+      onToast(`${name} installed successfully!`);
+    }, 1500);
+  };
+
+  return (
+    <div className="flex flex-col gap-10">
     <header>
-      <h2 style={{ fontSize: '2.25rem', fontWeight: '900' }}>Marketplace</h2>
-      <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>Powerful integrations to supercharge your restaurant.</p>
+      <h2 style={{ fontSize: '2.25rem', fontWeight: '900', color: '#F61B8D' }}>Marketplace</h2>
+      <p style={{ color: '#7c3aed', opacity: 0.6, fontSize: '1.1rem' }}>Powerful integrations to supercharge your restaurant.</p>
     </header>
 
     <div className="grid grid-cols-2 gap-8">
-      {[
-        { name: 'UberEats Integration', desc: 'Sync your menu and inject orders directly into the POS/KDS pipeline.', price: '$29/mo', icon: '🛵', color: '#06C167' },
-        { name: '7shifts Payroll', desc: 'Automated staff scheduling and labor cost analysis synced with timeclocks.', price: '$49/mo', icon: '⏰', color: '#1E40AF' },
-        { name: 'Mailchimp Sync', desc: 'Sync customer names and emails from Loyalty accounts into segmented campaigns.', price: 'Free', icon: '✉️', color: '#FFE01B' },
-        { name: 'TouchBistro Reservations', desc: 'Full-service host stand and online booking engine for your website.', price: 'Installed', icon: '📅', color: '#059669', active: true },
-      ].map((app, i) => (
-        <div key={i} className="pos-card flex gap-6 p-8">
+      {apps.map((app, i) => (
+        <div key={app.id} className="pos-card flex gap-6 p-8">
            <div style={{ width: '70px', height: '70px', borderRadius: '18px', backgroundColor: app.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', flexShrink: 0, boxShadow: 'var(--shadow-sm)' }}>
              {app.icon}
            </div>
@@ -406,15 +484,18 @@ const AppMarketplace = () => (
               <div>
                 <div className="flex justify-between items-center mb-1">
                    <h4 style={{ fontWeight: '800', fontSize: '1.1rem' }}>{app.name}</h4>
-                   <span style={{ fontWeight: '800', fontSize: '0.85rem', color: 'var(--text-main)' }}>{app.price}</span>
+                   <span style={{ fontWeight: '800', fontSize: '0.85rem' }}>{app.price}</span>
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{app.desc}</p>
+                <p style={{ fontSize: '0.85rem', opacity: 0.7, lineHeight: '1.5' }}>{app.desc}</p>
               </div>
               <div className="flex justify-end mt-6">
                  {app.active ? (
-                   <span className="badge badge-success" style={{ padding: '0.5rem 1rem' }}>System Native</span>
+                   <span className="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-bold text-xs">Installed</span>
                  ) : (
-                   <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>Install Integration</button>
+                   <button 
+                    onClick={() => installApp(app.id, app.name)}
+                    className="py-2 px-4 rounded-lg bg-[#7c3aed] text-white font-bold text-xs"
+                   >Install Integration</button>
                  )}
               </div>
            </div>
@@ -423,40 +504,59 @@ const AppMarketplace = () => (
     </div>
   </div>
 );
+};
 
-const AdvancedSettings = () => {
+const AdvancedSettings = ({ onToast }: { onToast: (m: string) => void }) => {
   const [offline, setOffline] = useState(false);
+
+  const purgeCache = () => {
+    onToast('Purging system cache...');
+    setTimeout(() => onToast('Cache purged successfully!'), 1500);
+  };
+
+  const wipeHistory = () => {
+    if (window.confirm('CRITICAL: This will permanently delete all transaction history for the current database. Proceed?')) {
+      onToast('Transaction history wiped.');
+    }
+  };
+
+  const factoryReset = () => {
+    if (window.confirm('CRITICAL: This will restore the terminal to factory default. All settings will be lost. Proceed?')) {
+      onToast('Factory reset initiated...');
+      setTimeout(() => window.location.reload(), 2000);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-10 max-w-2xl">
       <header>
-        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Advanced Operations</h2>
-        <p style={{ color: 'var(--text-light)' }}>Technical configurations and database maintenance.</p>
+        <h2 style={{ fontSize: '2.5rem', fontWeight: '950', color: '#F61B8D' }}>Advanced Operations</h2>
+        <p style={{ color: '#7c3aed', opacity: 0.6 }}>Technical configurations and database maintenance.</p>
       </header>
   
       <div className="flex flex-col gap-6">
-         <div className="surface p-8">
+         <div className="surface p-8" style={{ backgroundColor: '#fdfaff', border: '1px solid #f1f5f9', borderRadius: '24px' }}>
             <div className="flex justify-between items-center mb-4">
                <div>
                   <h4 style={{ fontWeight: '800' }}>Offline Synchronization Mode</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Simulate internet disconnect to test local caching Resilience.</p>
+                  <p style={{ fontSize: '0.85rem', opacity: 0.6 }}>Simulate internet disconnect to test local caching Resilience.</p>
                </div>
-               <Toggle active={offline} onChange={() => setOffline(!offline)} />
+               <Toggle active={offline} onChange={() => { setOffline(!offline); onToast(offline ? 'System online' : 'System offline mode active'); }} />
             </div>
          </div>
 
-         <div className="surface p-8">
+         <div className="surface p-8" style={{ backgroundColor: '#fdfaff', border: '1px solid #f1f5f9', borderRadius: '24px' }}>
             <h4 style={{ fontWeight: '800', marginBottom: '1rem' }}>System Cache</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Clearing the cache will force a fresh sync of all menu items and images. Use if changes aren&apos;t appearing.</p>
-            <button className="btn w-full">Purge Local Cache</button>
+            <p style={{ fontSize: '0.9rem', opacity: 0.6, marginBottom: '1.5rem' }}>Clearing the cache will force a fresh sync of all menu items and images. Use if changes aren&apos;t appearing.</p>
+            <button onClick={purgeCache} className="w-full py-3 rounded-lg bg-[#7c3aed] text-white font-bold">Purge Local Cache</button>
          </div>
   
-         <div className="surface p-8" style={{ border: '2px solid #FEE2E2', backgroundColor: '#FEF2F2' }}>
-            <h4 style={{ fontWeight: '800', color: 'var(--danger)', marginBottom: '1rem' }}>Dangerous Actions</h4>
-            <p style={{ fontSize: '0.9rem', color: '#991B1B', marginBottom: '1.5rem' }}>These actions are permanent. Ensure you have a database backup before proceeding.</p>
+         <div className="surface p-8" style={{ border: '2px solid rgba(246, 27, 141, 0.4)', backgroundColor: 'rgba(246, 27, 141, 0.05)', borderRadius: '24px' }}>
+            <h4 style={{ fontWeight: '800', color: '#F61B8D', marginBottom: '1rem' }}>Dangerous Actions</h4>
+            <p style={{ fontSize: '0.9rem', color: '#F61B8D', opacity: 0.8, marginBottom: '1.5rem' }}>These actions are permanent. Ensure you have a database backup before proceeding.</p>
             <div className="flex flex-col gap-3">
-               <button className="btn" style={{ backgroundColor: 'white', border: '1px solid #FCA5A5', color: 'var(--danger)', fontWeight: '800' }}>Wipe Transaction History</button>
-               <button className="btn" style={{ backgroundColor: 'var(--danger)', border: 'none', color: 'white', fontWeight: '800' }}>Factory Reset Terminal</button>
+               <button onClick={wipeHistory} className="py-2 rounded-lg border border-pink-200 text-[#F61B8D] font-bold">Wipe Transaction History</button>
+               <button onClick={factoryReset} className="py-2 rounded-lg bg-[#F61B8D] text-white font-bold">Factory Reset Terminal</button>
             </div>
          </div>
       </div>
