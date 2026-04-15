@@ -4,7 +4,6 @@ import { staff, tables, menuCategories, menuItems, loyaltyAccounts, prepStations
 async function seed() {
   console.log('Seeding Database...');
 
-  // Clean up existing data to avoid duplicates if run multiple times
   await db.delete(orderItems);
   await db.delete(kdsTickets);
   await db.delete(orders);
@@ -19,23 +18,21 @@ async function seed() {
   await db.delete(loyaltyAccounts);
 
   console.log('Inserting Staff...');
-  // 1. Seed Staff
   await db.insert(staff).values([
-    { id: 1, name: 'Admin', pin: '1234', role: 'admin' },
-    { id: 2, name: 'Server Darko', pin: '1111', role: 'server' },
+    { id: 1, name: 'Admin',       pin: '1234', role: 'admin',   hourlyRate: 35.0 },
+    { id: 2, name: 'Server Darko',pin: '1111', role: 'server',  hourlyRate: 18.0 },
+    { id: 3, name: 'Chef Gordon', pin: '8888', role: 'kitchen', hourlyRate: 45.0 },
   ]);
 
   console.log('Inserting Tables...');
-  // 2. Seed Tables
   await db.insert(tables).values([
-    { id: 1, name: '201', status: 'open' },
-    { id: 2, name: '202', status: 'open' },
-    { id: 3, name: '205', status: 'open' },
+    { id: 1, name: '201',           status: 'open' },
+    { id: 2, name: '202',           status: 'open' },
+    { id: 3, name: '205',           status: 'open' },
     { id: 4, name: 'Cash Register', status: 'open' },
   ]);
 
   console.log('Inserting Categories...');
-  // 3. Seed Menu Categories
   await db.insert(menuCategories).values([
     { id: 1, name: 'Starters' },
     { id: 2, name: 'Mains' },
@@ -47,7 +44,6 @@ async function seed() {
   ]);
 
   console.log('Inserting Prep Stations...');
-  // 4. Seed Prep Stations
   await db.insert(prepStations).values([
     { id: 1, name: 'Grill' },
     { id: 2, name: 'Expo' },
@@ -55,90 +51,77 @@ async function seed() {
   ]);
 
   console.log('Inserting Menu Items...');
-  // 5. Seed Menu Items
   await db.insert(menuItems).values([
-    // Starters (CategoryId: 1) -> Grill (1)
-    { categoryId: 1, prepStationId: 1, name: 'Garlic Bread', price: 6.99, imageUrl: '/assets/menu/garlic_bread.png' },
-    { categoryId: 1, prepStationId: 1, name: 'Calamari', price: 11.99, imageUrl: '/assets/menu/calamari.png' },
-    { categoryId: 1, prepStationId: 1, name: 'Bruschetta', price: 6.99, imageUrl: '/assets/menu/bruschetta.png' },
-    { categoryId: 1, prepStationId: 1, name: 'Nachos', price: 13.99, imageUrl: '/assets/menu/nachos.png' },
-    { categoryId: 1, prepStationId: 1, name: 'Vegetable Spring Rolls', price: 10.00, imageUrl: '/assets/menu/spring_rolls.png' },
+    // --- Starters ---
+    { id: 1,  categoryId: 1, prepStationId: 1, name: 'Garlic Bread',            price: 6.99,  imageUrl: '/assets/menu/garlic_bread.png', allergenInfo: 'Dairy, Gluten' },
+    { id: 2,  categoryId: 1, prepStationId: 1, name: 'Calamari',                price: 11.99, imageUrl: '/assets/menu/calamari.png', allergenInfo: 'Shellfish' },
+    { id: 3,  categoryId: 1, prepStationId: 1, name: 'Bruschetta',              price: 6.99,  imageUrl: '/assets/menu/bruschetta.png', allergenInfo: 'Gluten' },
+    { id: 4,  categoryId: 1, prepStationId: 1, name: 'Nachos',                  price: 13.99, imageUrl: '/assets/menu/nachos.png', allergenInfo: 'Dairy' },
+    { id: 5,  categoryId: 1, prepStationId: 1, name: 'Vegetable Spring Rolls',  price: 10.00, imageUrl: '/assets/menu/spring_rolls.png', allergenInfo: 'Soy' },
+    { id: 14, categoryId: 1, prepStationId: 1, name: 'Caesar Salad',            price: 12.99, imageUrl: '/assets/menu/caesar_salad.png', allergenInfo: 'Dairy, Eggs' },
 
-    // Mains (CategoryId: 2) -> Grill (1)
-    { categoryId: 2, prepStationId: 1, name: 'Classic Burger + Fries', price: 14.99, imageUrl: '/assets/menu/classic_burger.png' },
-    { categoryId: 2, prepStationId: 1, name: 'Vegetarian Burger + Fries', price: 11.99, imageUrl: '/assets/menu/veggie_burger.png' },
-    { categoryId: 2, prepStationId: 1, name: 'Margarita Pizza', price: 15.99, imageUrl: '/assets/menu/margarita_pizza.png' },
-    { categoryId: 2, prepStationId: 1, name: 'Pepperoni Pizza', price: 16.99, imageUrl: '/assets/menu/pepperoni_pizza.png' },
-    { categoryId: 2, prepStationId: 1, name: 'Lasagna', price: 15.99, imageUrl: '/assets/menu/lasagna.png' },
-    { categoryId: 2, prepStationId: 1, name: 'Grilled Chicken Sandwich', price: 12.99, imageUrl: 'https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 2, prepStationId: 1, name: 'Caesar Salad', price: 9.99, imageUrl: '/assets/menu/caesar_salad.png' },
+    // --- Mains ---
+    { id: 6,  categoryId: 2, prepStationId: 1, name: 'Classic Burger + Fries',    price: 17.99, imageUrl: '/assets/menu/classic_burger.png', allergenInfo: 'Gluten, Dairy' },
+    { id: 7,  categoryId: 2, prepStationId: 1, name: 'Vegetarian Burger + Fries', price: 16.99, imageUrl: '/assets/menu/veggie_burger.png', allergenInfo: 'Gluten, Soy' },
+    { id: 8,  categoryId: 2, prepStationId: 1, name: 'Margarita Pizza',           price: 15.99, imageUrl: '/assets/menu/margarita_pizza.png', allergenInfo: 'Gluten, Dairy' },
+    { id: 9,  categoryId: 2, prepStationId: 1, name: 'Pepperoni Pizza',           price: 18.99, imageUrl: '/assets/menu/pepperoni_pizza.png', allergenInfo: 'Gluten, Dairy' },
+    { id: 10, categoryId: 2, prepStationId: 1, name: 'Lasagna',                   price: 16.99, imageUrl: '/assets/menu/lasagna.png', allergenInfo: 'Gluten, Dairy' },
+    { id: 15, categoryId: 2, prepStationId: 1, name: 'Grilled Salmon',            price: 24.99, imageUrl: '/assets/menu/grilled_salmon.png', allergenInfo: 'Fish' },
+    { id: 16, categoryId: 2, prepStationId: 1, name: 'Ribeye Steak',              price: 32.99, imageUrl: '/assets/menu/ribeye_steak.png', allergenInfo: 'None' },
 
-    // Desserts (CategoryId: 3) -> Expo (2)
-    { categoryId: 3, prepStationId: 2, name: 'Cheese Cake', price: 6.99, imageUrl: '/assets/menu/cheesecake.png' },
-    { categoryId: 3, prepStationId: 2, name: 'Chocolate Molten Lava Cake', price: 6.99, imageUrl: '/assets/menu/lava_cake.png' },
-    { categoryId: 3, prepStationId: 2, name: 'Tiramisu', price: 7.99, imageUrl: '/assets/menu/tiramisu.png' },
-    { categoryId: 3, prepStationId: 2, name: 'Apple Crumble', price: 5.99, imageUrl: 'https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 3, prepStationId: 2, name: 'Strawberry Sundae', price: 4.99, imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 3, prepStationId: 2, name: 'Nutella Strawberry Banana Crepe', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 3, prepStationId: 2, name: 'Banana Split', price: 5.99, imageUrl: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 3, prepStationId: 2, name: 'Croissant', price: 2.50, imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800' },
+    // --- Desserts ---
+    { id: 11, categoryId: 3, prepStationId: 2, name: 'Cheese Cake',                price: 8.99, imageUrl: '/assets/menu/cheesecake.png', allergenInfo: 'Dairy, Eggs' },
+    { id: 12, categoryId: 3, prepStationId: 2, name: 'Chocolate Molten Lava Cake', price: 9.99, imageUrl: '/assets/menu/lava_cake.png', allergenInfo: 'Dairy, Eggs' },
+    { id: 13, categoryId: 3, prepStationId: 2, name: 'Tiramisu',                   price: 8.99, imageUrl: '/assets/menu/tiramisu.png', allergenInfo: 'Dairy, Caffeine' },
+    { id: 17, categoryId: 3, prepStationId: 2, name: 'Apple Crumble',              price: 7.99, imageUrl: '/assets/menu/apple_crumble.png', allergenInfo: 'Gluten' },
 
-    // Hot Drinks (CategoryId: 4) -> Bar (3)
-    { categoryId: 4, prepStationId: 3, name: 'Coffee Americano', price: 2.75, imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 4, prepStationId: 3, name: 'Cappuccino', price: 3.99, imageUrl: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 4, prepStationId: 3, name: 'Latte', price: 4.25, imageUrl: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 4, prepStationId: 3, name: 'Espresso', price: 2.50, imageUrl: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&q=80&w=800' },
+    // --- Hot Drinks ---
+    { id: 18, categoryId: 4, prepStationId: 3, name: 'Espresso',             price: 3.50, imageUrl: '/assets/menu/espresso.png', allergenInfo: 'Caffeine' },
+    { id: 19, categoryId: 4, prepStationId: 3, name: 'Cappuccino',           price: 4.50, imageUrl: '/assets/menu/cappuccino.png', allergenInfo: 'Dairy, Caffeine' },
+    { id: 20, categoryId: 4, prepStationId: 3, name: 'Caffé Latte',         price: 4.50, imageUrl: '/assets/menu/latte.png', allergenInfo: 'Dairy, Caffeine' },
+    { id: 21, categoryId: 4, prepStationId: 3, name: 'Americano',            price: 3.99, imageUrl: '/assets/menu/americano.png', allergenInfo: 'Caffeine' },
+    { id: 22, categoryId: 4, prepStationId: 3, name: 'Herbal Tea Selection', price: 3.50, imageUrl: '/assets/menu/herbal_tea.png', allergenInfo: 'None' },
 
-    // Cold & Soft Drinks (CategoryId: 5) -> Bar (3)
-    { categoryId: 5, prepStationId: 3, name: 'Cola', price: 2.99, imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 5, prepStationId: 3, name: 'Lemon-Lime Soda', price: 2.99, imageUrl: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 5, prepStationId: 3, name: 'Iced Tea', price: 3.25, imageUrl: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 5, prepStationId: 3, name: 'Sparkling Water', price: 2.50, imageUrl: 'https://images.unsplash.com/photo-1551731589-cee04a53042d?auto=format&fit=crop&q=80&w=800' },
+    // --- Cold & Soft Drinks ---
+    { id: 23, categoryId: 5, prepStationId: 3, name: 'Classic Coca-Cola',       price: 2.99, imageUrl: '/assets/menu/coca_cola.png', allergenInfo: 'Sugar' },
+    { id: 24, categoryId: 5, prepStationId: 3, name: 'Sprite',                  price: 2.99, imageUrl: '/assets/menu/sprite.png', allergenInfo: 'Sugar' },
+    { id: 25, categoryId: 5, prepStationId: 3, name: 'Homemade Lemonade',       price: 4.50, imageUrl: '/assets/menu/lemonade.png', allergenInfo: 'Citrus' },
+    { id: 26, categoryId: 5, prepStationId: 3, name: 'Peach Iced Tea',          price: 3.99, imageUrl: '/assets/menu/iced_tea.png', allergenInfo: 'Sugar' },
+    { id: 27, categoryId: 5, prepStationId: 3, name: 'Sparkling Mineral Water', price: 3.50, imageUrl: '/assets/menu/mineral_water.png', allergenInfo: 'None' },
 
-    // Cocktails (CategoryId: 6) -> Bar (3)
-    { categoryId: 6, prepStationId: 3, name: 'Margarita', price: 7.99, imageUrl: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Bloody Mary', price: 7.99, imageUrl: 'https://images.unsplash.com/photo-1541546339469-be3055b440b2?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Blue Lagoon', price: 7.99, imageUrl: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Mojito', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Manhattan', price: 5.99, imageUrl: 'https://images.unsplash.com/photo-1582812351173-fb66c4293e87?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Martini', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1575023782549-63c0585bb3c7?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Singapore Sling', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 6, prepStationId: 3, name: 'Pina Colada', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1585225442642-c412e33bc830?auto=format&fit=crop&q=80&w=800' },
+    // --- Cocktails ---
+    { id: 28, categoryId: 6, prepStationId: 3, name: 'Classic Mojito',     price: 12.00, imageUrl: '/assets/menu/mojito.png', allergenInfo: 'Alcohol' },
+    { id: 29, categoryId: 6, prepStationId: 3, name: 'Espresso Martini',   price: 14.00, imageUrl: '/assets/menu/espresso_martini.png', allergenInfo: 'Alcohol, Caffeine' },
+    { id: 30, categoryId: 6, prepStationId: 3, name: 'Old Fashioned',      price: 13.00, imageUrl: '/assets/menu/old_fashioned.png', allergenInfo: 'Alcohol' },
+    { id: 31, categoryId: 6, prepStationId: 3, name: 'Signature Margarita',price: 12.50, imageUrl: '/assets/menu/signature_margarita.png', allergenInfo: 'Alcohol' },
 
-    // Spirits & Beer (CategoryId: 7) -> Bar (3)
-    { categoryId: 7, prepStationId: 3, name: 'Vodka', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1550985052-54ac456f7374?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 7, prepStationId: 3, name: 'Gin', price: 4.99, imageUrl: 'https://images.unsplash.com/photo-1556855810-7f74511f068a?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 7, prepStationId: 3, name: 'Rum', price: 4.99, imageUrl: 'https://images.unsplash.com/photo-1614313511387-1436a4480ebb?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 7, prepStationId: 3, name: 'Scotch', price: 6.99, imageUrl: 'https://images.unsplash.com/photo-1527281483445-d933b4bb214a?auto=format&fit=crop&q=80&w=800' },
-    { categoryId: 7, prepStationId: 3, name: 'Beer (Pint)', price: 4.99, imageUrl: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&q=80&w=800' },
+    // --- Spirits & Beer ---
+    { id: 32, categoryId: 7, prepStationId: 3, name: 'Craft Draft Beer',      price: 7.50,  imageUrl: 'https://images.unsplash.com/photo-1541014529323-288277207604?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol, Gluten' },
+    { id: 33, categoryId: 7, prepStationId: 3, name: 'Cabernet Sauvignon',    price: 11.00, imageUrl: 'https://images.unsplash.com/photo-1553135049-2f10705a6206?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
+    { id: 34, categoryId: 7, prepStationId: 3, name: 'Chardonnay',            price: 10.50, imageUrl: 'https://images.unsplash.com/photo-1563260797-cb5cd70254c8?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
+    { id: 35, categoryId: 7, prepStationId: 3, name: 'Single Malt Whiskey',   price: 15.00, imageUrl: 'https://images.unsplash.com/photo-1582819509237-753c90ef4036?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
+
   ]);
 
-  console.log('Inserting Loyalty Accounts...');
-  // 6. Seed Loyalty
-  await db.insert(loyaltyAccounts).values([
-    { phone: '15559993434', name: 'Lana Avery', points: 198 },
+  console.log('Inserting Sample Analytics Data...');
+  const now = Date.now();
+  await db.insert(timeclocks).values([
+    { staffId: 1, clockIn: now - 36000000, clockOut: now - 18000000 },
+    { staffId: 2, clockIn: now - 28800000 },
+    { staffId: 3, clockIn: now - 32400000, clockOut: now - 3600000 },
   ]);
 
-  console.log('Inserting Modifiers...');
-  // 7. Seed Modifiers
-  const allItems = await db.select().from(menuItems);
-  const modifiersToInsert = [];
-  
-  for (const item of allItems) {
-    if (item.categoryId === 1 || item.categoryId === 2) {
-      modifiersToInsert.push({ menuItemId: item.id, name: 'Add Cheese', price: 1.00 });
-      modifiersToInsert.push({ menuItemId: item.id, name: 'Gluten Free Options', price: 2.00 });
-    }
-    if (item.categoryId === 4 || item.categoryId === 5 || item.categoryId === 6) {
-      modifiersToInsert.push({ menuItemId: item.id, name: 'No Ice', price: 0 });
-      modifiersToInsert.push({ menuItemId: item.id, name: 'Light Ice', price: 0 });
-      modifiersToInsert.push({ menuItemId: item.id, name: 'Extra Shot', price: 1.50 });
-    }
-  }
-  
-  if (modifiersToInsert.length > 0) {
-    await db.insert(menuModifiers).values(modifiersToInsert);
-  }
+  await db.insert(orders).values([
+    { id: 1, tableId: 1, staffId: 2, status: 'paid', total: 45.97 },
+    { id: 2, tableId: 2, staffId: 2, status: 'paid', total: 32.50 },
+  ]);
+
+  await db.insert(orderItems).values([
+    { orderId: 1, menuItemId: 6,  name: 'Classic Burger + Fries',      qty: 2, unitPrice: 14.99 },
+    { orderId: 1, menuItemId: 1,  name: 'Garlic Bread',                qty: 1, unitPrice: 6.99 },
+    { orderId: 2, menuItemId: 8,  name: 'Margarita Pizza',             qty: 1, unitPrice: 15.99 },
+    { orderId: 2, menuItemId: 12, name: 'Chocolate Molten Lava Cake',  qty: 1, unitPrice: 6.99 },
+  ]);
 
   console.log('Seeding Complete!');
 }

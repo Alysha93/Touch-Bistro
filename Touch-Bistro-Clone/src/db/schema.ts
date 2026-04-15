@@ -10,6 +10,7 @@ export const staff = sqliteTable('staff', {
   name: text('name').notNull(),
   pin: text('pin').notNull().unique(),
   role: text('role').notNull(),
+  hourlyRate: real('hourly_rate').notNull().default(20.0),
 });
 
 export const tables = sqliteTable('tables', {
@@ -32,6 +33,7 @@ export const menuItems = sqliteTable('menu_items', {
   imageColor: text('image_color'),
   imageUrl: text('image_url'),
   isAvailable: integer('is_available', { mode: 'boolean' }).notNull().default(true),
+  allergenInfo: text('allergen_info'), // e.g., 'Peanuts, Dairy'
 });
 
 export const orders = sqliteTable('orders', {

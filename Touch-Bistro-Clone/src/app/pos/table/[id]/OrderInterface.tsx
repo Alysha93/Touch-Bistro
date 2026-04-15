@@ -1,9 +1,11 @@
+'use client'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { submitOrder, deleteOrderItem } from '../actions';
 import Image from 'next/image';
 
-type MenuItem = { id?: number, categoryId: number, name: string, price: number, imageColor: string | null, imageUrl?: string };
+
+type MenuItem = { id?: number, categoryId: number, name: string, price: number, imageColor: string | null, imageUrl?: string, allergenInfo?: string };
 type Modifier = { id: number, menuItemId: number, name: string, price: number };
 
 export default function OrderInterface({ table, allTables = [], categories, menuItems, modifiers = [], staffId, staffRole, initialOrderItems = [] }: any) {
@@ -23,6 +25,9 @@ export default function OrderInterface({ table, allTables = [], categories, menu
   const [selectedModifiers, setSelectedModifiers] = useState<Modifier[]>([]);
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [allergenWarningItem, setAllergenWarningItem] = useState<MenuItem | null>(null);
+  const [splitMode, setSplitMode] = useState<null | 'seat' | 'equal'>(null);
+  const [splitCount, setSplitCount] = useState(2);
 
   useEffect(() => {
     setMounted(true);
@@ -31,6 +36,11 @@ export default function OrderInterface({ table, allTables = [], categories, menu
   const displayedItems = menuItems.filter((i: MenuItem) => i.categoryId === activeCategory);
 
   const handleItemClick = (item: MenuItem) => {
+    if (item.allergenInfo && !allergenWarningItem) {
+      setAllergenWarningItem(item);
+      return;
+    }
+    
     const itemModifiers = modifiers.filter((m: Modifier) => m.menuItemId === item.id);
     if (itemModifiers.length > 0) {
       setSelectedItemForModifiers(item);
@@ -38,6 +48,7 @@ export default function OrderInterface({ table, allTables = [], categories, menu
     } else {
       addItemToOrder(item, []);
     }
+    setAllergenWarningItem(null);
   };
 
   const addItemToOrder = (item: MenuItem, itemModifiers: Modifier[]) => {
@@ -204,22 +215,29 @@ export default function OrderInterface({ table, allTables = [], categories, menu
             <span style={{ fontSize: '1.25rem', fontWeight: '800' }}>Total</span>
             <span style={{ fontSize: '1.5rem', fontWeight: '900', color: 'var(--primary)' }}>${total.toFixed(2)}</span>
           </div>
-          
           <div className="flex gap-2">
+            <button 
+              onClick={() => setSplitMode('seat')} 
+              className="btn flex-1"
+              style={{ backgroundColor: '#F1F5F9', color: 'var(--text-main)' }}
+            >
+               Split Ticket
+            </button>
             <button 
               onClick={handleSendOrder} 
               className="btn flex-1"
               style={{ backgroundColor: '#F1F5F9', color: 'var(--text-main)' }}
             >
-               Send & Stay
+               Send &amp; Stay
             </button>
             <button 
               onClick={handleCheckout} 
               className="btn btn-primary flex-1"
             >
-               Pay & Finish
+               Pay &amp; Finish
             </button>
           </div>
+
         </div>
       </div>
 
@@ -311,6 +329,80 @@ export default function OrderInterface({ table, allTables = [], categories, menu
             <button onClick={() => addItemToOrder(selectedItemForModifiers, selectedModifiers)} className="btn btn-primary w-full py-4 text-lg">
               Confirm & Add to Ticket
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ALLERGY WARNING MODAL */}
+      {allergenWarningItem && (
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '400px', padding: '2.5rem', textAlign: 'center', border: '2px solid #F59E0B' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Allergy Alert</h2>
+            <p style={{ marginBottom: '2rem', color: 'var(--text-main)' }}>
+              This item (<strong>{allergenWarningItem.name}</strong>) contains: <br/>
+              <span style={{ color: '#D97706', fontWeight: 'bold' }}>{allergenWarningItem.allergenInfo}</span>
+            </p>
+            <div className="flex flex-col gap-2">
+               <button onClick={() => { handleItemClick(Object.assign({}, allergenWarningItem, { allergenInfo: null })); }} className="btn btn-primary w-full py-4">Proceed with Order</button>
+               <button onClick={() => setAllergenWarningItem(null)} className="btn btn-secondary w-full">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SPLIT TICKET MODAL */}
+      {splitMode && (
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '500px', padding: '2.5rem' }}>
+             <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem' }}>Split Transaction</h2>
+             <div className="flex gap-4 mb-6">
+                <button 
+                  onClick={() => setSplitMode('seat')}
+                  className={`flex-1 py-4 rounded-xl border-2 font-bold transition-all ${splitMode === 'seat' ? 'border-teal-600 bg-teal-50 text-teal-700' : 'border-slate-200 text-slate-500'}`}
+                >
+                   Split by Seat
+                </button>
+                <button 
+                  onClick={() => setSplitMode('equal')}
+                  className={`flex-1 py-4 rounded-xl border-2 font-bold transition-all ${splitMode === 'equal' ? 'border-teal-600 bg-teal-50 text-teal-700' : 'border-slate-200 text-slate-500'}`}
+                >
+                   Split Equally
+                </button>
+             </div>
+
+             {splitMode === 'equal' ? (
+                <div className="mb-8">
+                   <p className="mb-2 font-semibold text-slate-600">Number of ways to split:</p>
+                   <div className="flex items-center gap-4">
+                      <button onClick={() => setSplitCount(Math.max(2, splitCount-1))} className="w-12 h-12 rounded-full bg-slate-100 font-bold">-</button>
+                      <span style={{ fontSize: '1.5rem', fontWeight: '800' }}>{splitCount}</span>
+                      <button onClick={() => setSplitCount(splitCount+1)} className="w-12 h-12 rounded-full bg-slate-100 font-bold">+</button>
+                      <div className="ml-auto text-right">
+                         <span style={{ fontSize: '1.25rem', fontWeight: '900', color: 'var(--primary)' }}>${(total / splitCount).toFixed(2)}</span>
+                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Per person (x{splitCount})</p>
+                      </div>
+                   </div>
+                </div>
+             ) : (
+                <div className="mb-8 overflow-y-auto" style={{ maxHeight: '200px' }}>
+                   {[1,2,3,4].map(seat => {
+                      const seatTotal = orderItems.filter(oi => oi.seatNumber === seat).reduce((acc, oi) => acc + (oi.price * oi.qty), 0);
+                      if (seatTotal === 0) return null;
+                      return (
+                        <div key={seat} className="flex justify-between p-3 border-b border-slate-100">
+                           <span className="font-bold text-slate-700">Seat {seat}</span>
+                           <span className="font-bold">${seatTotal.toFixed(2)}</span>
+                        </div>
+                      );
+                   })}
+                </div>
+             )}
+
+             <div className="flex gap-2">
+                <button onClick={() => setSplitMode(null)} className="btn btn-secondary flex-1">Back</button>
+                <button onClick={handleCheckout} className="btn btn-primary flex-2">Proceed to Split Payment</button>
+             </div>
           </div>
         </div>
       )}

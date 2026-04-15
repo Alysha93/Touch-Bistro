@@ -97,73 +97,137 @@ export default function SettingsPage() {
   );
 }
 
-const StatsDashboard = () => (
-  <div className="flex flex-col gap-10">
-    <header>
-      <h2 style={{ fontSize: '2.25rem', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' }}>Performance Overview</h2>
-      <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>Business metrics and operational insights for today.</p>
-    </header>
+const StatsDashboard = () => {
+  const [showLabor, setShowLabor] = useState(false);
+  
+  // High-fidelity chart data
+  const data = [
+    { time: '11am', sales: 1200, labor: 450 },
+    { time: '12pm', sales: 2100, labor: 450 },
+    { time: '1pm', sales: 1800, labor: 450 },
+    { time: '2pm', sales: 900, labor: 400 },
+    { time: '3pm', sales: 700, labor: 350 },
+    { time: '4pm', sales: 1100, labor: 350 },
+    { time: '5pm', sales: 2400, labor: 500 },
+  ];
 
-    <div className="grid grid-cols-3 gap-8">
-      {[
-        { label: 'Total Revenue', value: '$12,482.50', trend: '+14.2%', color: 'var(--primary)' },
-        { label: 'Average Check', value: '$42.90', trend: '+5.1%', color: 'var(--accent)' },
-        { label: 'Guest Count', value: '284', trend: '-2.4%', color: 'var(--warning)' },
-      ].map((stat, i) => (
-        <div key={i} className="surface" style={{ padding: '2rem', borderLeft: `6px solid ${stat.color}` }}>
-           <p style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-light)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>{stat.label}</p>
-           <h3 style={{ fontSize: '2.5rem', fontWeight: '900' }}>{stat.value}</h3>
-           <div className="flex items-center gap-2 mt-4">
-              <span className={`badge ${stat.trend.startsWith('+') ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.8rem' }}>{stat.trend}</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>vs. last week</span>
-           </div>
+  return (
+    <div className="flex flex-col gap-10">
+      <header className="flex justify-between items-end">
+        <div>
+          <h2 style={{ fontSize: '2.25rem', fontWeight: '900', color: 'var(--text-main)', letterSpacing: '-1px' }}>Performance Overview</h2>
+          <p style={{ color: 'var(--text-light)', fontSize: '1.1rem' }}>Business metrics and operational insights for today.</p>
         </div>
-      ))}
-    </div>
+        <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+           <button 
+             onClick={() => setShowLabor(false)}
+             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${!showLabor ? 'bg-teal-600 text-white shadow-md' : 'text-slate-500'}`}
+           >Revenue Only</button>
+           <button 
+             onClick={() => setShowLabor(true)}
+             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${showLabor ? 'bg-teal-600 text-white shadow-md' : 'text-slate-500'}`}
+           >Labor Adjusted</button>
+        </div>
+      </header>
 
-    <div className="grid grid-cols-2 gap-10">
-       <div className="surface" style={{ padding: '2rem' }}>
-          <h4 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem' }}>Revenue by Category</h4>
-          <div className="flex flex-col gap-6">
-             {[
-               { name: 'Mains', amount: '$6,240', percent: 50 },
-               { name: 'Starters', amount: '$1,820', percent: 15 },
-               { name: 'Beverages', amount: '$3,120', percent: 25 },
-               { name: 'Desserts', amount: '$1,302', percent: 10 },
-             ].map((cat, i) => (
-               <div key={i} className="flex flex-col gap-2">
-                 <div className="flex justify-between items-end">
-                    <span style={{ fontWeight: '700' }}>{cat.name}</span>
-                    <span style={{ fontWeight: '800', color: 'var(--primary)' }}>{cat.amount}</span>
-                 </div>
-                 <div style={{ width: '100%', height: '8px', backgroundColor: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: `${cat.percent}%`, height: '100%', backgroundColor: 'var(--primary)', borderRadius: '4px' }}></div>
-                 </div>
-               </div>
-             ))}
+      <div className="grid grid-cols-3 gap-8">
+        {[
+          { label: 'Total Revenue', value: '$12,482.50', trend: '+14.2%', color: 'var(--primary)' },
+          { label: showLabor ? 'Labor Cost' : 'Average Check', value: showLabor ? '$2,450.00' : '$42.90', trend: showLabor ? '+2.1%' : '+5.1%', color: showLabor ? 'var(--danger)' : 'var(--accent)' },
+          { label: showLabor ? 'Net Profit' : 'Guest Count', value: showLabor ? '$10,032.50' : '284', trend: showLabor ? '+18.4%' : '-2.4%', color: showLabor ? 'var(--success)' : 'var(--warning)' },
+        ].map((stat, i) => (
+          <div key={i} className="surface transition-all hover:translate-y-[-4px]" style={{ padding: '2rem', borderLeft: `6px solid ${stat.color}` }}>
+             <p style={{ fontSize: '0.8rem', fontWeight: '800', color: 'var(--text-light)', textTransform: 'uppercase', marginBottom: '0.75rem' }}>{stat.label}</p>
+             <h3 style={{ fontSize: '2.5rem', fontWeight: '900' }}>{stat.value}</h3>
+             <div className="flex items-center gap-2 mt-4">
+                <span className={`badge ${stat.trend.startsWith('+') ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.8rem' }}>{stat.trend}</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>vs. last week</span>
+             </div>
           </div>
-       </div>
+        ))}
+      </div>
 
-       <div className="surface" style={{ padding: '2rem' }}>
-          <h4 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem' }}>Popular Items Today</h4>
-          <div className="flex flex-col gap-2">
-             {[
-               { name: 'Classic Burger + Fries', count: 48, color: 'var(--success)' },
-               { name: 'Margarita Pizza', count: 32, color: 'var(--success)' },
-               { name: 'Garlic Bread', count: 29, color: 'var(--warning)' },
-               { name: 'Cola', count: 25, color: 'var(--warning)' },
-               { name: 'Tiramisu', count: 18, color: 'var(--danger)' },
-             ].map((item, i) => (
-               <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50">
-                  <span style={{ fontWeight: '600' }}>{item.name}</span>
-                  <span className="badge badge-primary">{item.count} orders</span>
+      <div className="surface" style={{ padding: '2rem', minHeight: '300px' }}>
+         <div className="flex justify-between items-center mb-8">
+            <h4 style={{ fontSize: '1.25rem', fontWeight: '800' }}>Sales vs. Labor Trend</h4>
+            <div className="flex gap-4">
+               <div className="flex items-center gap-2">
+                  <div style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: 'var(--primary)' }}></div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: '600' }}>Gross Sales</span>
                </div>
-             ))}
-          </div>
-       </div>
+               <div className="flex items-center gap-2">
+                  <div style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: '#FCA5A5' }}></div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: '600' }}>Labor Cost</span>
+               </div>
+            </div>
+         </div>
+         {/* Chart Visualization */}
+         <div className="flex items-end gap-4" style={{ height: '200px', paddingBottom: '2rem' }}>
+            {data.map((d, i) => (
+               <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-1">
+                  <div className="w-full flex flex-col justify-end gap-[1px]">
+                     <div style={{ height: `${(d.sales/2500)*100}%`, width: '100%', backgroundColor: 'var(--primary-light)', borderRadius: '4px 4px 0 0', position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: '-20px', left: 0, right: 0, textAlign: 'center', fontSize: '0.65rem', fontWeight: '800' }}>${d.sales}</div>
+                     </div>
+                     <div style={{ height: `${(d.labor/2500)*100}%`, width: '100%', backgroundColor: '#FCA5A5', borderRadius: '0 0 4px 4px' }} />
+                  </div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>{d.time}</span>
+               </div>
+            ))}
+         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-10">
+         <div className="surface" style={{ padding: '2rem' }}>
+            <h4 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '2rem' }}>Revenue by Category</h4>
+            <div className="flex flex-col gap-6">
+               {[
+                 { name: 'Mains', amount: '$6,240', percent: 50 },
+                 { name: 'Starters', amount: '$1,820', percent: 15 },
+                 { name: 'Beverages', amount: '$3,120', percent: 25 },
+                 { name: 'Desserts', amount: '$1,302', percent: 10 },
+               ].map((cat, i) => (
+                 <div key={i} className="flex flex-col gap-2">
+                   <div className="flex justify-between items-end">
+                      <span style={{ fontWeight: '700' }}>{cat.name}</span>
+                      <span style={{ fontWeight: '800', color: 'var(--primary)' }}>{cat.amount}</span>
+                   </div>
+                   <div style={{ width: '100%', height: '8px', backgroundColor: '#F1F5F9', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div style={{ width: `${cat.percent}%`, height: '100%', backgroundColor: 'var(--primary)', borderRadius: '4px' }}></div>
+                   </div>
+                 </div>
+               ))}
+            </div>
+         </div>
+  
+         <div className="surface" style={{ padding: '2rem' }}>
+            <h4 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '1rem' }}>Top Performing Items</h4>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>Real-time ranking of staff favorites and high-margin assets.</p>
+            <div className="flex flex-col gap-2">
+               {[
+                 { name: 'Classic Burger + Fries', count: 48, growth: '+12%', color: 'var(--success)' },
+                 { name: 'Margarita Pizza', count: 32, growth: '+4%', color: 'var(--success)' },
+                 { name: 'Garlic Bread', count: 29, growth: '+18%', color: 'var(--success)' },
+                 { name: 'Singapore Sling', count: 25, growth: '-2%', color: 'var(--danger)' },
+                 { name: 'Tiramisu', count: 18, growth: '+8%', color: 'var(--success)' },
+               ].map((item, i) => (
+                 <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-all">
+                    <div className="flex items-center gap-3">
+                       <span style={{ fontWeight: '800', color: 'var(--text-light)', width: '20px' }}>{i+1}</span>
+                       <span style={{ fontWeight: '700' }}>{item.name}</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                       <span style={{ fontSize: '0.8rem', fontWeight: '800', color: item.growth.startsWith('+') ? 'var(--success)' : 'var(--danger)' }}>{item.growth}</span>
+                       <span className="badge badge-primary">{item.count} Sold</span>
+                    </div>
+                 </div>
+               ))}
+            </div>
+         </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const RestaurantInfo = () => (
   <div className="flex flex-col gap-10 max-w-3xl">
@@ -360,28 +424,42 @@ const AppMarketplace = () => (
   </div>
 );
 
-const AdvancedSettings = () => (
-  <div className="flex flex-col gap-10 max-w-2xl">
-    <header>
-      <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Advanced Operations</h2>
-      <p style={{ color: 'var(--text-light)' }}>Technical configurations and database maintenance.</p>
-    </header>
+const AdvancedSettings = () => {
+  const [offline, setOffline] = useState(false);
 
-    <div className="flex flex-col gap-6">
-       <div className="surface p-8">
-          <h4 style={{ fontWeight: '800', marginBottom: '1rem' }}>System Cache</h4>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Clearing the cache will force a fresh sync of all menu items and images. Use if changes aren&apos;t appearing.</p>
-          <button className="btn w-full">Purge Local Cache</button>
-       </div>
+  return (
+    <div className="flex flex-col gap-10 max-w-2xl">
+      <header>
+        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Advanced Operations</h2>
+        <p style={{ color: 'var(--text-light)' }}>Technical configurations and database maintenance.</p>
+      </header>
+  
+      <div className="flex flex-col gap-6">
+         <div className="surface p-8">
+            <div className="flex justify-between items-center mb-4">
+               <div>
+                  <h4 style={{ fontWeight: '800' }}>Offline Synchronization Mode</h4>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Simulate internet disconnect to test local caching Resilience.</p>
+               </div>
+               <Toggle active={offline} onChange={() => setOffline(!offline)} />
+            </div>
+         </div>
 
-       <div className="surface p-8" style={{ border: '2px solid #FEE2E2', backgroundColor: '#FEF2F2' }}>
-          <h4 style={{ fontWeight: '800', color: 'var(--danger)', marginBottom: '1rem' }}>Dangerous Actions</h4>
-          <p style={{ fontSize: '0.9rem', color: '#991B1B', marginBottom: '1.5rem' }}>These actions are permanent. Ensure you have a database backup before proceeding.</p>
-          <div className="flex flex-col gap-3">
-             <button className="btn" style={{ backgroundColor: 'white', border: '1px solid #FCA5A5', color: 'var(--danger)', fontWeight: '800' }}>Wipe Transaction History</button>
-             <button className="btn" style={{ backgroundColor: 'var(--danger)', border: 'none', color: 'white', fontWeight: '800' }}>Factory Reset Terminal</button>
-          </div>
-       </div>
+         <div className="surface p-8">
+            <h4 style={{ fontWeight: '800', marginBottom: '1rem' }}>System Cache</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Clearing the cache will force a fresh sync of all menu items and images. Use if changes aren&apos;t appearing.</p>
+            <button className="btn w-full">Purge Local Cache</button>
+         </div>
+  
+         <div className="surface p-8" style={{ border: '2px solid #FEE2E2', backgroundColor: '#FEF2F2' }}>
+            <h4 style={{ fontWeight: '800', color: 'var(--danger)', marginBottom: '1rem' }}>Dangerous Actions</h4>
+            <p style={{ fontSize: '0.9rem', color: '#991B1B', marginBottom: '1.5rem' }}>These actions are permanent. Ensure you have a database backup before proceeding.</p>
+            <div className="flex flex-col gap-3">
+               <button className="btn" style={{ backgroundColor: 'white', border: '1px solid #FCA5A5', color: 'var(--danger)', fontWeight: '800' }}>Wipe Transaction History</button>
+               <button className="btn" style={{ backgroundColor: 'var(--danger)', border: 'none', color: 'white', fontWeight: '800' }}>Factory Reset Terminal</button>
+            </div>
+         </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};

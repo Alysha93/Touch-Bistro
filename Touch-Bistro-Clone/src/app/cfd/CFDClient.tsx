@@ -33,8 +33,9 @@ export default function CFDClient() {
             />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(15, 23, 42, 0.9), transparent)' }} />
             <div style={{ position: 'absolute', bottom: '15%', left: '8%', color: 'white', maxWidth: '600px' }}>
-               <h1 style={{ fontSize: '5rem', fontWeight: '900', lineHeight: 1.1, marginBottom: '2rem', letterSpacing: '-2px' }}>Welcome to<br/>ProServe Bistro</h1>
+               <h1 style={{ fontSize: '5rem', fontWeight: '900', lineHeight: 1.1, marginBottom: '2rem', letterSpacing: '-2px' }}>Welcome to<br/>TouchBistro</h1>
                <p style={{ fontSize: '1.75rem', opacity: 0.8, fontWeight: '500' }}>Please enjoy your dining experience. Your order details will appear here as they are prepared.</p>
+
                <div className="flex gap-4 mt-12">
                   <div className="badge badge-primary px-6 py-2 text-lg">Hospitality Reimagined</div>
                   <div className="badge badge-success px-6 py-2 text-lg">Live Support</div>
@@ -179,7 +180,8 @@ export default function CFDClient() {
                   </div>
                   <div>
                     <h1 style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '1rem' }}>Please Tap or Insert Card</h1>
-                    <p style={{ color: 'var(--text-light)', fontSize: '1.5rem' }}>Securely processing your payment via ProServe Terminal...</p>
+                    <p style={{ color: 'var(--text-light)', fontSize: '1.5rem' }}>Securely processing your payment via TouchBistro Terminal...</p>
+
                   </div>
                </div>
             </div>

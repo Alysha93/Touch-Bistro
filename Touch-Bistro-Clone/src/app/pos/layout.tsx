@@ -5,6 +5,7 @@ import { logout } from '../actions';
 import { db } from '@/db';
 import { orders } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import SyncMonitor from '@/components/SyncMonitor';
 
 export default async function POSLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -24,6 +25,9 @@ export default async function POSLayout({ children }: { children: React.ReactNod
           <span style={{ fontWeight: 800, fontSize: '1.25rem', letterSpacing: '-0.5px' }}>TouchBistro</span>
           <span style={{ color: 'rgba(255,255,255,0.4)', margin: '0 0.5rem' }}>|</span>
           <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}>Staff: {staffName}</span>
+          <div style={{ marginLeft: '1rem' }}>
+            <SyncMonitor />
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           {webOrders > 0 && (
