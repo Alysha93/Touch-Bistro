@@ -2,8 +2,7 @@
 
 A full-stack, tablet-optimized restaurant operating system inspired by TouchBistro, built with Next.js 15 (App Router), Drizzle ORM, and SQLite.
 
-## Live System Demo 🚀
-![Full System Walkthrough Video](./Touch-Bistro-Clone/public/touch_bistro_app_demo.webp)
+
 
 ## Modules Included
 
