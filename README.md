@@ -66,7 +66,5 @@ This repository stores its core logic within the [**Touch-Bistro-Clone**](./Touc
 ## 📄 License
 This project is licensed under the **MIT License**.
 
----
 
-## 👨‍💻 Developed by Antigravity
-*Pushing the boundaries of agentic coding and premium design.*
+
