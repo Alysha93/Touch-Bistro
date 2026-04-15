@@ -115,58 +115,58 @@ export default function OrderInterface({ table, allTables = [], categories, menu
   const isRegister = table.name.includes("Register");
 
   return (
-    <div className="flex h-full w-full animate-fade-in" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="flex h-full w-full animate-fade-in">
       
       {/* PANE 1 - TABLES SIDEBAR */}
-      <div className="flex flex-col" style={{ width: '240px', borderRight: '1px solid var(--border-color)', backgroundColor: 'white' }}>
-         <div className="flex items-center justify-center" style={{ height: '60px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-secondary)', color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>
-           Service Areas
+      <div className="flex flex-col" style={{ width: '240px', borderRight: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}>
+         <div className="flex items-center justify-center" style={{ height: '60px', borderBottom: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.1)', fontWeight: 'bold', fontSize: '1rem', letterSpacing: '0.05em' }}>
+           SERVICE AREAS
          </div>
-         <div style={{ padding: '1rem', overflowY: 'auto' }} className="flex flex-col gap-2">
+         <div style={{ padding: '1rem', overflowY: 'auto' }} className="flex flex-col gap-3">
            {allTables.map((t: any) => (
               <div 
                 key={t.id}
                 onClick={() => t.id !== table.id && router.push(`/pos/table/${t.id}`)}
                 className="pos-card flex flex-col items-center justify-center"
                 style={{
-                  height: '90px',
-                  padding: '0.5rem',
+                  height: '100px',
+                  padding: '0.75rem',
                   cursor: 'pointer',
-                  backgroundColor: t.id === table.id ? 'var(--primary-light)' : 'white',
-                  borderColor: t.id === table.id ? 'var(--primary)' : 'var(--border-color)',
-                  borderRadius: t.name.includes('Register') ? 'var(--radius-md)' : 'var(--radius-full)',
-                  borderWidth: t.id === table.id ? '2px' : '1px'
+                  background: t.id === table.id ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                  borderColor: t.id === table.id ? 'white' : 'rgba(255,255,255,0.15)',
+                  borderRadius: t.name.includes('Register') ? 'var(--radius-lg)' : 'var(--radius-full)',
+                  borderWidth: t.id === table.id ? '2.5px' : '1px'
                 }}
               >
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>{t.name.includes('Register') ? 'Register' : 'Table'}</span>
-                <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: t.id === table.id ? 'var(--primary)' : 'var(--text-main)' }}>{t.name.replace('Register', '01')}</span>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: t.status === 'open' ? 'var(--success)' : (t.status === 'seated' ? 'var(--warning)' : 'var(--danger)'), marginTop: '0.5rem' }}></div>
+                <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.25rem', fontWeight: '600' }}>{t.name.includes('Register') ? 'Register' : 'Table'}</span>
+                <span style={{ fontWeight: '900', fontSize: '1.25rem', color: 'white' }}>{t.name.replace('Register', '01')}</span>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: t.status === 'open' ? 'var(--success)' : (t.status === 'seated' ? 'var(--warning)' : 'var(--danger)'), marginTop: '0.75rem', boxShadow: '0 0 10px currentColor' }}></div>
               </div>
            ))}
          </div>
       </div>
 
       {/* PANE 2 - ACTIVE TICKET */}
-      <div className="flex flex-col" style={{ width: '400px', borderRight: '1px solid var(--border-color)', backgroundColor: 'white', boxShadow: '0 0 20px rgba(0,0,0,0.03)' }}>
-        <div className="flex flex-col" style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-color)', backgroundColor: 'white' }}>
-          <span className="badge badge-success" style={{ alignSelf: 'flex-start', marginBottom: '0.5rem' }}>{isRegister ? 'Direct Sale' : 'Dine In'}</span>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.5px' }}>{isRegister ? 'Cash Register' : `Table ${table.name}`}</h2>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+      <div className="flex flex-col" style={{ width: '420px', borderRight: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)' }}>
+        <div className="flex flex-col" style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)' }}>
+          <span className="badge badge-success" style={{ alignSelf: 'flex-start', marginBottom: '0.75rem' }}>{isRegister ? 'Direct Sale' : 'Dine In'}</span>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.5px' }}>{isRegister ? 'Cash Register' : `Table ${table.name}`}</h2>
+          <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>
             Order #{(orderItems[0]?.orderId || 'NEW').toString().padStart(4, '0')} {mounted && `• ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
           </span>
         </div>
         
         {!isRegister && (
-           <div className="flex" style={{ backgroundColor: '#F1F5F9', padding: '0.5rem', gap: '0.5rem' }}>
+           <div className="flex" style={{ background: 'rgba(255,255,255,0.05)', padding: '0.5rem', gap: '0.5rem' }}>
               {[1,2,3,4].map(seat => (
                 <button 
                   key={seat}
                   onClick={() => setActiveSeat(seat)}
-                  className={`flex-1 py-2 rounded-md font-bold text-sm transition-all ${activeSeat === seat ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200'}`}
+                  className="flex-1 py-2 rounded-lg font-bold text-sm transition-all"
                   style={{
-                    backgroundColor: activeSeat === seat ? 'white' : 'transparent',
-                    color: activeSeat === seat ? 'var(--primary)' : 'var(--text-muted)',
-                    boxShadow: activeSeat === seat ? 'var(--shadow-sm)' : 'none'
+                    background: activeSeat === seat ? 'rgba(255,255,255,0.2)' : 'transparent',
+                    color: activeSeat === seat ? 'white' : 'rgba(255,255,255,0.5)',
+                    border: activeSeat === seat ? '1px solid rgba(255,255,255,0.2)' : '1px solid transparent'
                   }}>
                   Seat {seat}
                 </button>
@@ -174,84 +174,89 @@ export default function OrderInterface({ table, allTables = [], categories, menu
            </div>
         )}
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem' }} className="flex flex-col gap-1">
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }} className="flex flex-col gap-2">
            {orderItems.length === 0 ? (
-             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.3, textAlign: 'center' }}>
-               <span style={{ fontSize: '3rem' }}>🧾</span>
-               <p style={{ marginTop: '1rem', fontWeight: '500' }}>Ticket is empty</p>
+             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.4, textAlign: 'center' }}>
+               <span style={{ fontSize: '3.5rem' }}>🧾</span>
+               <p style={{ marginTop: '1rem', fontWeight: '600', fontSize: '1.1rem' }}>Ticket is empty</p>
              </div>
            ) : (
              orderItems.map((oi, idx) => (
                 <div 
                   key={idx} 
                   onClick={() => setEditItemIndex(idx)}
-                  className="flex items-center justify-between p-3 rounded-xl transition-all cursor-pointer hover:bg-slate-50 border border-transparent hover:border-slate-100"
-                  style={{ backgroundColor: editItemIndex === idx ? 'var(--primary-light)' : 'transparent', borderLeft: editItemIndex === idx ? '4px solid var(--primary)' : '1px solid transparent' }}
+                  className="flex items-center justify-between p-4 rounded-2xl transition-all cursor-pointer border border-transparent hover:border-white/20"
+                  style={{ 
+                    background: editItemIndex === idx ? 'rgba(255,255,255,0.1)' : 'transparent', 
+                    backdropFilter: editItemIndex === idx ? 'blur(10px)' : 'none'
+                  }}
                 >
                    <div className="flex flex-col flex-1">
                      <div className="flex items-center gap-2">
-                       {!isRegister && <span style={{ fontSize: '0.7rem', backgroundColor: '#E2E8F0', color: '#475569', padding: '2px 6px', borderRadius: '4px', fontWeight: '800' }}>S{oi.seatNumber}</span>}
-                       <span style={{ fontSize: '1rem', fontWeight: '600', color: oi.id ? 'var(--text-main)' : 'var(--success)' }}>
+                       {!isRegister && <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.15)', color: 'white', padding: '2px 8px', borderRadius: '6px', fontWeight: '800' }}>S{oi.seatNumber}</span>}
+                       <span style={{ fontSize: '1.1rem', fontWeight: '700', color: oi.id ? 'white' : 'var(--success)' }}>
                          {oi.qty > 1 ? `${oi.qty}x ` : ''}{oi.originalName} 
-                         {!oi.id && <span style={{ marginLeft: '4px', color: 'var(--success)', fontSize: '1.2rem', verticalAlign: 'middle' }}>•</span>}
+                         {!oi.id && <span style={{ marginLeft: '6px', color: 'var(--success)', fontSize: '1.5rem', verticalAlign: 'middle' }}>•</span>}
                        </span>
                      </div>
                      {oi.name !== oi.originalName && (
-                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>+ {oi.name.replace(`${oi.originalName} `, '').replace('(', '').replace(')', '')}</span>
+                       <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', marginTop: '4px', fontStyle: 'italic' }}>+ {oi.name.replace(`${oi.originalName} `, '').replace('(', '').replace(')', '')}</span>
                      )}
                    </div>
-                   <span style={{ fontWeight: '700', fontSize: '1rem' }}>${(oi.price * oi.qty).toFixed(2)}</span>
+                   <span style={{ fontWeight: '800', fontSize: '1.1rem' }}>${(oi.price * oi.qty).toFixed(2)}</span>
                 </div>
              ))
            )}
         </div>
 
-        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-color)', backgroundColor: 'white' }}>
+        <div style={{ padding: '1.75rem', borderTop: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)' }}>
           <div className="flex justify-between items-center mb-4">
-            <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>Subtotal</span>
-            <span style={{ fontWeight: '600' }}>${total.toFixed(2)}</span>
+            <span style={{ color: 'rgba(255,255,255,0.6)', fontWeight: '600' }}>Subtotal</span>
+            <span style={{ fontWeight: '700' }}>${total.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center mb-6">
-            <span style={{ fontSize: '1.25rem', fontWeight: '800' }}>Total</span>
-            <span style={{ fontSize: '1.5rem', fontWeight: '900', color: 'var(--primary)' }}>${total.toFixed(2)}</span>
+            <span style={{ fontSize: '1.4rem', fontWeight: '800' }}>Total</span>
+            <span style={{ fontSize: '1.75rem', fontWeight: '900', color: 'white' }}>${total.toFixed(2)}</span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button 
               onClick={() => setSplitMode('seat')} 
-              className="btn flex-1"
-              style={{ backgroundColor: '#F1F5F9', color: 'var(--text-main)' }}
+              className="btn btn-secondary flex-1"
+              style={{ padding: '1rem 0' }}
             >
-               Split Ticket
+               Split
             </button>
             <button 
               onClick={handleSendOrder} 
-              className="btn flex-1"
-              style={{ backgroundColor: '#F1F5F9', color: 'var(--text-main)' }}
+              className="btn btn-secondary flex-1"
+              style={{ padding: '1rem 0' }}
             >
-               Send &amp; Stay
+               Send
             </button>
             <button 
               onClick={handleCheckout} 
-              className="btn btn-primary flex-1"
+              className="btn btn-primary flex-2"
+              style={{ padding: '1rem 0', background: 'rgba(255,255,255,0.2)' }}
             >
-               Pay &amp; Finish
+               Pay & Finish
             </button>
           </div>
-
         </div>
       </div>
 
       {/* PANE 3 - MENU GRID */}
-      <div className="flex flex-col flex-1" style={{ backgroundColor: '#F8FAFC' }}>
-        <div className="flex" style={{ padding: '0.75rem 1.5rem', gap: '1rem', backgroundColor: 'white', borderBottom: '1px solid var(--border-color)', overflowX: 'auto' }}>
+      <div className="flex flex-col flex-1" style={{ background: 'rgba(255,255,255,0.02)' }}>
+        <div className="flex" style={{ padding: '1rem 2rem', gap: '1rem', background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--glass-border)', overflowX: 'auto', backdropFilter: 'blur(10px)' }}>
            {categories.map((c: any) => (
              <button 
                key={c.id} 
                onClick={() => setActiveCategory(c.id)}
-               className={`px-6 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap ${activeCategory === c.id ? 'bg-teal-600 text-white shadow-lg' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+               className="px-8 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap"
                style={{
-                 backgroundColor: activeCategory === c.id ? 'var(--primary)' : '#F1F5F9',
-                 color: activeCategory === c.id ? 'white' : 'var(--text-muted)'
+                 background: activeCategory === c.id ? 'white' : 'rgba(255,255,255,0.08)',
+                 color: activeCategory === c.id ? '#0f172a' : 'white',
+                 border: '1px solid rgba(255,255,255,0.1)',
+                 boxShadow: activeCategory === c.id ? '0 10px 20px -5px rgba(255,255,255,0.2)' : 'none'
                }}
              >
                {c.name}
@@ -259,15 +264,19 @@ export default function OrderInterface({ table, allTables = [], categories, menu
            ))}
         </div>
 
-        <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1.25rem', overflowY: 'auto' }}>
+        <div style={{ padding: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem', overflowY: 'auto' }}>
           {displayedItems.map((item: MenuItem & { isAvailable?: boolean }) => (
              <div 
                key={item.id} 
                onClick={() => item.isAvailable !== false && handleItemClick(item)}
                className="pos-card flex flex-col p-0 overflow-hidden"
-               style={{ opacity: item.isAvailable !== false ? 1 : 0.5, cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed' }}
+               style={{ 
+                 opacity: item.isAvailable !== false ? 1 : 0.4, 
+                 cursor: item.isAvailable !== false ? 'pointer' : 'not-allowed',
+                 borderWidth: '1.5px'
+               }}
              >
-               <div style={{ position: 'relative', width: '100%', height: '140px' }}>
+               <div style={{ position: 'relative', width: '100%', height: '160px' }}>
                  {item.imageUrl ? (
                     <img 
                       src={item.imageUrl} 
@@ -275,17 +284,17 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                  ) : (
-                    <div style={{ width: '100%', height: '100%', backgroundColor: item.imageColor || '#E2E8F0' }} />
+                    <div style={{ width: '100%', height: '100%', backgroundColor: item.imageColor || '#E2E8F0', opacity: 0.1 }} />
                  )}
-                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }} />
-                 <span style={{ position: 'absolute', bottom: '10px', right: '10px', backgroundColor: 'rgba(255,255,255,0.95)', color: 'var(--text-main)', padding: '2px 8px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '800' }}>
+                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '70%', background: 'linear-gradient(transparent, rgba(0,0,0,0.8))' }} />
+                 <span style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(255,255,255,0.9)', color: '#0f172a', padding: '3px 10px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: '900' }}>
                    ${item.price.toFixed(2)}
                  </span>
                </div>
-               <div style={{ padding: '1rem' }}>
-                 <p style={{ fontWeight: '700', fontSize: '1rem', lineHeight: '1.2' }}>{item.name}</p>
+               <div style={{ padding: '1.25rem' }}>
+                 <p style={{ fontWeight: '800', fontSize: '1.15rem', lineHeight: '1.3', color: 'white' }}>{item.name}</p>
                  {item.isAvailable === false && (
-                    <span style={{ fontSize: '0.75rem', fontWeight: '900', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '1px' }}>Out of Stock</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: '900', color: '#fca5a5', textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginTop: '0.5rem' }}>Out of Stock</span>
                  )}
                </div>
              </div>
@@ -295,16 +304,16 @@ export default function OrderInterface({ table, allTables = [], categories, menu
 
       {/* MODIFIERS MODAL */}
       {selectedItemForModifiers && (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="surface animate-fade-in" style={{ width: '550px', padding: '2rem' }}>
-            <div className="flex justify-between items-center mb-6">
-               <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Add Modifiers</h2>
-               <button onClick={() => setSelectedItemForModifiers(null)} style={{ fontSize: '1.5rem', color: 'var(--text-light)' }}>✕</button>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(25px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '600px', padding: '3rem', borderRadius: 'var(--radius-xl)' }}>
+            <div className="flex justify-between items-center mb-8">
+               <h2 style={{ fontSize: '1.8rem', fontWeight: '900', letterSpacing: '-0.5px' }}>Add Modifiers</h2>
+               <button onClick={() => setSelectedItemForModifiers(null)} className="btn btn-secondary" style={{ padding: '0.5rem 1rem', borderRadius: '50%' }}>✕</button>
             </div>
             
-            <p className="mb-4" style={{ fontWeight: '600', color: 'var(--primary)' }}>MODIFYING: {selectedItemForModifiers.name}</p>
+            <p className="mb-6" style={{ fontWeight: '700', fontSize: '1.1rem', color: 'white' }}>MODIFYING: {selectedItemForModifiers.name}</p>
             
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-4 mb-10">
               {modifiers.filter((m: Modifier) => m.menuItemId === selectedItemForModifiers.id).map((mod: Modifier) => {
                 const isSelected = !!selectedModifiers.find(selected => selected.id === mod.id);
                 return (
@@ -313,20 +322,20 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                     onClick={() => toggleModifier(mod)}
                     className="pos-card flex justify-between items-center"
                     style={{ 
-                      padding: '1.25rem', 
-                      borderColor: isSelected ? 'var(--primary)' : 'var(--border-color)', 
-                      backgroundColor: isSelected ? 'var(--primary-light)' : 'white',
-                      borderWidth: isSelected ? '2px' : '1px'
+                      padding: '1.5rem', 
+                      background: isSelected ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      borderColor: isSelected ? 'white' : 'rgba(255, 255, 255, 0.1)', 
+                      borderWidth: isSelected ? '2.5px' : '1.5px'
                     }}
                   >
-                     <span style={{ fontWeight: '600' }}>{mod.name}</span>
-                     <span style={{ color: 'var(--text-muted)' }}>{mod.price > 0 ? `+$${mod.price.toFixed(2)}` : 'Free'}</span>
+                     <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>{mod.name}</span>
+                     <span style={{ color: 'rgba(255,255,255,0.6)', fontWeight: '600' }}>{mod.price > 0 ? `+$${mod.price.toFixed(2)}` : 'Free'}</span>
                   </div>
                 );
               })}
             </div>
 
-            <button onClick={() => addItemToOrder(selectedItemForModifiers, selectedModifiers)} className="btn btn-primary w-full py-4 text-lg">
+            <button onClick={() => addItemToOrder(selectedItemForModifiers, selectedModifiers)} className="btn btn-primary w-full py-5 text-xl font-black uppercase tracking-wider">
               Confirm & Add to Ticket
             </button>
           </div>
@@ -335,17 +344,17 @@ export default function OrderInterface({ table, allTables = [], categories, menu
 
       {/* ALLERGY WARNING MODAL */}
       {allergenWarningItem && (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="surface animate-fade-in" style={{ width: '400px', padding: '2.5rem', textAlign: 'center', border: '2px solid #F59E0B' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>Allergy Alert</h2>
-            <p style={{ marginBottom: '2rem', color: 'var(--text-main)' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(30px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '450px', padding: '3rem', textAlign: 'center', border: '3px solid #fbbf24' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>⚠️</div>
+            <h2 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '1rem' }}>Allergy Alert</h2>
+            <p style={{ marginBottom: '2.5rem', color: 'white', fontSize: '1.1rem' }}>
               This item (<strong>{allergenWarningItem.name}</strong>) contains: <br/>
-              <span style={{ color: '#D97706', fontWeight: 'bold' }}>{allergenWarningItem.allergenInfo}</span>
+              <span style={{ color: '#fbbf24', fontWeight: '900', fontSize: '1.4rem', textTransform: 'uppercase', display: 'block', marginTop: '0.75rem' }}>{allergenWarningItem.allergenInfo}</span>
             </p>
-            <div className="flex flex-col gap-2">
-               <button onClick={() => { handleItemClick(Object.assign({}, allergenWarningItem, { allergenInfo: null })); }} className="btn btn-primary w-full py-4">Proceed with Order</button>
-               <button onClick={() => setAllergenWarningItem(null)} className="btn btn-secondary w-full">Cancel</button>
+            <div className="flex flex-col gap-3">
+               <button onClick={() => { handleItemClick(Object.assign({}, allergenWarningItem, { allergenInfo: null })); }} className="btn btn-primary w-full py-5 font-black uppercase" style={{ background: '#fbbf24', color: '#0f172a' }}>Proceed with Order</button>
+               <button onClick={() => setAllergenWarningItem(null)} className="btn btn-secondary w-full py-4 uppercase font-bold">Cancel</button>
             </div>
           </div>
         </div>
@@ -353,55 +362,65 @@ export default function OrderInterface({ table, allTables = [], categories, menu
 
       {/* SPLIT TICKET MODAL */}
       {splitMode && (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="surface animate-fade-in" style={{ width: '500px', padding: '2.5rem' }}>
-             <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem' }}>Split Transaction</h2>
-             <div className="flex gap-4 mb-6">
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(25px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '550px', padding: '3rem' }}>
+             <h2 style={{ fontSize: '1.8rem', fontWeight: '900', marginBottom: '2rem' }}>Split Transaction</h2>
+             <div className="flex gap-4 mb-8">
                 <button 
                   onClick={() => setSplitMode('seat')}
-                  className={`flex-1 py-4 rounded-xl border-2 font-bold transition-all ${splitMode === 'seat' ? 'border-teal-600 bg-teal-50 text-teal-700' : 'border-slate-200 text-slate-500'}`}
+                  className="flex-1 py-5 rounded-2xl border-2 font-black transition-all"
+                  style={{
+                    background: splitMode === 'seat' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                    borderColor: splitMode === 'seat' ? 'white' : 'transparent',
+                    color: 'white'
+                  }}
                 >
                    Split by Seat
                 </button>
                 <button 
                   onClick={() => setSplitMode('equal')}
-                  className={`flex-1 py-4 rounded-xl border-2 font-bold transition-all ${splitMode === 'equal' ? 'border-teal-600 bg-teal-50 text-teal-700' : 'border-slate-200 text-slate-500'}`}
+                  className="flex-1 py-5 rounded-2xl border-2 font-black transition-all"
+                  style={{
+                    background: splitMode === 'equal' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                    borderColor: splitMode === 'equal' ? 'white' : 'transparent',
+                    color: 'white'
+                  }}
                 >
                    Split Equally
                 </button>
              </div>
 
              {splitMode === 'equal' ? (
-                <div className="mb-8">
-                   <p className="mb-2 font-semibold text-slate-600">Number of ways to split:</p>
-                   <div className="flex items-center gap-4">
-                      <button onClick={() => setSplitCount(Math.max(2, splitCount-1))} className="w-12 h-12 rounded-full bg-slate-100 font-bold">-</button>
-                      <span style={{ fontSize: '1.5rem', fontWeight: '800' }}>{splitCount}</span>
-                      <button onClick={() => setSplitCount(splitCount+1)} className="w-12 h-12 rounded-full bg-slate-100 font-bold">+</button>
+                <div className="mb-10">
+                   <p className="mb-4 font-bold text-white/60 uppercase text-xs tracking-widest">Number of ways to split:</p>
+                   <div className="flex items-center gap-6">
+                      <button onClick={() => setSplitCount(Math.max(2, splitCount-1))} className="w-14 h-14 rounded-full glass font-black text-2xl">-</button>
+                      <span style={{ fontSize: '2.5rem', fontWeight: '900' }}>{splitCount}</span>
+                      <button onClick={() => setSplitCount(splitCount+1)} className="w-14 h-14 rounded-full glass font-black text-2xl">+</button>
                       <div className="ml-auto text-right">
-                         <span style={{ fontSize: '1.25rem', fontWeight: '900', color: 'var(--primary)' }}>${(total / splitCount).toFixed(2)}</span>
-                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Per person (x{splitCount})</p>
+                         <span style={{ fontSize: '1.75rem', fontWeight: '900', color: 'white' }}>${(total / splitCount).toFixed(2)}</span>
+                         <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>Per person (x{splitCount})</p>
                       </div>
                    </div>
                 </div>
              ) : (
-                <div className="mb-8 overflow-y-auto" style={{ maxHeight: '200px' }}>
+                <div className="mb-10 overflow-y-auto" style={{ maxHeight: '250px' }}>
                    {[1,2,3,4].map(seat => {
                       const seatTotal = orderItems.filter(oi => oi.seatNumber === seat).reduce((acc, oi) => acc + (oi.price * oi.qty), 0);
                       if (seatTotal === 0) return null;
                       return (
-                        <div key={seat} className="flex justify-between p-3 border-b border-slate-100">
-                           <span className="font-bold text-slate-700">Seat {seat}</span>
-                           <span className="font-bold">${seatTotal.toFixed(2)}</span>
+                        <div key={seat} className="flex justify-between p-4 border-b border-white/10 glass mb-2 rounded-xl">
+                           <span className="font-black text-white uppercase text-sm">Seat {seat}</span>
+                           <span className="font-black text-white text-xl">${seatTotal.toFixed(2)}</span>
                         </div>
                       );
                    })}
                 </div>
              )}
 
-             <div className="flex gap-2">
-                <button onClick={() => setSplitMode(null)} className="btn btn-secondary flex-1">Back</button>
-                <button onClick={handleCheckout} className="btn btn-primary flex-2">Proceed to Split Payment</button>
+             <div className="flex gap-3">
+                <button onClick={() => setSplitMode(null)} className="btn btn-secondary flex-1 py-4">Back</button>
+                <button onClick={handleCheckout} className="btn btn-primary flex-2 py-4 font-black uppercase" style={{ background: 'rgba(255,255,255,0.2)' }}>Proceed to Split Pay</button>
              </div>
           </div>
         </div>
@@ -409,12 +428,12 @@ export default function OrderInterface({ table, allTables = [], categories, menu
 
       {/* EDIT ITEM MODAL */}
       {editItemIndex !== null && (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="surface animate-fade-in" style={{ width: '400px', padding: '2.5rem', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Edit Item</h2>
-            <h3 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '2rem' }}>{orderItems[editItemIndex].originalName}</h3>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(25px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="surface animate-fade-in" style={{ width: '450px', padding: '3rem', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'rgba(255,255,255,0.5)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Edit Ticket Item</h2>
+            <h3 style={{ fontSize: '2.25rem', fontWeight: '900', marginBottom: '2.5rem', letterSpacing: '-1px' }}>{orderItems[editItemIndex].originalName}</h3>
             
-            <div className="flex items-center justify-center gap-6 mb-8">
+            <div className="flex items-center justify-center gap-8 mb-10">
                <button 
                  onClick={() => {
                    const newItems = [...orderItems];
@@ -423,10 +442,10 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                      setOrderItems(newItems);
                    }
                  }} 
-                 style={{ width: '60px', height: '60px', borderRadius: 'var(--radius-full)', backgroundColor: '#F1F5F9', fontSize: '1.5rem', fontWeight: 'bold' }}
+                 className="w-16 h-16 rounded-full glass font-black text-2xl"
                >-</button>
                
-               <span style={{ fontSize: '2.5rem', fontWeight: '900', minWidth: '60px' }}>
+               <span style={{ fontSize: '3.5rem', fontWeight: '900', minWidth: '80px' }}>
                  {orderItems[editItemIndex].qty}
                </span>
 
@@ -436,7 +455,7 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                    newItems[editItemIndex].qty += 1;
                    setOrderItems(newItems);
                  }} 
-                 style={{ width: '60px', height: '60px', borderRadius: 'var(--radius-full)', backgroundColor: '#F1F5F9', fontSize: '1.5rem', fontWeight: 'bold' }}
+                 className="w-16 h-16 rounded-full glass font-black text-2xl"
                >+</button>
             </div>
 
@@ -455,21 +474,21 @@ export default function OrderInterface({ table, allTables = [], categories, menu
                 setOrderItems(newItems);
                 setEditItemIndex(null);
               }} 
-              className="btn w-full mb-3"
-              style={{ backgroundColor: '#FEF2F2', color: 'var(--danger)', border: '1px solid #FCA5A5' }}
+              className="btn btn-danger w-full mb-4 py-4 uppercase font-black tracking-widest"
             >
-              Remove / Void Item
+              Void Item
             </button>
             
             <button 
               onClick={() => setEditItemIndex(null)} 
-              className="btn btn-secondary w-full"
+              className="btn btn-secondary w-full py-4 uppercase font-bold"
             >
-              Close
+              Done
             </button>
           </div>
         </div>
       )}
     </div>
+
   );
 }

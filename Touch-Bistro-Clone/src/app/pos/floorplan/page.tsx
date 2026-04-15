@@ -49,7 +49,7 @@ export default async function FloorplanPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '2.5rem' }}>
         {allTables.map(table => {
           const isRegister = table.name.includes('Register');
           const tableTicket = activeTickets.find(t => t.tableId === table.id);
@@ -61,28 +61,29 @@ export default async function FloorplanPage() {
               href={`/pos/table/${table.id}`}
               className={`pos-card flex flex-col items-center justify-center transition-all ${isLate ? 'animate-pulse-slow' : ''}`}
               style={{
-                height: '160px', 
+                height: '180px', 
                 borderRadius: isRegister ? 'var(--radius-lg)' : 'var(--radius-full)', 
-                backgroundColor: isLate ? '#FFFBEB' : (table.status === 'open' ? 'white' : (table.status === 'seated' ? 'var(--primary-light)' : '#FEF2F2')),
-                borderColor: isLate ? '#F59E0B' : (table.status === 'open' ? 'var(--border-color)' : (table.status === 'seated' ? 'var(--primary)' : 'var(--danger)')),
-                borderWidth: (table.status === 'open' && !isLate) ? '1px' : '2px',
+                background: isLate ? 'rgba(251, 191, 36, 0.2)' : (table.status === 'open' ? 'rgba(255, 255, 255, 0.1)' : (table.status === 'seated' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(248, 113, 113, 0.2)')),
+                borderColor: isLate ? '#fbbf24' : (table.status === 'open' ? 'rgba(255, 255, 255, 0.2)' : (table.status === 'seated' ? 'white' : '#fca5a5')),
+                borderWidth: (table.status === 'open' && !isLate) ? '1px' : '2.5px',
                 textDecoration: 'none',
-                boxShadow: isLate ? '0 0 15px rgba(245, 158, 11, 0.2)' : 'var(--shadow-sm)'
+                boxShadow: isLate ? '0 0 30px rgba(251, 191, 36, 0.3)' : '0 10px 20px -10px rgba(0,0,0,0.2)'
               }}
             >
-              <span style={{ fontSize: '0.8rem', color: isLate ? '#B45309' : 'var(--text-light)', fontWeight: '600', marginBottom: '0.25rem', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.8rem', color: isLate ? '#fcd34d' : 'var(--text-muted)', fontWeight: '600', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {isRegister ? 'Point of Sale' : 'Table'}
               </span>
-              <span style={{ fontSize: '1.75rem', fontWeight: '900', color: isLate ? '#92400E' : 'var(--text-main)' }}>
+              <span style={{ fontSize: '2rem', fontWeight: '900', color: 'white', letterSpacing: '-0.5px' }}>
                 {isRegister ? '01' : table.name}
               </span>
-              <div className={`badge ${isLate ? 'badge-warning' : (table.status === 'open' ? 'badge-success' : (table.status === 'seated' ? 'badge-warning' : 'badge-danger'))}`} style={{ marginTop: '1rem', backgroundColor: isLate ? '#F59E0B' : undefined }}>
+              <div className={`badge ${isLate ? 'badge-warning' : (table.status === 'open' ? 'badge-success' : (table.status === 'seated' ? 'badge-warning' : 'badge-danger'))}`} style={{ marginTop: '1.25rem' }}>
                 {isLate ? 'URGENT' : table.status}
               </div>
             </Link>
           );
         })}
       </div>
+
     </div>
   );
 }

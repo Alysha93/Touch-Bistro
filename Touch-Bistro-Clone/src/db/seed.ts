@@ -96,10 +96,10 @@ async function seed() {
     { id: 31, categoryId: 6, prepStationId: 3, name: 'Signature Margarita',price: 12.50, imageUrl: '/assets/menu/signature_margarita.png', allergenInfo: 'Alcohol' },
 
     // --- Spirits & Beer ---
-    { id: 32, categoryId: 7, prepStationId: 3, name: 'Craft Draft Beer',      price: 7.50,  imageUrl: 'https://images.unsplash.com/photo-1541014529323-288277207604?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol, Gluten' },
-    { id: 33, categoryId: 7, prepStationId: 3, name: 'Cabernet Sauvignon',    price: 11.00, imageUrl: 'https://images.unsplash.com/photo-1553135049-2f10705a6206?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
-    { id: 34, categoryId: 7, prepStationId: 3, name: 'Chardonnay',            price: 10.50, imageUrl: 'https://images.unsplash.com/photo-1563260797-cb5cd70254c8?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
-    { id: 35, categoryId: 7, prepStationId: 3, name: 'Single Malt Whiskey',   price: 15.00, imageUrl: 'https://images.unsplash.com/photo-1582819509237-753c90ef4036?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
+    { id: 32, categoryId: 7, prepStationId: 3, name: 'Craft Draft Beer',      price: 7.50,  imageUrl: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol, Gluten' },
+    { id: 33, categoryId: 7, prepStationId: 3, name: 'Cabernet Sauvignon',    price: 11.00, imageUrl: 'https://images.unsplash.com/photo-1510850463344-6714645d3df4?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
+    { id: 34, categoryId: 7, prepStationId: 3, name: 'Chardonnay',            price: 10.50, imageUrl: 'https://images.unsplash.com/photo-1547595628-c65a29f62c3a?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
+    { id: 35, categoryId: 7, prepStationId: 3, name: 'Single Malt Whiskey',   price: 15.00, imageUrl: 'https://images.unsplash.com/photo-1527281473222-793a7e50d2af?q=80&w=800&auto=format&fit=crop', allergenInfo: 'Alcohol' },
 
   ]);
 

@@ -19,9 +19,9 @@ export default async function POSLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex-col h-full w-full">
-      <header className="header-bar flex justify-between" style={{ backgroundColor: 'var(--bg-dark)', color: 'white' }}>
+      <header className="header-bar flex justify-between">
         <div className="flex items-center" style={{ gap: '0.75rem' }}>
-          <span style={{ color: 'white', fontSize: '1.4rem' }}>🍽</span>
+          <span style={{ fontSize: '1.4rem' }}>🍽</span>
           <span style={{ fontWeight: 800, fontSize: '1.25rem', letterSpacing: '-0.5px' }}>TouchBistro</span>
           <span style={{ color: 'rgba(255,255,255,0.4)', margin: '0 0.5rem' }}>|</span>
           <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}>Staff: {staffName}</span>
@@ -29,19 +29,20 @@ export default async function POSLayout({ children }: { children: React.ReactNod
             <SyncMonitor />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="flex items-center" style={{ gap: '1rem' }}>
           {webOrders > 0 && (
-            <div style={{ backgroundColor: '#ef4444', color: 'white', padding: '0.2rem 0.75rem', borderRadius: '16px', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <div className="badge badge-danger" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                <span>📦</span> {webOrders} Online
             </div>
           )}
-          <Link href="/pos/settings" style={{ color: 'white', textDecoration: 'underline', fontSize: '0.9rem' }}>⚙️ Settings</Link>
+          <Link href="/pos/settings" className="btn btn-secondary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>⚙️ Settings</Link>
           <form action={logout}>
-            <button className="btn" style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', backgroundColor: '#333', color: 'white' }}>Logout</button>
+            <button className="btn btn-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>Logout</button>
           </form>
         </div>
       </header>
-      <main className="flex-1" style={{ overflow: 'hidden', height: 'calc(100vh - 60px)' }}>
+      <main className="flex-1" style={{ overflow: 'hidden' }}>
+
         {children}
       </main>
     </div>
