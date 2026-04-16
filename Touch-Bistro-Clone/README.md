@@ -7,13 +7,9 @@
 
 **TouchBistro Clone** is a high-performance, enterprise-grade restaurant management system. This project features a state-of-the-art **Glassmorphism Design System**, combining vibrant mesh gradients with sophisticated frosted glass interfaces to deliver a premium, tablet-first hospitality experience.
 
----
 
-## 📺 Workflow Demonstration
-![TouchBistro Workflow Demo](./public/touch_bistro_final_demo.webp)
-*Interactive walkthrough showcasing the Glassmorphism transition and real-time synchronization.*
 
----
+
 
 ## 📸 Premium Glassmorphism UI Showcase
 A curated visual summary of the core ProServe POS modules featuring high-definition captures of the Glassmorphism design system in action.
