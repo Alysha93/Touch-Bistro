@@ -1,6 +1,5 @@
 # TouchBistro Clone • Premium Glassmorphism POS
 
-[**🚀 LAUNCH LIVE DEMO (Localhost Port 3000)**](http://localhost:3000)
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Glassmorphism](https://img.shields.io/badge/Design-Glassmorphism-FF69B4?style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter)
